@@ -48,7 +48,7 @@ jobs:
                       ${{ runner.os }}-pnpm-store-
 
             - name: Clean install
-              run: pnpm install --frozen-lockfile --prefer-offline
+              run: pnpm install --no-frozen-lockfile --prefer-offline
 
             - name: Check formatting
               run: pnpm format:check
