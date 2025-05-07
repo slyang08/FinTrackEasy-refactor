@@ -6,10 +6,10 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 
 |      Name      | ID  |
 | :------------: | :-: |
-|   Aaron Liu    |     |
-|  Carrie Leung  |     |
-|  Wing Ho Chau  |     |
-| Sheng-Lin Yang |     |
+|   Aaron Liu    |  105515233  |
+|  Carrie Leung  |  106844228  |
+|  Wing Ho Chau  |  150924231  |
+| Sheng-Lin Yang |  160443222  |
 
 ## Technology Stack
 
