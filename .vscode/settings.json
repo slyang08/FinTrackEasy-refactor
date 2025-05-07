@@ -1,0 +1,37 @@
+// .vscode/settings.json
+{
+    "editor.formatOnSave": false,
+    "eslint.format.enable": false,
+    // Strengthen ESLint detection scope
+    "eslint.probe": ["javascript", "javascriptreact"],
+    // monorepo workspace configuration
+    "eslint.workingDirectories": [
+        { "directory": "fte-react", "changeProcessCWD": true },
+        { "directory": "express", "changeProcessCWD": true }
+    ],
+    // Prettier enhanced configuration
+    "prettier.requireConfig": true,
+    "prettier.configPath": ".prettierrc.json",
+    "prettier.prettierPath": "./node_modules/prettier",
+    "prettier.useEditorConfig": false, // avoid conflicts with .editorconfig
+    // Unified file format
+    "files.eol": "\n",
+    // Formatter configuration
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // "[javascript]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // },
+    // "[javascriptreact]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // },
+    // ESLint path configuration
+    "eslint.nodePath": "node_modules",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    // Add new conflict handling configuration
+    "eslint.rules.customizations": [{ "rule": "prettier/prettier", "severity": "error" }]
+}
+// Manually format archives using VSCode shortcut keys
+// Mac：Shift + Option + F
+// Windows/Linux：Shift + Alt + F
