@@ -1,5 +1,6 @@
 // src/controllers/accountController.js
 import Account from "../models/Account.js";
+import { isPasswordReused } from "../utils/password.js";
 
 // @desc    Get all accounts for current user
 export const getMyAccounts = async (req, res) => {
@@ -68,14 +69,17 @@ export const deleteAccount = async (req, res) => {
 export const changePassword = async (req, res, next) => {
     try {
         const { currentPassword, newPassword, confirmPassword } = req.body;
+        const accountId = req.params.accountId;
 
         if (newPassword !== confirmPassword) {
             return res.status(400).json({ message: "Passwords do not match" });
         }
 
-        const account = await Account.findById(req.params.id).select("+password");
+        const account = await Account.findById(accountId).select(
+            "+password previousPasswords user"
+        );
 
-        if (!account || account.user.toString() !== req.userId) {
+        if (!account || !account.user || account.user.toString() !== req.userId) {
             return res.status(403).json({ message: "Unauthorized" });
         }
 
@@ -84,7 +88,22 @@ export const changePassword = async (req, res, next) => {
             return res.status(401).json({ error: "Current password is incorrect" });
         }
 
+        // Check if old password is reused (optional)
+        if (await isPasswordReused(newPassword, account.previousPasswords)) {
+            return res
+                .status(400)
+                .json({ message: "New password cannot be one of your previous passwords." });
+        }
+
+        // Store the old password (optional, it is recommended to store only the hash, not the plain text)
+        account.previousPasswords = [
+            ...(account.previousPasswords || []),
+            { hash: account.password, changedAt: new Date() },
+        ].slice(-5); // Only keep the last 5 times
+
+        // Assign to new password
         account.password = newPassword;
+
         await account.save();
 
         res.json({ message: "Password updated successfully" });

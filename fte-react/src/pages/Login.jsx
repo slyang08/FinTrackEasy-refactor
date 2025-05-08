@@ -1,6 +1,7 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 
@@ -8,16 +9,23 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
+            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
                 email,
                 password,
             });
 
-            window.location.href = "/register";
+            // Assume the backend returns { token: '...' }
+            localStorage.setItem("token", res.data.token);
+
+            // Set axios default header
+            api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+
+            navigate("/profile");
         } catch (err) {
             setError("Invalid email or password." + err);
         }
