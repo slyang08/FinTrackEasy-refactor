@@ -9,7 +9,8 @@
         "start": "node src/server.js",
         "dev": "nodemon src/server.js",
         "lint": "eslint .",
-        "lint:fix": "eslint . --ext .js --fix",
+        "lint:fix": "eslint . --ext .js,.jsx --fix --config ../eslint.config.js",
+        "format:fix": "prettier --write . --config ../.prettierrc.json",
         "format:check": "prettier --check ."
     },
     "keywords": [],

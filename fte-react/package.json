@@ -7,8 +7,9 @@
         "dev": "vite",
         "build": "vite build",
         "lint": "eslint .",
-        "lint:fix": "eslint . --ext .js,.jsx --fix",
+        "lint:fix": "eslint . --ext .js,.jsx --fix --config ../eslint.config.js",
         "format:check": "prettier --check .",
+        "format:fix": "prettier --write . --config ../.prettierrc.json",
         "preview": "vite preview"
     },
     "dependencies": {

@@ -19,8 +19,8 @@ const router = express.Router();
 router.use(protect);
 
 // Password Routes
-router.patch("/:id/change-password", validate(changePasswordSchema), changePassword);
-router.patch("/:id/reset-password", validate(resetPasswordSchema), resetPassword);
+router.patch("/:accountId/changepassword", validate(changePasswordSchema), changePassword);
+router.patch("/:id/resetpassword", validate(resetPasswordSchema), resetPassword);
 
 // Login verification is required
 router.get("/", getMyAccounts);

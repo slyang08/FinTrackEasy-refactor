@@ -1,6 +1,7 @@
 // src/pages/Register.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 
@@ -16,6 +17,7 @@ const Register = () => {
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -45,7 +47,7 @@ const Register = () => {
                 phone,
             });
 
-            window.location.href = "/login";
+            navigate("/login");
         } catch (err) {
             setError("An error occurred while registering. Please try again." + err);
         } finally {
