@@ -2,25 +2,17 @@
 import express from "express";
 
 import {
-    changePassword,
     createAccount,
     deleteAccount,
     getMyAccounts,
-    resetPassword,
     updateAccountStatus,
 } from "../controllers/accountController.js";
 import protect from "../middlewares/authMiddleware.js";
-import validate from "../middlewares/validate.js";
-import { changePasswordSchema, resetPasswordSchema } from "../validations/accountValidation.js";
 
 const router = express.Router();
 
 // Authentication middleware - protects all routes
 router.use(protect);
-
-// Password Routes
-router.patch("/:accountId/changepassword", validate(changePasswordSchema), changePassword);
-router.patch("/:id/resetpassword", validate(resetPasswordSchema), resetPassword);
 
 // Login verification is required
 router.get("/", getMyAccounts);

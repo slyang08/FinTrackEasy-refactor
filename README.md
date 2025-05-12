@@ -8,8 +8,9 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 | :------------: | :-------: |
 |   Aaron Liu    | 105515233 |
 |  Carrie Leung  | 106844228 |
-|  Wing Ho Chau  | 150924231 |
 | Sheng-Lin Yang | 160443222 |
+|   Tracy Tran   | 109604223 |
+|  Wing Ho Chau  | 150924231 |
 
 ## Technology Stack
 

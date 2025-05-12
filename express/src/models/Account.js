@@ -29,6 +29,8 @@ const accountSchema = new mongoose.Schema(
                 changedAt: Date,
             },
         ],
+        passwordResetToken: { type: String },
+        passwordResetExpires: { type: Date },
     },
     { timestamps: true }
 );
@@ -49,6 +51,7 @@ accountSchema.pre("save", async function (next) {
         const hashed = await hashPassword(this.password);
         this.password = hashed;
         this.previousPasswords.push({ hash: hashed, changedAt: new Date() });
+        this.updatedAt = new Date();
 
         // Keep up to 5 records
         if (this.previousPasswords.length > 5) this.previousPasswords.shift(); // Delete the oldest password record

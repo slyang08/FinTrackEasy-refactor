@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 
-const Login = () => {
+export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -61,7 +61,7 @@ const Login = () => {
                 </div>
                 <div className="flex flex-col justify-between mt-4 text-sm">
                     {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <Link to="/forgot-password" className="text-blue-600 hover:underline">
+                    <Link to="/forgotpassword" className="text-blue-600 hover:underline">
                         Forgot Password?
                     </Link>
                     <button
@@ -78,6 +78,4 @@ const Login = () => {
             </form>
         </div>
     );
-};
-
-export default Login;
+}
