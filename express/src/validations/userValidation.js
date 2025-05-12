@@ -11,3 +11,14 @@ export const updateProfileSchema = Joi.object({
 
     preferredLanguage: Joi.string().valid("en", "fr").optional(),
 }).unknown(false);
+
+export const forgotPasswordSchema = Joi.object({
+    email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required()
+        .messages({
+            "string.email": "Please enter a valid email address",
+            "string.empty": "Email is required",
+            "any.required": "Email is required",
+        }),
+});

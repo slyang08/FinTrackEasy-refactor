@@ -2,7 +2,7 @@
 import Joi from "joi";
 
 // Common password rules (you can add password strength requirements)
-const passwordSchema = Joi.string().min(6).max(100).required();
+const passwordSchema = Joi.string().min(8).max(16).required();
 
 export const changePasswordSchema = Joi.object({
     currentPassword: passwordSchema.label("Current Password"),
@@ -14,6 +14,7 @@ export const changePasswordSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
+    token: Joi.string().required(),
     newPassword: passwordSchema.label("New Password"),
     confirmPassword: Joi.valid(Joi.ref("newPassword"))
         .required()

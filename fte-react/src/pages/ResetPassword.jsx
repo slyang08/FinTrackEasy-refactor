@@ -1,53 +1,43 @@
-// src/pages/ChangePassword.jsx
-import { useEffect, useState } from "react";
+// src/pages/ResetPassword.jsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 
-export default function ChangePassword() {
-    const [currentPassword, setCurrentPassword] = useState("");
+export default function ResetPassword() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [selectedAccountId, setSelectedAccountId] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
-    // Get all accounts of user
-    useEffect(() => {
-        api.get("/auth/me")
-            .then((res) => {
-                if (res.data.accounts && res.data.accounts.length > 0) {
-                    setSelectedAccountId(res.data.accounts[0]._id); // Select the first account by default
-                } else {
-                    setMessage("No account found for this user.");
-                }
-            })
-            .catch(() => setMessage("Failed to get account info"));
-    }, []);
+    // Get the accountId and token on the URL
+    const params = new URLSearchParams(window.location.search);
+    const accountId = params.get("accountId");
+    const token = params.get("token");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
         if (newPassword !== confirmPassword) {
-            setMessage("New passwords do not match!");
+            setMessage("Passwords do not match!");
             return;
         }
         try {
             await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/auth/${selectedAccountId}/changepassword`,
+                `${import.meta.env.VITE_API_BASE_URL}/auth/${accountId}/resetpassword`,
                 {
-                    currentPassword,
+                    token,
                     newPassword,
                     confirmPassword,
                 }
             );
-            setMessage("Password changed successfully!");
-            navigate("/profile");
+            setMessage("Password reset successfully!");
+            navigate("/login");
         } catch (err) {
             setMessage(
                 err.response?.data?.message ||
                     err.response?.data?.error ||
-                    "Failed to change password"
+                    "Failed to reset password"
             );
         }
     };
@@ -58,7 +48,7 @@ export default function ChangePassword() {
             <main className="flex-grow flex justify-center items-center">
                 <div className="border border-green-100 shadow-md p-10 rounded bg-white">
                     <h2 className="text-3xl font-bold text-green-700 text-center mb-8">
-                        Change Password
+                        Reset Password
                     </h2>
                     {message && (
                         <div
@@ -70,17 +60,11 @@ export default function ChangePassword() {
                     <form onSubmit={handleSubmit} className="space-y-4 w-72">
                         <input
                             type="password"
-                            placeholder="Current password"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
-                        />
-                        <input
-                            type="password"
                             placeholder="New password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            required
                         />
                         <input
                             type="password"
@@ -88,14 +72,16 @@ export default function ChangePassword() {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            required
                         />
                         <button
                             type="submit"
                             className="w-full bg-green-900 text-white py-2 rounded hover:bg-green-800 transition"
                         >
-                            Change password
+                            Reset password
                         </button>
                     </form>
+                    {message && <div>{message}</div>}
                 </div>
             </main>
         </div>

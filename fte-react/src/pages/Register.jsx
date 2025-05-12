@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 
-const Register = () => {
+export default function Register() {
     const [formData, setFormData] = useState({
         nickname: "",
         email: "",
@@ -158,6 +158,4 @@ const Register = () => {
             </form>
         </div>
     );
-};
-
-export default Register;
+}

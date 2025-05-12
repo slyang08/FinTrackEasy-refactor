@@ -6,9 +6,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import api from "@/api/axios";
 
 import ChangePassword from "./pages/ChangePassword.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
 import Register from "./pages/Register.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import Terms from "./pages/Terms.jsx";
 
 const token = localStorage.getItem("token");
@@ -30,10 +32,12 @@ function App() {
             <div>
                 <h1 className="text-4xl font-bold text-blue-500">FinTrackEasy</h1>
                 <Routes>
-                    <Route path="/changepassword" element={<ChangePassword />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/changepassword" element={<ChangePassword />} />
+                    <Route path="/forgotpassword" element={<ForgotPassword />} />
+                    <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/terms" element={<Terms />} />
                 </Routes>
             </div>

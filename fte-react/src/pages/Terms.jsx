@@ -1,6 +1,6 @@
 import React from "react";
 
-const Terms = () => {
+export default function Terms() {
     return (
         <div className="bg-gray-50 min-h-screen text-gray-800">
             <header className="bg-blue-600 text-white py-10 px-6 text-center shadow">
@@ -134,6 +134,4 @@ const Terms = () => {
             </footer>
         </div>
     );
-};
-
-export default Terms;
+}
