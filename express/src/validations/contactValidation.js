@@ -10,7 +10,3 @@ export const generalContactSchema = Joi.object({
     email: Joi.string().email().required(),
     description: Joi.string().allow(null, ""),
 });
-
-export const troubleLoginSchema = Joi.object({
-    email: Joi.string().email().required(),
-});
