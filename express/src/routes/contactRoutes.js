@@ -5,20 +5,18 @@ import {
     getAllContacts,
     getContactById,
     submitContactForm,
-    submitLoginHelpForm,
     updateContactStatus,
 } from "../controllers/contactController.js";
 import protect from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
-import { generalContactSchema, troubleLoginSchema } from "../validations/contactValidation.js";
+import { generalContactSchema } from "../validations/contactValidation.js";
 
 const router = express.Router();
 
-router.use(protect);
-
 // Public routes
 router.post("/", validate(generalContactSchema), submitContactForm);
-router.post("/trouble-login", validate(troubleLoginSchema), submitLoginHelpForm);
+
+router.use(protect);
 
 // Admin-only or team routes (can be protected later)
 router.get("/", getAllContacts);

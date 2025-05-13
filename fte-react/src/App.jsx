@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import api from "@/api/axios";
 
 import ChangePassword from "./pages/ChangePassword.jsx";
+import ContactUs from "./pages/ContactUs.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Login from "./pages/Login.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -32,6 +33,7 @@ function App() {
             <div>
                 <h1 className="text-4xl font-bold text-blue-500">FinTrackEasy</h1>
                 <Routes>
+                    <Route path="/contact" element={<ContactUs />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={<Profile />} />

@@ -1,5 +1,6 @@
 // src/controllers/contactController.js
 import ContactForm from "../models/Contact.js";
+import sendEmail from "../utils/sendEmail.js";
 
 // @route   POST /api/contact
 // @access  Public
@@ -10,20 +11,17 @@ export const submitContactForm = async (req, res, next) => {
             ...req.body,
             type: "general",
         });
-        res.status(201).json({ message: "Contact submitted", contact });
-    } catch (err) {
-        next(err);
-    }
-};
 
-// @desc Submit trouble-login help form
-export const submitLoginHelpForm = async (req, res, next) => {
-    try {
-        const contact = await ContactForm.create({
-            email: req.body.email,
-            type: "account-help",
-        });
-        res.status(201).json({ message: "Help request submitted", contact });
+        // Send a letter to the administrator
+        await sendEmail(
+            "info@fintrackeasy.ca",
+            "New Contact Us Submission",
+            `<p>Name: ${contact.name || ""}<br/>
+                Email: ${contact.email}<br/>
+                Phone: ${contact.phone || ""}<br/>
+                Description: ${contact.description || ""}</p>`
+        );
+        res.status(201).json({ message: "Contact submitted", contact });
     } catch (err) {
         next(err);
     }
