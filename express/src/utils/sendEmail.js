@@ -1,26 +1,37 @@
 // src/utils/sendEmail.js
+import pkg from "google-auth-library";
+const { OAuth2Client } = pkg;
 import nodemailer from "nodemailer";
 
-// You can put these settings in a .env file
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST, // For example, smtp.gmail.com
-    port: process.env.SMTP_PORT, // 465 (SSL) or 587 (TLS)
-    secure: process.env.SMTP_SECURE === "true", // true for 465, false for 587
-    auth: {
-        user: process.env.SMTP_USER, // Our email
-        pass: process.env.SMTP_PASS, // Our email password or app password
-    },
-});
+const { GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_USER } = process.env;
+
+const oAuth2Client = new OAuth2Client(GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET);
+
+oAuth2Client.setCredentials({ refresh_token: GMAIL_REFRESH_TOKEN });
+
+async function createTransporter() {
+    const accessToken = await oAuth2Client.getAccessToken();
+    return nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: GMAIL_USER,
+            clientId: GMAIL_CLIENT_ID,
+            clientSecret: GMAIL_CLIENT_SECRET,
+            refreshToken: GMAIL_REFRESH_TOKEN,
+            accessToken: accessToken.token,
+        },
+    });
+}
 
 export default async function sendEmail(to, subject, html) {
-    // from can customize the brand name, we can use fintrackeasy or fte
+    const transporter = await createTransporter();
     const mailOptions = {
-        from: `"FinTrackEasy" <${process.env.SMTP_USER}>`,
+        from: `"FinTrackEasy" <${GMAIL_USER}>`,
         to,
         subject,
-        html, // Support html format
+        html,
     };
-
     try {
         const info = await transporter.sendMail(mailOptions);
         console.log("Email sent:", info.messageId);

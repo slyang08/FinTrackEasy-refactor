@@ -14,7 +14,7 @@ export const submitContactForm = async (req, res, next) => {
 
         // Send a letter to the administrator
         await sendEmail(
-            "info@fintrackeasy.ca",
+            "fintrackeasy@gmail.com",
             "New Contact Us Submission",
             `<p>Name: ${contact.name || ""}<br/>
                 Email: ${contact.email}<br/>
