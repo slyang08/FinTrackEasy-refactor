@@ -31,6 +31,11 @@ export default function Login() {
         }
     };
 
+    const handleGoogleLogin = (e) => {
+        e.preventDefault();
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    };
+
     return (
         <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
             <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
@@ -59,6 +64,13 @@ export default function Login() {
                         required
                     />
                 </div>
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    className="w-full bg-white border border-gray-300 text-white py-2 rounded flex items-center justify-center gap-2 mb-4 hover:bg-gray-100"
+                >
+                    Sign in with Google
+                </button>
                 <div className="flex flex-col justify-between mt-4 text-sm">
                     {error && <p className="text-red-500 text-sm">{error}</p>}
                     <Link to="/forgotpassword" className="text-blue-600 hover:underline">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
+import { getUserInfo } from "@/api/user";
 
 export default function Profile() {
     const [profile, setProfile] = useState({
@@ -27,9 +28,8 @@ export default function Profile() {
 
     // Loading personal info
     useEffect(() => {
-        api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, { withCredentials: true })
-            .then((res) => {
-                const user = res.data.user;
+        getUserInfo()
+            .then((user) => {
                 setProfile(user);
                 setForm({
                     nickname: user.nickname || "",
@@ -83,7 +83,13 @@ export default function Profile() {
         setSaving(false);
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`);
+        } catch (err) {
+            setMessage(err);
+        }
+        // Clear all JWT tokens
         localStorage.removeItem("token");
         delete api.defaults.headers.common["Authorization"];
         navigate("/login");

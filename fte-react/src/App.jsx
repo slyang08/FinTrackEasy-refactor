@@ -9,6 +9,7 @@ import ChangePassword from "./pages/ChangePassword.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Login from "./pages/Login.jsx";
+import OAuthCallback from "./pages/OAuthCallback.jsx";
 import Profile from "./pages/Profile.jsx";
 import Register from "./pages/Register.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
@@ -33,9 +34,12 @@ function App() {
             <div>
                 <h1 className="text-4xl font-bold text-blue-500">FinTrackEasy</h1>
                 <Routes>
+                    {/* Root directory should set it to home page in the future */}
+                    <Route path="/" element={<Login />} />
                     <Route path="/contact" element={<ContactUs />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/oauth-callback" element={<OAuthCallback />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/changepassword" element={<ChangePassword />} />
                     <Route path="/forgotpassword" element={<ForgotPassword />} />

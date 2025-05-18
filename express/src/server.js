@@ -1,6 +1,7 @@
 // express/server.js
 import cors from "cors";
 import express from "express";
+import session from "express-session";
 
 import connectDB from "./config/dbConnect.js";
 import accountRoutes from "./routes/accountRoutes.js";
@@ -12,6 +13,7 @@ import goalRoutes from "./routes/goalRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import savingRoutes from "./routes/savingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import passport from "./utils/googleOAuth.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -20,6 +22,21 @@ const port = process.env.PORT;
 connectDB();
 
 // Middleware
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: false, // Must be false for local testing, set to true for official sites
+            sameSite: "lax", // or 'none' (cross-domain)
+        },
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(
     cors({
         origin: "http://localhost:5173",
