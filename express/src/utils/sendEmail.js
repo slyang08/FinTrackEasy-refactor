@@ -3,11 +3,11 @@ import pkg from "google-auth-library";
 const { OAuth2Client } = pkg;
 import nodemailer from "nodemailer";
 
-const { GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_USER } = process.env;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_USER } = process.env;
 
-const oAuth2Client = new OAuth2Client(GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET);
+const oAuth2Client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
 
-oAuth2Client.setCredentials({ refresh_token: GMAIL_REFRESH_TOKEN });
+oAuth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
 
 async function createTransporter() {
     const accessToken = await oAuth2Client.getAccessToken();
@@ -15,10 +15,10 @@ async function createTransporter() {
         service: "gmail",
         auth: {
             type: "OAuth2",
-            user: GMAIL_USER,
-            clientId: GMAIL_CLIENT_ID,
-            clientSecret: GMAIL_CLIENT_SECRET,
-            refreshToken: GMAIL_REFRESH_TOKEN,
+            user: GOOGLE_USER,
+            clientId: GOOGLE_CLIENT_ID,
+            clientSecret: GOOGLE_CLIENT_SECRET,
+            refreshToken: GOOGLE_REFRESH_TOKEN,
             accessToken: accessToken.token,
         },
     });
@@ -27,7 +27,7 @@ async function createTransporter() {
 export default async function sendEmail(to, subject, html) {
     const transporter = await createTransporter();
     const mailOptions = {
-        from: `"FinTrackEasy" <${GMAIL_USER}>`,
+        from: `"FinTrackEasy" <${GOOGLE_USER}>`,
         to,
         subject,
         html,

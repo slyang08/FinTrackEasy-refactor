@@ -24,8 +24,14 @@ const protect = async (req, res, next) => {
             return res.status(403).json({ message: `Account is ${account.status}` });
         }
 
+        // Get user
+        const user = await User.findById(decoded.userId).lean();
+        if (!user) return res.status(401).json({ message: "User not found" });
+
         req.userId = decoded.userId;
         req.account = account; // attach to request
+        req.user = user;
+
         next();
     } catch (err) {
         console.error(err);
