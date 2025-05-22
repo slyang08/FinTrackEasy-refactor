@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema(
             enum: ["en", "fr"],
             default: "en",
         },
+        verificationToken: { type: String },
+        verificationTokenExpires: { type: Date },
     },
     { timestamps: true }
 );
