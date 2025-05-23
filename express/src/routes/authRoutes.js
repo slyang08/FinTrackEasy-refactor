@@ -1,8 +1,15 @@
 // src/routes/authRoutes.js
 import express from "express";
 
-import { changePassword, forgotPassword, resetPassword } from "../controllers/authController.js";
-import { login, register } from "../controllers/authController.js";
+import {
+    changePassword,
+    forgotPassword,
+    login,
+    register,
+    resendVerificationEmail,
+    resetPassword,
+    verifyEmail,
+} from "../controllers/authController.js";
 import protect from "../middlewares/authMiddleware.js";
 import optionalJwt from "../middlewares/optionalJwt.js";
 import { loginLimiter, registerLimiter } from "../middlewares/rateLimit.js";
@@ -17,6 +24,8 @@ const router = express.Router();
 
 router.post("/register", registerLimiter, register);
 router.post("/login", loginLimiter, login);
+router.get("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerificationEmail);
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 router.get(
