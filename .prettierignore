@@ -1,0 +1,19 @@
+# .prettierignore
+# Ignore node_modules
+node_modules/
+
+# Ignore compilation output
+dist/
+build/
+
+# Ignore specific file types
+*.min.js
+
+# Ignore project specific JSON files (non-configuration files)
+package-lock.json
+pnpm-lock.yaml
+**/tsconfig*.json
+
+# Keep the JSON file that needs to be formatted
+!.vscode/settings.json
+!prettier.config.json

@@ -1,12 +1,45 @@
 {
-  "name": "FinTrackEasy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "name": "fintrackeasy",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "description": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "pnpm -r --parallel dev",
+        "lint": "pnpm -r --parallel --stream lint",
+        "lint:fix": "pnpm -r --parallel lint:fix",
+        "build": "pnpm -r --parallel build",
+        "format": "pnpm -r --parallel --stream format",
+        "format:check": "prettier --check . --config ./.prettierrc.json",
+        "format:fix": "prettier --write . --config ./.prettierrc.json",
+        "start:front": "pnpm -F fte-react dev",
+        "start:back": "pnpm -F express dev",
+        "prepare": "husky install"
+    },
+    "lint-staged": {
+        "*.{js,jsx,json,css,md}": [
+            "prettier --write",
+            "eslint --fix"
+        ]
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/eslint-parser": "^7.27.1",
+        "@babel/preset-react": "^7.27.1",
+        "@eslint/js": "^9.25.0",
+        "@types/eslint": "^9.6.1",
+        "@types/prettier": "^3.0.0",
+        "eslint": "^9.26.0",
+        "eslint-config-prettier": "^10.1.2",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-prettier": "^5.4.0",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-simple-import-sort": "^12.1.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.1",
+        "prettier": "^3.5.3"
+    }
 }

@@ -10,7 +10,6 @@ lerna-debug.log*
 # Dependencies
 node_modules
 .pnpm-store/
-pnpm-lock.yaml
 
 # Build outputs
 dist
@@ -26,9 +25,6 @@ build
 .env.production
 
 # Editor directories and files
-.vscode
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo

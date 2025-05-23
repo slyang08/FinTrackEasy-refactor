@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+import api from "@/api/axios";
+
+import ChangePassword from "./pages/ChangePassword.jsx";
+import ContactUs from "./pages/ContactUs.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Login from "./pages/Login.jsx";
+import OAuthCallback from "./pages/OAuthCallback.jsx";
+import Profile from "./pages/Profile.jsx";
+import Register from "./pages/Register.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
+import Terms from "./pages/Terms.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
+
+const token = localStorage.getItem("token");
+if (token) {
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-export default App
+function App() {
+    useEffect(() => {
+        // Check localStorage for token every time the App is loaded
+        const token = localStorage.getItem("token");
+        if (token) {
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
+    }, []);
+
+    return (
+        <Router>
+            <div>
+                <h1 className="text-4xl font-bold text-blue-500">FinTrackEasy</h1>
+                <Routes>
+                    {/* Root directory should set it to home page in the future */}
+                    <Route path="/" element={<Login />} />
+                    <Route path="/contact" element={<ContactUs />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/oauth-callback" element={<OAuthCallback />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/changepassword" element={<ChangePassword />} />
+                    <Route path="/forgotpassword" element={<ForgotPassword />} />
+                    <Route path="/resetpassword" element={<ResetPassword />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
+                </Routes>
+            </div>
+        </Router>
+    );
+}
+
+export default App;

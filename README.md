@@ -4,13 +4,13 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 
 # Member
 
-|      Name      | ID  |
-| :------------: | :-: |
-|   Aaron Liu    |  105515233  |
-|  Carrie Leung  |  106844228  |
-|  Wing Ho Chau  |  150924231  |
-| Sheng-Lin Yang |  160443222  |
-| Tracy Tran     |  109604223  |
+|      Name      |    ID     |
+| :------------: | :-------: |
+|   Aaron Liu    | 105515233 |
+|  Carrie Leung  | 106844228 |
+| Sheng-Lin Yang | 160443222 |
+|   Tracy Tran   | 109604223 |
+|  Wing Ho Chau  | 150924231 |
 
 ## Technology Stack
 
@@ -69,16 +69,26 @@ PORT=3000
 
 ## Running the Project
 
-### Start Backend Service
+### Start both Backend and Frontend at the same time
 
 ```bash
-cd express
 pnpm dev
 ```
 
-### Start Frontend Development Server
+## Prettier (only handles formatting)
 
 ```bash
-cd fte-react
-pnpm dev
+pnpm format:fix
 ```
+
+- Execution tool: Prettier
+- Purpose: Unify code formats (such as indentation, semicolons, quotes, line breaks, etc.), and do not check for syntax errors or potential bugs
+
+## ESLint (which handles syntax, quality, and some formatting (such as import ordering))
+
+```bash
+pnpm lint:fix
+```
+
+- Execution tool: ESLint
+- Function: Check and automatically correct syntax errors and code quality issues (such as import order, unused variables, etc.) according to ESLint rules, and can also correct some formatting issues
