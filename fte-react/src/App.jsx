@@ -14,6 +14,7 @@ import Profile from "./pages/Profile.jsx";
 import Register from "./pages/Register.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Terms from "./pages/Terms.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 
 const token = localStorage.getItem("token");
 if (token) {
@@ -45,6 +46,7 @@ function App() {
                     <Route path="/forgotpassword" element={<ForgotPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/terms" element={<Terms />} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                 </Routes>
             </div>
         </Router>
