@@ -1,13 +1,15 @@
 import "./App.css";
 
 import { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import api from "@/api/axios";
 
+import Navbar from "./components/Navbar.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import OAuthCallback from "./pages/OAuthCallback.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -31,12 +33,12 @@ function App() {
     }, []);
 
     return (
-        <Router>
+        <>
+            <Navbar />
             <div>
-                <h1 className="text-4xl font-bold text-blue-500">FinTrackEasy</h1>
                 <Routes>
                     {/* Root directory should set it to home page in the future */}
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<ContactUs />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
@@ -49,7 +51,7 @@ function App() {
                     <Route path="/verify-email" element={<VerifyEmail />} />
                 </Routes>
             </div>
-        </Router>
+        </>
     );
 }
 
