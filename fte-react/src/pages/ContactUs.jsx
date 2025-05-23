@@ -39,7 +39,7 @@ export default function ContactUs() {
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-white to-green-100 flex flex-col">
-            {/* Header */}
+            {/* Header
             <header className="bg-green-900 h-14 flex items-center justify-between px-6">
                 <div className="flex items-center space-x-2 text-white font-bold text-lg">
                     <span className="text-2xl">🖐</span>
@@ -51,7 +51,7 @@ export default function ContactUs() {
                     </button>
                     <span className="text-white text-2xl">👤</span>
                 </div>
-            </header>
+            </header> */}
 
             {/* Main Content */}
             <main className="flex-grow flex justify-center items-center p-6">
