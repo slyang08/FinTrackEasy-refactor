@@ -36,24 +36,31 @@ export const getMe = async (req, res, next) => {
 
 // @desc Update logged-in user's profile (nickname, phone, language)
 export const updateProfile = async (req, res, next) => {
-    const { nickname, phone, preferredLanguage } = req.body;
-
     try {
-        const user = await User.findById(req.params.id);
-
-        // Verify identity (can only change your own)
-        if (!user || user._id.toString() !== req.userId) {
-            return res.status(403).json({ message: "Unauthorized" });
+        // Get current login id (supports session or JWT)
+        const currentUserId = req.user?._id?.toString() || req.userId;
+        // Only allow owner to change itself information
+        if (req.params.id !== currentUserId) {
+            return res.status(403).json({ message: "Forbidden" });
         }
 
-        // Update only allowed fields
-        if (nickname !== undefined) user.nickname = nickname;
-        if (phone !== undefined) user.phone = phone;
-        if (preferredLanguage !== undefined) user.preferredLanguage = preferredLanguage;
+        const { nickname, phone, preferredLanguage } = req.body;
+        const updateFields = {};
+        if (nickname !== undefined) updateFields.nickname = nickname;
+        if (phone !== undefined) updateFields.phone = phone;
+        if (preferredLanguage !== undefined) updateFields.preferredLanguage = preferredLanguage;
 
-        await user.save(); // Self-contained validation (runValidators)
+        // Update and send back new data
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, updateFields, {
+            new: true,
+            runValidators: true,
+        }).lean();
 
-        res.json({ message: "Profile updated successfully", user });
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ message: "Profile updated successfully", user: updatedUser });
     } catch (err) {
         next(err);
     }
