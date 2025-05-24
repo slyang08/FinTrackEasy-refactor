@@ -1,11 +1,14 @@
 import "./App.css";
 
+import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import api from "@/api/axios";
 
+import { isAuthenticated } from "./atoms/Atom.js";
 import Navbar from "./components/Navbar.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
@@ -24,11 +27,16 @@ if (token) {
 }
 
 function App() {
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+
     useEffect(() => {
         // Check localStorage for token every time the App is loaded
         const token = localStorage.getItem("token");
         if (token) {
             api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            setIsAuth(true);
+        } else {
+            setIsAuth(false);
         }
     }, []);
 
@@ -43,8 +51,22 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/oauth-callback" element={<OAuthCallback />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/changepassword" element={<ChangePassword />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/changepassword"
+                        element={
+                            <ProtectedRoute>
+                                <ChangePassword />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="/forgotpassword" element={<ForgotPassword />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/terms" element={<Terms />} />

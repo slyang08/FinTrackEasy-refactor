@@ -1,12 +1,14 @@
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAtom } from "jotai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import NavItem from "./NavItem";
+import { isAuthenticated } from "../atoms/Atom";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
 
     function navItemClicked() {
         setIsOpen(false);
@@ -28,11 +30,26 @@ export default function Navbar() {
 
                 {/* Dropdown (hidden by default) */}
                 <div
-                    className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${isOpen ? "visible" : "invisible"} duration-50 z-10 min-w-[160px]`}
+                    className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${isOpen ? "visible" : "invisible"} duration-200 z-10 min-w-[160px]`}
                 >
                     <ul className="p-2">
                         <li>
-                            <NavItem target={"/login"} text={"Login"} onClick={navItemClicked} />
+                            <Link
+                                to={"/login"}
+                                className={`text-gray-700 hover:text-gray-300 p-3 ${isAuth && "hidden"}`}
+                                onClick={navItemClicked}
+                            >
+                                Login
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to={"/profile"}
+                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
+                                onClick={navItemClicked}
+                            >
+                                Profile
+                            </Link>
                         </li>
                     </ul>
                 </div>
