@@ -1,5 +1,3 @@
-import "./App.css";
-
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
@@ -27,7 +25,7 @@ if (token) {
 }
 
 function App() {
-    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+    const [, setIsAuth] = useAtom(isAuthenticated);
 
     useEffect(() => {
         // Check localStorage for token every time the App is loaded
