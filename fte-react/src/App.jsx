@@ -1,5 +1,3 @@
-import "./App.css";
-
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
