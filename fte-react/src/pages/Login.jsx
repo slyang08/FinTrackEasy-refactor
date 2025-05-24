@@ -14,7 +14,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+    const [, setIsAuth] = useAtom(isAuthenticated);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -36,7 +36,7 @@ export default function Login() {
             navigate("/profile");
         } catch (err) {
             // setError("Invalid email or password." + err);
-            setError("Invalid email or password.");
+            setError("Invalid email or password." + err);
         }
     };
 

@@ -20,7 +20,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
-    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+    const [, setIsAuth] = useAtom(isAuthenticated);
 
     const navigate = useNavigate();
 

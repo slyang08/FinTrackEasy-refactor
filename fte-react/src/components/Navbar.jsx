@@ -8,7 +8,7 @@ import { isAuthenticated } from "../atoms/Atom";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+    const [isAuth] = useAtom(isAuthenticated);
 
     function navItemClicked() {
         setIsOpen(false);
