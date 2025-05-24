@@ -111,16 +111,6 @@ export default function Profile() {
 
     return (
         <div className="min-h-screen bg-white text-black font-sans">
-            <header className="bg-green-800 text-white p-4 flex justify-between items-center">
-                <h1 className="text-xl font-bold flex items-center space-x-2">
-                    <span>💵</span>
-                    <span>FinTrackEasy</span>
-                </h1>
-                <div className="w-8 h-8 bg-white rounded-full flex justify-center items-center text-green-800">
-                    <span className="text-lg">👤</span>
-                </div>
-            </header>
-
             <main className="max-w-xl mx-auto py-10 px-6">
                 <h2 className="text-2xl font-semibold text-green-700 mb-6">Profile</h2>
 
@@ -203,11 +193,8 @@ export default function Profile() {
                 <div className="mt-10 space-y-3 text-sm">
                     <p>
                         Contact us:{" "}
-                        <a
-                            href="mailto:our_company_email@company.domain"
-                            className="text-blue-600 underline"
-                        >
-                            our_company_email@company.domain
+                        <a href="mailto:fintrackeasy@gmail.com" className="text-blue-600 underline">
+                            fintrackeasy@gmail.com
                         </a>
                     </p>
                     <p>
