@@ -2,7 +2,7 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtom } from "jotai";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const [, setIsAuth] = useAtom(isAuthenticated);
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -35,10 +35,16 @@ export default function Login() {
 
             navigate("/profile");
         } catch (err) {
-            // setError("Invalid email or password." + err);
-            setError("Invalid email or password." + err);
+            console.error(err);
+            setError("Invalid email or password.");
         }
     };
+
+    useEffect(() => {
+        if (isAuth) {
+            navigate("/profile", { replace: true });
+        }
+    }, [isAuth, navigate]);
 
     const handleGoogleLogin = (e) => {
         e.preventDefault();
@@ -101,7 +107,6 @@ export default function Login() {
                 <button
                     type="button"
                     onClick={handleGoogleLogin}
-                    // className="w-full bg-white border border-gray-300 text-white py-2 rounded flex items-center justify-center gap-2 mb-4 hover:bg-gray-100"
                     className="w-full text-gray-500 py-2 border border-gray-300 rounded-md hover:bg-gray-100 flex justify-center items-center"
                 >
                     <FontAwesomeIcon icon={faGoogle} className="mr-4 border p-1 rounded-xl" />
