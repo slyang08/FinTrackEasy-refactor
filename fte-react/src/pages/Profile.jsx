@@ -32,9 +32,8 @@ export default function Profile() {
                 setLoading(false);
             })
             .catch((err) => {
-                setMessage(
-                    "Failed to load profile: " + (err?.response?.data?.message || err.message)
-                );
+                console.error(err?.response?.data?.message || err.message);
+                setMessage("Failed to load profile: ");
                 setLoading(false);
             });
     }, []);
@@ -142,8 +141,8 @@ export default function Profile() {
                     onChange={handleChange}
                     className="bg-gray-200 rounded-md py-1 px-3"
                 >
-                    <option>English</option>
-                    <option>French</option>
+                    <option value="en">English</option>
+                    <option value="fr">French</option>
                 </select>
 
                 <button
