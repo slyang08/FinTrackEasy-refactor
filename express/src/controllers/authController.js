@@ -8,9 +8,11 @@ import { isPasswordReused } from "../utils/password.js";
 import sendEmail from "../utils/sendEmail.js";
 import { generateVerificationToken, verificationContent } from "../utils/verificateEmail.js";
 
-// @desc   Register a new user
-// @route  POST /api/auth/register
-// @access public
+/**
+ * @desc    Register a new user
+ * @route   POST /api/auth/register
+ * @access  Public
+ */
 export const register = async (req, res) => {
     const { nickname, email, password, confirmPassword, phone } = req.body;
 
@@ -68,9 +70,11 @@ export const register = async (req, res) => {
     }
 };
 
-// @desc   Verify email address
-// @route  GET /api/auth/verify-email
-// @access public
+/**
+ * @desc   Verify email address
+ * @route  GET /api/auth/verify-email
+ * @access public
+ */
 export const verifyEmail = async (req, res) => {
     const { token, id } = req.query;
 
@@ -131,9 +135,11 @@ export const verifyEmail = async (req, res) => {
     }
 };
 
-// @desc   Resend verification email
-// @route  POST /api/auth/resend-verification
-// @access Public
+/**
+ * @desc   Resend verification email
+ * @route  POST /api/auth/resend-verification
+ * @access Public
+ */
 export const resendVerificationEmail = async (req, res) => {
     const { email } = req.body;
 
@@ -185,9 +191,11 @@ export const resendVerificationEmail = async (req, res) => {
     }
 };
 
-// @desc    Login user and return JWT token
-// @route   POST /api/auth/login
-// @access  Public
+/**
+ * @desc    Login user
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -209,8 +217,16 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(401).json({ message: "Sorry, cannot match password" });
 
         const token = generateToken({ userId: user._id, accountId: account._id });
+        // Set the token in a cookie
+        res.cookie("token", token, {
+            path: "/",
+            httpOnly: true, // Prevents JavaScript access to the cookie
+            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+            sameSite: "lax", // Adjust as necessary
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+
         res.status(200).json({
-            token,
             user: {
                 id: user._id,
                 nickname: user.nickname,
@@ -225,9 +241,51 @@ export const login = async (req, res) => {
     }
 };
 
-// @desc   Change account password
-// @route  PUT /api/auth/change-password/:accountId
-// @access Private (valid JWT required)
+/**
+ * @desc    Google OAuth callback
+ * @route   GET /api/auth/google/callback
+ * @access  Public
+ */
+export const googleCallback = (req, res) => {
+    // Login successful, redirect to the front-end /oauth-callback
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-callback`);
+};
+
+/**
+ * @desc    Get current user info (JWT or Session)
+ * @route   GET /api/auth/me
+ * @access  Private (JWT or Session)
+ */
+export const getMe = async (req, res) => {
+    // JWT method
+    if (req.userId) {
+        try {
+            // req.userId comes from protect middleware
+            // Get user information
+            const user = await User.findById(req.userId).lean();
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            // Get all accounts belonging to this user
+            const accounts = await Account.find({ user: req.userId }).lean();
+            return res.json({ user, accounts });
+        } catch (err) {
+            return res.status(500).json({ message: "Failed to get user info" });
+        }
+    }
+
+    // Session method
+    if (typeof req.isAuthenticated === "function" && req.isAuthenticated()) {
+        return res.json({ user: req.user });
+    }
+    return res.status(401).json({ message: "Not logged in" });
+};
+
+/**
+ * @desc   Change account password
+ * @route  PUT /api/auth/change-password/:accountId
+ * @access Private (valid JWT required)
+ */
 export const changePassword = async (req, res, next) => {
     try {
         const { currentPassword, newPassword, confirmPassword } = req.body;
@@ -274,9 +332,11 @@ export const changePassword = async (req, res, next) => {
     }
 };
 
-// @desc    Send password reset link to user's email
-// @route   POST /api/auth/forgot-password
-// @access  Public
+/**
+ * @desc    Send password reset link to user's email
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -308,9 +368,11 @@ export const forgotPassword = async (req, res) => {
     res.json({ message: "If this email exists, a reset link has been sent." });
 };
 
-// @desc    Reset account password
-// @route   POST /api/auth/reset-password/:accountId
-// @access  Public
+/**
+ * @desc    Reset account password
+ * @route   POST /api/auth/reset-password/:accountId
+ * @access  Public
+ */
 export const resetPassword = async (req, res, next) => {
     try {
         const { token, newPassword, confirmPassword } = req.body;
@@ -337,4 +399,26 @@ export const resetPassword = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+};
+
+/**
+ * @desc    Logout user (clear JWT cookie and/or session)
+ * @route   GET /api/auth/logout
+ * @access  Private
+ */
+export const logout = (req, res) => {
+    req.logout(() => {
+        req.session.destroy(() => {
+            // Clear cookies
+            const cookieOptions = {
+                path: "/",
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production",
+            };
+            res.clearCookie("connect.sid", cookieOptions);
+            res.clearCookie("token", cookieOptions);
+            res.status(200).json({ message: "Logged out" });
+        });
+    });
 };
