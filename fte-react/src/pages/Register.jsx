@@ -56,7 +56,7 @@ export default function Register() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-[calc(100vh-2.5rem)]">
+        <div className="flex justify-center items-center w-full">
             {/* <form onSubmit={handleSubmit} className="p-8 rounded-lg shadow-lg w-full max-w-md"> */}
             <form onSubmit={handleSubmit} className="max-w-md space-y-5 rounded-xl shadow-2xl p-8">
                 <h2 className="text-4xl font-bold text-center mb-6 text-green-600">

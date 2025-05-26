@@ -25,7 +25,7 @@ export default function ForgotPassword() {
     };
 
     return (
-        <div className="flex justify-center min-h-[calc(100vh-2.5rem)] items-center">
+        <div className="flex justify-center w-full items-center">
             <div className="shadow-xl rounded-lg p-10 text-center max-w-sm">
                 <h2 className="text-2xl font-semibold mb-3 text-gray-800">Trouble logging in?</h2>
                 <p className="text-sm text-gray-700 mb-6">

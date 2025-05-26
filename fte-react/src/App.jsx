@@ -62,9 +62,9 @@ function App() {
     if (verifying) return <div>Loading...</div>;
 
     return (
-        <>
+        <div className="min-h-screen flex flex-col">
             <Navbar />
-            <div>
+            <div className="flex flex-grow">
                 <Routes>
                     {/* Root directory should set it to home page in the future */}
                     <Route path="/" element={<Home />} />
@@ -95,7 +95,7 @@ function App() {
                 </Routes>
             </div>
             <Footer />
-        </>
+        </div>
     );
 }
 

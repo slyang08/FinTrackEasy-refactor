@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
     return (
-        <div className="flex flex-1 bg-green-800 justify-around items-center min-h-35">
+        <div className="flex bg-green-800 justify-around items-center min-h-30">
             <Link to={"/contact"} className="text-white text-2xl hover:text-gray-300">
                 Contact Us
             </Link>

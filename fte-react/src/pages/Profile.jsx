@@ -90,14 +90,14 @@ export default function Profile() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="flex w-full items-center justify-center">
                 <span>Loading...</span>
             </div>
         );
     }
 
     return (
-        <div className="m-15">
+        <div className="mt-15 ml-15 w-full">
             <h1 className="text-green-600 font-bold text-3xl">Profile</h1>
 
             <div
@@ -110,7 +110,7 @@ export default function Profile() {
                 {message}
             </div>
 
-            <div className="grid grid-cols-2 max-w-1/2 space-y-5 mt-10">
+            <div className="grid grid-cols-2 min-w-1/4 max-w-1/3 space-y-5 mt-10">
                 <p>Email:</p>
                 <p>{profile.email}</p>
 

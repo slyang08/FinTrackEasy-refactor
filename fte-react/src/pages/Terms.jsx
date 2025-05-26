@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Terms() {
     return (
-        <div className="bg-gray-50 min-h-screen text-gray-800">
+        <div className="bg-gray-50 w-full text-gray-800">
             <header className="bg-blue-600 text-white py-10 px-6 text-center shadow">
                 <h1 className="text-3xl font-semibold">FinTrackEasy - Terms of Service</h1>
                 <p className="mt-2 text-sm">Effective Date: April 24, 2025</p>

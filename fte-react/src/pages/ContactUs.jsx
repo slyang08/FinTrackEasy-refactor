@@ -38,21 +38,7 @@ export default function ContactUs() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-white to-green-100 flex flex-col">
-            {/* Header
-            <header className="bg-green-900 h-14 flex items-center justify-between px-6">
-                <div className="flex items-center space-x-2 text-white font-bold text-lg">
-                    <span className="text-2xl">🖐</span>
-                    <span>FinTrackEasy</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <button className="bg-gray-100 px-3 py-1 rounded shadow text-sm text-gray-800 hover:bg-gray-200">
-                        Sign in
-                    </button>
-                    <span className="text-white text-2xl">👤</span>
-                </div>
-            </header> */}
-
+        <div className="w-full bg-gradient-to-r from-white to-green-100 flex flex-col">
             {/* Main Content */}
             <main className="flex-grow flex justify-center items-center p-6">
                 <div className="w-full max-w-5xl flex shadow-lg rounded p-8">
