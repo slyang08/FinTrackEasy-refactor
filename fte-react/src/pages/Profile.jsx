@@ -20,7 +20,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
-    const [, setIsAuth] = useAtom(isAuthenticated);
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
 
     const navigate = useNavigate();
 
@@ -53,7 +53,7 @@ export default function Profile() {
         setMessage("");
         try {
             await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/users/${profile._id}`,
+                `/users/${profile._id}`,
                 {
                     nickname: profile.nickname,
                     phone: profile.phone,
@@ -63,7 +63,7 @@ export default function Profile() {
             );
             setMessage("Profile updated successfully!");
             // Re-obtain the latest data
-            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`);
+            const res = await api.get("/auth/me");
             setProfile(res.data.user);
         } catch (err) {
             setMessage(
@@ -77,16 +77,18 @@ export default function Profile() {
 
     const handleLogout = async () => {
         try {
-            await api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`);
+            // Clear both JWT tokens for traditional and Google OAuth
+            await api.get("/auth/logout");
         } catch (err) {
             setMessage(err);
         }
-        // Clear all JWT tokens
-        localStorage.removeItem("token");
-        delete api.defaults.headers.common["Authorization"];
         setIsAuth(false);
         navigate("/");
     };
+
+    useEffect(() => {
+        if (!isAuth) navigate("/login");
+    }, [isAuth, navigate]);
 
     if (loading) {
         return (
@@ -94,6 +96,10 @@ export default function Profile() {
                 <span>Loading...</span>
             </div>
         );
+    }
+
+    if (!profile) {
+        return <div>No profile data available.</div>;
     }
 
     return (

@@ -1,4 +1,5 @@
 // express/server.js
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -22,6 +23,7 @@ const port = process.env.PORT;
 connectDB();
 
 // Middleware
+app.use(cookieParser());
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -29,7 +31,7 @@ app.use(
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            secure: false, // Must be false for local testing, set to true for official sites
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax", // or 'none' (cross-domain)
         },
     })

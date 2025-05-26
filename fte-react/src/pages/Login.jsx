@@ -20,16 +20,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
-                email,
-                password,
-            });
-
-            // Assume the backend returns { token: '...' }
-            localStorage.setItem("token", res.data.token);
-
-            // Set axios default header
-            api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+            await api.post("/auth/login", { email, password });
 
             setIsAuth(true);
 

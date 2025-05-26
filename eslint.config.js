@@ -36,7 +36,7 @@ export default [
             },
         },
         rules: {
-            "no-console": "warn",
+            "no-console": "off",
             "simple-import-sort/imports": "error", // This will show an error if imports are not sorted
             "simple-import-sort/exports": "error", // This will show an error if exports are not sorted
             "import/order": "off", // Disable import/order because simple-import-sort is used
