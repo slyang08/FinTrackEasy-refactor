@@ -5,15 +5,15 @@ import ChangePassword from "@/pages/ChangePassword";
 import ContactUs from "@/pages/ContactUs";
 import ForgotPassword from "@/pages/ForgotPassword";
 import Home from "@/pages/Home";
+import Income from "@/pages/Income";
 import Login from "@/pages/Login";
+import NotFound from "@/pages/NotFound";
 import OAuthCallback from "@/pages/OAuthCallback";
 import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Terms from "@/pages/Terms";
 import VerifyEmail from "@/pages/VerifyEmail";
-
-import NotFound from "../pages/NotFound";
 
 // Public page (anyone can see it)
 export const publicRoutes = [
@@ -61,6 +61,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <ChangePassword />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/income",
+        element: (
+            <ProtectedRoute>
+                <Income />
             </ProtectedRoute>
         ),
     },

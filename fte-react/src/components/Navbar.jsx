@@ -51,6 +51,15 @@ export default function Navbar() {
                                 Profile
                             </Link>
                         </li>
+                        <li>
+                            <Link
+                                to={"/income"}
+                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
+                                onClick={navItemClicked}
+                            >
+                                Income
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </div>

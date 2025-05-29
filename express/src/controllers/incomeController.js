@@ -6,7 +6,11 @@ import Income from "../models/Income.js";
 // Helper: Check for valid MongoDB ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-// @desc    Create an Income
+/**
+ * @desc    Create an Income
+ * @route   POST /api/incomes
+ * @access  Private (valid JWT required)
+ */
 export const createIncome = async (req, res, next) => {
     try {
         const { name, date, amount, category, description } = req.body;
@@ -25,7 +29,11 @@ export const createIncome = async (req, res, next) => {
     }
 };
 
-// @desc    Get all Incomes
+/**
+ * @desc    Get all Incomes
+ * @route   GET /api/incomes
+ * @access  Private (valid JWT required)
+ */
 export const getIncomes = async (req, res, next) => {
     try {
         const incomes = await Income.find({ account: req.account._id }).sort({ date: -1 });
@@ -35,7 +43,11 @@ export const getIncomes = async (req, res, next) => {
     }
 };
 
-// @desc    Get all Incomes (with optional query filters)
+/**
+ * @desc    Get all Incomes (with optional query filters)
+ * @route   GET /api/incomes/query?category=&year=&month=
+ * @access  Private (valid JWT required)
+ */
 export const getIncomesByQuery = async (req, res, next) => {
     try {
         const query = { account: req.account._id };
@@ -63,7 +75,11 @@ export const getIncomesByQuery = async (req, res, next) => {
     }
 };
 
-// @desc    Get single income
+/**
+ * @desc    Get single Income by ID
+ * @route   GET /api/incomes/:id
+ * @access  Private (valid JWT required)
+ */
 export const getIncome = async (req, res) => {
     try {
         const income = await Income.findOne({
@@ -79,7 +95,11 @@ export const getIncome = async (req, res) => {
     }
 };
 
-// @desc    Update an Income
+/**
+ * @desc    Update an Income by ID
+ * @route   PUT /api/incomes/:id
+ * @access  Private (valid JWT required)
+ */
 export const updateIncome = async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
@@ -100,7 +120,11 @@ export const updateIncome = async (req, res, next) => {
     }
 };
 
-// @desc    Delete an Income
+/**
+ * @desc    Delete an Income by ID
+ * @route   DELETE /api/incomes/:id
+ * @access  Private (valid JWT required)
+ */
 export const deleteIncome = async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {

@@ -19,6 +19,7 @@ passport.use(
                     googleId: profile.id,
                     email: profile.emails[0].value,
                     nickname: profile.displayName,
+                    verified: true,
                     // Other fields
                 });
             }
