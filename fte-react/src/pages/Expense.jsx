@@ -1,4 +1,4 @@
-// src/pages/Income.jsx
+// src/pages/Expense.jsx
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import api from "@/api/axios.js";
 dayjs.extend(advancedFormat);
 
-export default function Income() {
+export default function Expense() {
     const [formData, setFormData] = useState({
         name: "",
         date: "",
@@ -16,20 +16,20 @@ export default function Income() {
         isRecurring: false,
     });
 
-    const [incomes, setIncomes] = useState([]);
+    const [expenses, setExpenses] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [, setLoading] = useState(false);
     const [, setError] = useState(null);
 
-    // Read the income list
-    const fetchIncomes = async () => {
+    // Read the expense list
+    const fetchExpenses = async () => {
         setLoading(true);
         try {
-            const res = await api.get("/incomes");
-            setIncomes(res.data);
+            const res = await api.get("/expenses");
+            setExpenses(res.data);
             setError(null);
         } catch (err) {
-            setError("Failed to load incomes");
+            setError("Failed to load expenses");
             console.error(err);
         } finally {
             setLoading(false);
@@ -37,7 +37,7 @@ export default function Income() {
     };
 
     useEffect(() => {
-        fetchIncomes();
+        fetchExpenses();
     }, []);
 
     const handleChange = (e) => {
@@ -60,14 +60,14 @@ export default function Income() {
         setEditingId(null);
     };
 
-    // Add or update income
+    // Add or update expense
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             if (editingId) {
                 // Update
-                await api.patch(`/incomes/${editingId}`, {
+                await api.patch(`/expenses/${editingId}`, {
                     name: formData.name,
                     date: formData.date || undefined,
                     amount: Number(formData.amount),
@@ -75,10 +75,10 @@ export default function Income() {
                     description: formData.description,
                     isRecurring: formData.isRecurring,
                 });
-                alert("Income updated!");
+                alert("expense updated!");
             } else {
                 // Create
-                await api.post("/incomes", {
+                await api.post("/expenses", {
                     name: formData.name,
                     date: formData.date || undefined,
                     amount: Number(formData.amount),
@@ -86,43 +86,43 @@ export default function Income() {
                     description: formData.description,
                     isRecurring: formData.isRecurring,
                 });
-                alert("Income added!");
+                alert("expense added!");
             }
 
             handleClear();
-            fetchIncomes();
+            fetchExpenses();
         } catch (err) {
             if (err.response) {
                 console.log(err.response.data);
             }
-            alert("Failed to save income");
+            alert("Failed to save expense");
             console.error(err);
         }
     };
 
     // Click to edit
-    const handleEdit = (income) => {
+    const handleEdit = (expense) => {
         setFormData({
-            name: income.name,
-            date: income.date ? new Date(income.date).toISOString().slice(0, 10) : "",
-            amount: income.amount,
-            category: income.category,
-            description: income.description,
-            isRecurring: income.isRecurring,
+            name: expense.name,
+            date: expense.date ? new Date(expense.date).toISOString().slice(0, 10) : "",
+            amount: expense.amount,
+            category: expense.category,
+            description: expense.description,
+            isRecurring: expense.isRecurring,
         });
-        setEditingId(income._id);
+        setEditingId(expense._id);
     };
 
-    // Delete income
+    // Delete expense
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this income?")) return;
+        if (!window.confirm("Are you sure you want to delete this expense?")) return;
 
         try {
-            await api.delete(`/incomes/${id}`);
-            alert("Income deleted");
-            fetchIncomes();
+            await api.delete(`/expenses/${id}`);
+            alert("expense deleted");
+            fetchExpenses();
         } catch (err) {
-            alert("Failed to delete income");
+            alert("Failed to delete expense");
             console.error(err);
         }
     };
@@ -137,12 +137,12 @@ export default function Income() {
                     className="w-1/2 bg-gray-50 p-8 flex flex-col space-y-4"
                 >
                     <h2 className="text-2xl font-bold text-green-700 mb-4">
-                        {editingId ? "Edit income" : "Add income"}
+                        {editingId ? "Edit expense" : "Add expense"}
                     </h2>
 
                     <div className="flex flex-col md:flex-row space-x-4">
                         <div>
-                            <label htmlFor="name">Income name *</label>
+                            <label htmlFor="name">Expense name *</label>
                             <input
                                 type="text"
                                 id="name"
@@ -182,7 +182,7 @@ export default function Income() {
                     </div>
 
                     <div>
-                        <label htmlFor="category">Income Category</label>
+                        <label htmlFor="category">Expense Category</label>
                         <select
                             id="category"
                             name="category"
@@ -191,8 +191,13 @@ export default function Income() {
                             className="px-4 py-2 bg-gray-200 rounded w-full"
                         >
                             <option value="">Select</option>
-                            <option value="Pay">Pay</option>
-                            <option value="Gift">Gift</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Gas">Gas</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Food">Food</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -218,7 +223,7 @@ export default function Income() {
                             onChange={handleChange}
                             className="mr-2"
                         />
-                        Recurring income
+                        Recurring expense
                     </label>
 
                     <div className="flex space-x-4">
@@ -233,7 +238,7 @@ export default function Income() {
                             type="submit"
                             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                         >
-                            {editingId ? "Update Income" : "Add Income"}
+                            {editingId ? "Update Expense" : "Add Expense"}
                         </button>
                     </div>
                 </form>
@@ -247,13 +252,13 @@ export default function Income() {
                     </div>
 
                     <div className="flex flex-row space-x-8">
-                        <h3 className="text-2xl font-bold mb-2">Income Overview</h3>
+                        <h3 className="text-2xl font-bold mb-2">Expense Overview</h3>
                         <button className="text-2xl cursor-pointer">🎛️</button>
                     </div>
                     <div className="flex space-x-4 text-sm mb-4">
-                        <span className="text-blue-500">■ Gifts</span>
-                        <span className="text-green-600">■ Pay</span>
-                        <span className="text-lime-500">■ Other</span>
+                        <span className="text-blue-500">■ Grocery</span>
+                        <span className="text-green-600">■ Entertainment</span>
+                        <span className="text-lime-500">■ Bills</span>
                     </div>
 
                     {/* Placeholder for chart */}
@@ -261,31 +266,31 @@ export default function Income() {
                         (Chart Here)
                     </div>
 
-                    {incomes.map((income) => (
+                    {expenses.map((expense) => (
                         <>
-                            <p className="font-semibold">{dayjs(income.date).format("MMMM Do")}</p>
+                            <p className="font-semibold">{dayjs(expense.date).format("MMMM Do")}</p>
                             <ul className="my-2 text-sm">
-                                {income.length === 0 && <li>No income records found.</li>}
-                                <li key={income._id} className="flex justify-between">
+                                {expense.length === 0 && <li>No expense records found.</li>}
+                                <li key={expense._id} className="flex justify-between">
                                     <span>
-                                        {income.name} {income.isRecurring ? " (recurring)" : ""}
+                                        {expense.name} {expense.isRecurring ? " (recurring)" : ""}
                                     </span>
                                     <span className="flex items-center space-x-4">
                                         <span className="font-mono">
-                                            ${income.amount.toFixed(2)}
+                                            ${expense.amount.toFixed(2)}
                                         </span>
 
                                         {/* Action Buttons */}
                                         <div className="flex space-x-2 opacity-80 group-hover:opacity-100">
                                             <button
                                                 className="px-2 py-1 text-xs bg-yellow-200 text-yellow-800 rounded hover:bg-yellow-300"
-                                                onClick={() => handleEdit(income)}
+                                                onClick={() => handleEdit(expense)}
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 className="px-2 py-1 text-xs bg-red-200 text-red-800 rounded hover:bg-red-300"
-                                                onClick={() => handleDelete(income._id)}
+                                                onClick={() => handleDelete(expense._id)}
                                             >
                                                 Delete
                                             </button>

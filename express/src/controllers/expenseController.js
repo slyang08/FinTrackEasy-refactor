@@ -6,10 +6,14 @@ import Expense from "../models/Expense.js";
 // Helper: Check for valid MongoDB ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-// @desc    Create an Expense
+/**
+ * @desc    Create an Expense
+ * @route   POST /api/expenses
+ * @access  Private (valid JWT required)
+ */
 export const createExpense = async (req, res, next) => {
     try {
-        const { name, date, amount, category, description } = req.body;
+        const { name, date, amount, category, description, isRecurring } = req.body;
 
         const expense = await Expense.create({
             name,
@@ -17,6 +21,7 @@ export const createExpense = async (req, res, next) => {
             amount,
             category,
             description,
+            isRecurring,
             account: req.account._id,
         });
         res.status(201).json(expense);
@@ -25,7 +30,11 @@ export const createExpense = async (req, res, next) => {
     }
 };
 
-// @desc    Get all Expenses
+/**
+ * @desc    Get all Expenses
+ * @route   GET /api/expenses
+ * @access  Private (valid JWT required)
+ */
 export const getExpenses = async (req, res, next) => {
     try {
         const expenses = await Expense.find({ account: req.account._id }).sort({ date: -1 });
@@ -35,7 +44,12 @@ export const getExpenses = async (req, res, next) => {
     }
 };
 
-// @desc    Get all Expenses (with optional query filters)
+/**
+ * @desc    Get all Expenses (with optional query filters)
+ * @route   GET /api/expenses/query
+ * @access  Private (valid JWT required)
+ * @query   category, year, month
+ */
 export const getExpensesByQuery = async (req, res, next) => {
     try {
         const query = { account: req.account._id };
@@ -63,7 +77,11 @@ export const getExpensesByQuery = async (req, res, next) => {
     }
 };
 
-// @desc    Get single Expense
+/**
+ * @desc    Get single Expense
+ * @route   GET /api/expenses/:id
+ * @access  Private (valid JWT required)
+ */
 export const getExpense = async (req, res) => {
     try {
         const expense = await Expense.findOne({
@@ -78,7 +96,11 @@ export const getExpense = async (req, res) => {
     }
 };
 
-// @desc    Update an Expense
+/**
+ * @desc    Update an Expense
+ * @route   PUT /api/expenses/:id
+ * @access  Private (valid JWT required)
+ */
 export const updateExpense = async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
@@ -99,7 +121,11 @@ export const updateExpense = async (req, res, next) => {
     }
 };
 
-// @desc    Delete an Expense
+/**
+ * @desc    Delete an Expense
+ * @route   DELETE /api/expenses/:id
+ * @access  Private (valid JWT required)
+ */
 export const deleteExpense = async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {

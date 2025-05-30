@@ -15,7 +15,7 @@ export default function ForgotPassword() {
         setNotFound(false);
 
         try {
-            await api.post(`${import.meta.env.VITE_API_BASE_URL}/auth/forgotpassword`, { email });
+            await api.post("/auth/forgotpassword", { email });
         } catch (err) {
             if (err.response?.status === 404) {
                 setNotFound(true);
