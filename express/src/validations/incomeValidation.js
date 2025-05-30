@@ -5,9 +5,8 @@ const incomeCategories = ["Pay", "Gift", "Other"];
 
 // Joi schema for income validation
 export const incomeSchema = Joi.object({
-    account: Joi.string().required(),
     name: Joi.string().min(3).required(),
-    date: Joi.date().default(Date.now),
+    date: Joi.date().required(),
     category: Joi.string()
         .valid(...incomeCategories)
         .required(),
