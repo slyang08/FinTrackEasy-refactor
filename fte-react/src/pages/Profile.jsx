@@ -52,15 +52,11 @@ export default function Profile() {
         setSaving(true);
         setMessage("");
         try {
-            await api.patch(
-                `/users/${profile._id}`,
-                {
-                    nickname: profile.nickname,
-                    phone: profile.phone,
-                    preferredLanguage: profile.preferredLanguage,
-                },
-                { withCredentials: true }
-            );
+            await api.patch(`/users/${profile._id}`, {
+                nickname: profile.nickname,
+                phone: profile.phone,
+                preferredLanguage: profile.preferredLanguage,
+            });
             setMessage("Profile updated successfully!");
             // Re-obtain the latest data
             const res = await api.get("/auth/me");

@@ -43,7 +43,7 @@ export default function Login() {
     };
 
     return (
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full min-h-[calc(100vh-2.5rem)]">
             <div className="space-y-4 w-md shadow-2xl p-10 rounded-xl">
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <h2 className="text-4xl font-bold text-center text-green-600">Sign In</h2>

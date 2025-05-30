@@ -23,14 +23,11 @@ export default function ResetPassword() {
             return;
         }
         try {
-            await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/auth/${accountId}/resetpassword`,
-                {
-                    token,
-                    newPassword,
-                    confirmPassword,
-                }
-            );
+            await api.patch(`/auth/${accountId}/resetpassword`, {
+                token,
+                newPassword,
+                confirmPassword,
+            });
             setMessage("Password reset successfully!");
             navigate("/login");
         } catch (err) {
@@ -63,7 +60,7 @@ export default function ResetPassword() {
                             placeholder="New password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            className="w-full px-4 py-2 rounded-md bg-gray-200"
                             required
                         />
                         <input
@@ -71,7 +68,7 @@ export default function ResetPassword() {
                             placeholder="Confirm new password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            className="w-full px-4 py-2 rounded-md bg-gray-200"
                             required
                         />
                         <button
@@ -81,7 +78,6 @@ export default function ResetPassword() {
                             Reset password
                         </button>
                     </form>
-                    {message && <div>{message}</div>}
                 </div>
             </main>
         </div>

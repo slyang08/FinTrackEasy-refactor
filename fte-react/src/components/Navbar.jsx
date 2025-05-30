@@ -2,16 +2,28 @@ import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtom } from "jotai";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { isAuthenticated } from "../atoms/Atom";
+import api from "@/api/axios";
+import { isAuthenticated } from "@/atoms/Atom";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isAuth] = useAtom(isAuthenticated);
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
+    const navigate = useNavigate();
 
     function navItemClicked() {
         setIsOpen(false);
+    }
+
+    async function handleLogout() {
+        try {
+            await api.get("/auth/logout");
+            setIsAuth(false);
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     return (
@@ -53,12 +65,29 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
+                                to={"/expense"}
+                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
+                                onClick={navItemClicked}
+                            >
+                                Expense
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
                                 to={"/income"}
                                 className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
                                 onClick={navItemClicked}
                             >
                                 Income
                             </Link>
+                        </li>
+                        <li>
+                            <a
+                                className={`text-gray-700 cursor-pointer hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </a>
                         </li>
                     </ul>
                 </div>

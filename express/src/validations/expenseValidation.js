@@ -14,9 +14,8 @@ const expenseCategories = [
 
 // Joi schema for expense validation
 export const expenseSchema = Joi.object({
-    account: Joi.string().required(),
     name: Joi.string().min(3).required(),
-    date: Joi.date().default(Date.now),
+    date: Joi.date().required(),
     category: Joi.string()
         .valid(...expenseCategories)
         .required(),

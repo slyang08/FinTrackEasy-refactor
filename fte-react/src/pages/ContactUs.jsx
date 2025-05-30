@@ -27,7 +27,7 @@ export default function ContactUs() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post(`${import.meta.env.VITE_API_BASE_URL}/contact`, formData);
+            await api.post("/contact", formData);
             alert("Message sent!");
             handleClear();
         } catch (err) {

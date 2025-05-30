@@ -33,14 +33,11 @@ export default function ChangePassword() {
             return;
         }
         try {
-            await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/auth/${selectedAccountId}/changepassword`,
-                {
-                    currentPassword,
-                    newPassword,
-                    confirmPassword,
-                }
-            );
+            await api.patch(`/auth/${selectedAccountId}/changepassword`, {
+                currentPassword,
+                newPassword,
+                confirmPassword,
+            });
             setMessage("Password changed successfully!");
             navigate("/profile");
         } catch (err) {

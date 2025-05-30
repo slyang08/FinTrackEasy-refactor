@@ -53,8 +53,8 @@ accountSchema.pre("save", async function (next) {
         this.previousPasswords.push({ hash: hashed, changedAt: new Date() });
         this.updatedAt = new Date();
 
-        // Keep up to 5 records
-        if (this.previousPasswords.length > 5) this.previousPasswords.shift(); // Delete the oldest password record
+        // Keep up to 3 records
+        if (this.previousPasswords.length > 3) this.previousPasswords.shift(); // Delete the oldest password record
 
         next();
     } catch (err) {

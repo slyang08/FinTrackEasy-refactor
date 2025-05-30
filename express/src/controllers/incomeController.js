@@ -13,7 +13,7 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  */
 export const createIncome = async (req, res, next) => {
     try {
-        const { name, date, amount, category, description } = req.body;
+        const { name, date, amount, category, description, isRecurring } = req.body;
 
         const income = await Income.create({
             name,
@@ -21,6 +21,7 @@ export const createIncome = async (req, res, next) => {
             amount,
             category,
             description,
+            isRecurring,
             account: req.account._id,
         });
         res.status(201).json(income);

@@ -3,6 +3,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import PublicRoute from "@/components/PublicRoute";
 import ChangePassword from "@/pages/ChangePassword";
 import ContactUs from "@/pages/ContactUs";
+import Expense from "@/pages/Expense";
 import ForgotPassword from "@/pages/ForgotPassword";
 import Home from "@/pages/Home";
 import Income from "@/pages/Income";
@@ -61,6 +62,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <ChangePassword />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/expense",
+        element: (
+            <ProtectedRoute>
+                <Expense />
             </ProtectedRoute>
         ),
     },
