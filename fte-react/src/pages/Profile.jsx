@@ -5,8 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 import { getUserInfo } from "@/api/user";
-
-import { isAuthenticated } from "../atoms/Atom";
+import { isAuthenticated } from "@/atoms/Atom";
 
 export default function Profile() {
     const [profile, setProfile] = useState({
@@ -140,6 +139,7 @@ export default function Profile() {
                 <p>Language:</p>
                 <select
                     name="preferredLanguage"
+                    value={profile.preferredLanguage}
                     onChange={handleChange}
                     className="bg-gray-200 rounded-md py-1 px-3"
                 >

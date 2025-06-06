@@ -1,7 +1,11 @@
 // src/controllers/userController.js
 import User from "../models/User.js";
 
-// @desc    Get all users
+/**
+ * @desc    Get all users
+ * @route   GET /api/users
+ * @access  Private (valid JWT required)
+ */
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
@@ -11,7 +15,11 @@ export const getAllUsers = async (req, res) => {
     }
 };
 
-// @desc    Get a single user by ID
+/**
+ * @desc    Get a single user by ID
+ * @route   GET /api/users/:id
+ * @access  Private (valid JWT required)
+ */
 export const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -22,7 +30,11 @@ export const getUserById = async (req, res) => {
     }
 };
 
-// @desc    Get current user info
+/**
+ * @desc    Get current user info
+ * @route   GET /api/auth/me
+ * @access  Private (valid JWT required)
+ */
 export const getMe = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
@@ -34,7 +46,11 @@ export const getMe = async (req, res, next) => {
     }
 };
 
-// @desc Update logged-in user's profile (nickname, phone, language)
+/**
+ * @desc    Update logged-in user's profile (nickname, phone, language)
+ * @route   PATCH /api/users/:id
+ * @access  Private (valid JWT required)
+ */
 export const updateProfile = async (req, res, next) => {
     try {
         // Get current login id (supports session or JWT)
@@ -66,7 +82,11 @@ export const updateProfile = async (req, res, next) => {
     }
 };
 
-// @desc    Delete user
+/**
+ * @desc    Delete user
+ * @route   DELETE /api/users/:id
+ * @access  Private (valid JWT required)
+ */
 export const deleteUser = async (req, res) => {
     try {
         const deleted = await User.findByIdAndDelete(req.params.id);
