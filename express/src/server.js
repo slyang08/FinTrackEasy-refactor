@@ -8,11 +8,13 @@ import connectDB from "./config/dbConnect.js";
 import accountRoutes from "./routes/accountRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import savingRoutes from "./routes/savingRoutes.js";
+import transactionRoutes from "./routes/transactionRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import passport from "./utils/googleOAuth.js";
 
@@ -51,10 +53,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/budgets", budgetRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/incomes", incomeRoutes);
+app.use("/api/transactions", transactionRoutes);
 app.use("/api/goals/:goalId/savings", savingRoutes);
 app.use("/api/users", userRoutes);
 
