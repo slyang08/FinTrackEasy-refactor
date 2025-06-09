@@ -1,8 +1,8 @@
 "use client";
-// import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -27,19 +27,28 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-    name_9540128754: z.string(),
+    txnName: z.string().max(30).trim(),
     txnDate: z.coerce.date(),
     txnCategory: z.string(),
-    txnNote: z.string(),
-    txnAmount: z.string(),
+    txnNote: z.string().max(30).trim(),
+    txnAmount: z.number(),
     txnRecurring: z.string().optional(),
 });
 
 export default function MyForm() {
+    const [dropdown] = React.useState("dropdown");
+
     const languages = [
         { label: "English", value: "en" },
         { label: "French", value: "fr" },
@@ -50,6 +59,14 @@ export default function MyForm() {
         { label: "Japanese", value: "ja" },
         { label: "Korean", value: "ko" },
         { label: "Chinese", value: "zh" },
+    ];
+
+    const categories = [
+        { label: "Groceries", value: "Groceries" },
+        { label: "Gas", value: "Gas" },
+        { label: "Restaurants", value: "Restaurants" },
+        { label: "Bills", value: "Bills" },
+        { label: "Shopping", value: "Shopping" },
     ];
 
     const form = useForm({
@@ -83,7 +100,7 @@ export default function MyForm() {
                     <div className="col-span-6">
                         <FormField
                             control={form.control}
-                            name="name_9540128754"
+                            name="txnName"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Name</FormLabel>
@@ -100,7 +117,7 @@ export default function MyForm() {
                         />
                     </div>
 
-                    <div className="col-span-6">
+                    <div className="col-span-6 flex flex-col gap-4">
                         <FormField
                             control={form.control}
                             name="txnDate"
@@ -129,6 +146,7 @@ export default function MyForm() {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
+                                                captionLayout={dropdown}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -138,8 +156,7 @@ export default function MyForm() {
                             )}
                         />
                     </div>
-                </div>
-
+                </div>{" "}
                 <FormField
                     control={form.control}
                     name="txnCategory"
@@ -158,39 +175,38 @@ export default function MyForm() {
                                             )}
                                         >
                                             {field.value
-                                                ? languages.find((l) => l.value === field.value)
+                                                ? categories.find((l) => l.value === field.value)
                                                       ?.label
-                                                : "Select language"}
+                                                : "Select category"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[200px] p-0">
                                     <Command>
-                                        <CommandInput placeholder="Search language..." />
                                         <CommandList>
-                                            <CommandEmpty>No language found.</CommandEmpty>
+                                            <CommandEmpty>No categories found.</CommandEmpty>
                                             <CommandGroup>
-                                                {languages.map((language) => (
+                                                {categories.map((category) => (
                                                     <CommandItem
-                                                        value={language.label}
-                                                        key={language.value}
+                                                        value={category.label}
+                                                        key={category.value}
                                                         onSelect={() => {
                                                             form.setValue(
                                                                 "txnCategory",
-                                                                language.value
+                                                                category.value
                                                             );
                                                         }}
                                                     >
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                language.value === field.value
+                                                                category.value === field.value
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
                                                         />
-                                                        {language.label}
+                                                        {category.label}
                                                     </CommandItem>
                                                 ))}
                                             </CommandGroup>
@@ -202,7 +218,6 @@ export default function MyForm() {
                         </FormItem>
                     )}
                 />
-
                 <FormField
                     control={form.control}
                     name="txnNote"
@@ -221,7 +236,6 @@ export default function MyForm() {
                         </FormItem>
                     )}
                 />
-
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-6">
                         <FormField
@@ -301,7 +315,7 @@ export default function MyForm() {
                                         </PopoverContent>
                                     </Popover>
                                     <FormDescription>
-                                        This is the language that will be used in the dashboard.
+                                        Set the time interval between each recurrence.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -309,7 +323,6 @@ export default function MyForm() {
                         />
                     </div>
                 </div>
-
                 <Button type="submit">Submit</Button>
             </form>
         </Form>
