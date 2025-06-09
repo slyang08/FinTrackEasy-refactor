@@ -7,6 +7,16 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "@/api/axios";
 import { isAuthenticated } from "@/atoms/Atom";
 import { Button } from "@/components/ui/button";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuIndicator,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +38,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="flex items-center justify-between bg-green-800 px-4 h-12 w-full">
+        <nav className="w-full h-14 bg-green-800 px-4 flex items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center w-1/3">
                 <Link to="/" className="font-bold text-white text-2xl">
@@ -38,38 +48,99 @@ export default function Navbar() {
 
             {/* Center: Authenticated-only Links */}
             {isAuth && (
-                <div className="flex justify-center gap-x-10 flex-1">
-                    <Link to="/overview" className="text-white hover:text-gray-300">
-                        Overview
-                    </Link>
-                    <Link to="/transactions" className="text-white hover:text-gray-300">
-                        Transactions
-                    </Link>
-                    <Link to="/budgets" className="text-white hover:text-gray-300">
-                        Budgets
-                    </Link>
-                </div>
+                <NavigationMenu className="hidden md:flex flex-1 justify-center">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/overview"
+                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                >
+                                    Overview
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/transactions"
+                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                >
+                                    Transactions
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/budgets"
+                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                >
+                                    Budgets
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
             )}
 
             {/* Right: Guest Links or User Icon */}
             {!isAuth ? (
-                <div className="hidden md:flex justify-end items-center gap-x-6">
-                    <Button asChild variant="link">
-                        <Link to="/">Home</Link>
-                    </Button>
-                    <Button asChild variant="link">
-                        <Link to="/about">About Us</Link>
-                    </Button>
-                    <Button asChild variant="link">
-                        <Link to="/contact">Contact</Link>
-                    </Button>
-                    <Button asChild variant="outline">
-                        <Link to="/login">Log In</Link>
-                    </Button>
-                    <Button asChild variant="outline">
-                        <Link to="/register">Sign Up</Link>
-                    </Button>
-                </div>
+                <NavigationMenu className="hidden md:flex justify-end items-center gap-x-6">
+                    <NavigationMenuList className="flex gap-x-6">
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link to="/" className="px-3 py-2 text-white">
+                                    Home
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/about"
+                                    className="px-3 py-2 text-white hover:text-gray-300"
+                                >
+                                    About Us
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/contact"
+                                    className="px-3 py-2 text-white hover:text-gray-300"
+                                >
+                                    Contact
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/login"
+                                    className="px-3 py-2 border border-white rounded hover:bg-white hover:text-green-800 transition"
+                                >
+                                    Log In
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    to="/register"
+                                    className="px-3 py-2 border border-white rounded hover:bg-white hover:text-green-800 transition"
+                                >
+                                    Sign Up
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
             ) : (
                 <div
                     className="flex justify-end items-center w-1/3 relative group"
