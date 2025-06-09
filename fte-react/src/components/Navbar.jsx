@@ -27,15 +27,17 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="flex justify-between items-center bg-green-800 px-4 h-12">
-            {/* Logo */}
-            <Link to="/" className="font-bold text-white text-2xl">
-                FinTrackEasy
-            </Link>
+        <nav className="flex items-center justify-between bg-green-800 px-4 h-12 w-full">
+            {/* Left: Logo */}
+            <div className="flex items-center w-1/3">
+                <Link to="/" className="font-bold text-white text-2xl">
+                    FinTrackEasy
+                </Link>
+            </div>
 
-            {/* Authenticated-only Center Navigation Links */}
+            {/* Center: Authenticated-only Links */}
             {isAuth && (
-                <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-10 md:gap-x-16 lg:gap-x-20">
+                <div className="flex justify-center gap-x-10 flex-1">
                     <Link to="/overview" className="text-white hover:text-gray-300">
                         Overview
                     </Link>
@@ -48,70 +50,74 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* User Icon and Dropdown */}
-            <div
-                className="relative group"
-                onMouseEnter={() => setIsOpen(true)}
-                onMouseLeave={() => setIsOpen(false)}
-            >
-                <FontAwesomeIcon
-                    icon={faCircleUser}
-                    className="text-white text-2xl cursor-pointer"
-                />
-
-                <div
-                    className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${
-                        isOpen ? "visible" : "invisible"
-                    } duration-200 z-10 min-w-[160px]`}
-                >
-                    <ul className="p-2">
-                        <li>
-                            <Link
-                                to="/login"
-                                className={`text-gray-700 hover:text-gray-300 p-3 ${isAuth && "hidden"}`}
-                                onClick={navItemClicked}
-                            >
-                                Login
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/profile"
-                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
-                                onClick={navItemClicked}
-                            >
-                                Profile
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/expense"
-                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
-                                onClick={navItemClicked}
-                            >
-                                Expense
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/income"
-                                className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
-                                onClick={navItemClicked}
-                            >
-                                Income
-                            </Link>
-                        </li>
-                        <li>
-                            <a
-                                className={`text-gray-700 cursor-pointer hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
-                                onClick={handleLogout}
-                            >
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
+            {/* Right: Guest Links or User Icon */}
+            {!isAuth ? (
+                <div className="hidden md:flex justify-end items-center gap-x-6 w-1/3 text-white">
+                    <Link to="/">Home</Link>
+                    <Link to="/about">About Us</Link>
+                    <Link to="/contact">Contact</Link>
+                    <Link to="/login" className="hover:underline">
+                        Log In
+                    </Link>
+                    <Link to="/signup" className="hover:underline">
+                        Sign Up
+                    </Link>
                 </div>
-            </div>
+            ) : (
+                <div
+                    className="flex justify-end items-center w-1/3 relative group"
+                    onMouseEnter={() => setIsOpen(true)}
+                    onMouseLeave={() => setIsOpen(false)}
+                >
+                    <FontAwesomeIcon
+                        icon={faCircleUser}
+                        className="text-white text-2xl cursor-pointer"
+                    />
+                    <div
+                        className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${
+                            isOpen ? "visible" : "invisible"
+                        } duration-200 z-10 min-w-[160px]`}
+                    >
+                        <ul className="p-2">
+                            <li>
+                                <Link
+                                    to="/profile"
+                                    className="text-gray-700 hover:text-gray-300 p-3"
+                                    onClick={navItemClicked}
+                                >
+                                    Profile
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/expense"
+                                    className="text-gray-700 hover:text-gray-300 p-3"
+                                    onClick={navItemClicked}
+                                >
+                                    Expense
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/income"
+                                    className="text-gray-700 hover:text-gray-300 p-3"
+                                    onClick={navItemClicked}
+                                >
+                                    Income
+                                </Link>
+                            </li>
+                            <li>
+                                <a
+                                    className="text-gray-700 cursor-pointer hover:text-gray-300 p-3"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }
