@@ -37,6 +37,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
+// Form Schema for validation
 const formSchema = z.object({
     txnName: z.string().max(30).trim(),
     txnDate: z.coerce.date(),
@@ -46,22 +47,11 @@ const formSchema = z.object({
     txnRecurring: z.string().optional(),
 });
 
-export default function MyForm() {
+export default function TransactionForm({ formType }) {
     const [dropdown] = React.useState("dropdown");
 
-    // const languages = [
-    //     { label: "English", value: "en" },
-    //     { label: "French", value: "fr" },
-    //     { label: "German", value: "de" },
-    //     { label: "Spanish", value: "es" },
-    //     { label: "Portuguese", value: "pt" },
-    //     { label: "Russian", value: "ru" },
-    //     { label: "Japanese", value: "ja" },
-    //     { label: "Korean", value: "ko" },
-    //     { label: "Chinese", value: "zh" },
-    // ];
-
-    const categories = [
+    // Category mapping for combo boxes
+    const expenseCategories = [
         { label: "Groceries", value: "Groceries" },
         { label: "Gas", value: "Gas" },
         { label: "Restaurants", value: "Restaurants" },
@@ -69,11 +59,21 @@ export default function MyForm() {
         { label: "Shopping", value: "Shopping" },
     ];
 
+    const incomeCategories = [
+        { label: "Gift", value: "Gift" },
+        { label: "Other", value: "Other" },
+        { label: "Pay", value: "Pay" },
+    ];
+
+    // Recurrence mapping
     const recurring = [
         { label: "Bi-weekly", value: "Bi-weekly" },
         { label: "Monthly", value: "Monthly" },
         { label: "Weekly", value: "Weekly" },
     ];
+
+    // Render the form depending on whether it is an expense or income form: default to expense for now
+    const categoryOptions = formType === "income" ? incomeCategories : expenseCategories;
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -186,20 +186,20 @@ export default function MyForm() {
                                             )}
                                         >
                                             {field.value
-                                                ? categories.find((l) => l.value === field.value)
-                                                      ?.label
+                                                ? categoryOptions.find(
+                                                      (l) => l.value === field.value
+                                                  )?.label
                                                 : "Select category"}
                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                    {" "}
                                     <Command>
                                         <CommandList>
                                             <CommandEmpty>No categories found.</CommandEmpty>
                                             <CommandGroup>
-                                                {categories.map((category) => (
+                                                {categoryOptions.map((category) => (
                                                     <CommandItem
                                                         value={category.label}
                                                         key={category.value}
@@ -230,6 +230,7 @@ export default function MyForm() {
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     control={form.control}
                     name="txnNote"
