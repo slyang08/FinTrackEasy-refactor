@@ -47,7 +47,7 @@ const formSchema = z.object({
     txnRecurring: z.string().optional(),
 });
 
-export default function TransactionForm({ formType }) {
+export default function TransactionForm({ type, setOpen }) {
     const [dropdown] = React.useState("dropdown");
 
     // Category mapping for combo boxes
@@ -73,7 +73,7 @@ export default function TransactionForm({ formType }) {
     ];
 
     // Render the form depending on whether it is an expense or income form: default to expense for now
-    const categoryOptions = formType === "income" ? incomeCategories : expenseCategories;
+    const categoryOptions = type === "income" ? incomeCategories : expenseCategories;
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -335,7 +335,14 @@ export default function TransactionForm({ formType }) {
                         />
                     </div>
                 </div>
-                <Button type="submit">Submit</Button>
+                <div className="flex justify-left gap-4 mt-4">
+                    {setOpen && (
+                        <Button variant="destructive" type="button" onClick={() => setOpen(false)}>
+                            Cancel
+                        </Button>
+                    )}
+                    <Button variant="secondary">Submit</Button>
+                </div>
             </form>
         </Form>
     );
