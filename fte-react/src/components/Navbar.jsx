@@ -27,27 +27,47 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="flex justify-between items-center bg-green-800 px-3 h-10 ">
+        <nav className="flex justify-between items-center bg-green-800 px-4 h-12">
+            {/* Logo */}
             <Link to="/" className="font-bold text-white text-2xl">
                 FinTrackEasy
             </Link>
 
+            {/* Authenticated-only Center Navigation Links */}
+            {isAuth && (
+                <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-10 md:gap-x-16 lg:gap-x-20">
+                    <Link to="/overview" className="text-white hover:text-gray-300">
+                        Overview
+                    </Link>
+                    <Link to="/transactions" className="text-white hover:text-gray-300">
+                        Transactions
+                    </Link>
+                    <Link to="/budgets" className="text-white hover:text-gray-300">
+                        Budgets
+                    </Link>
+                </div>
+            )}
+
+            {/* User Icon and Dropdown */}
             <div
-                className="relative group inline"
+                className="relative group"
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
             >
-                {/* User Icon */}
-                <FontAwesomeIcon icon={faCircleUser} className="text-white text-2xl" />
+                <FontAwesomeIcon
+                    icon={faCircleUser}
+                    className="text-white text-2xl cursor-pointer"
+                />
 
-                {/* Dropdown (hidden by default) */}
                 <div
-                    className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${isOpen ? "visible" : "invisible"} duration-200 z-10 min-w-[160px]`}
+                    className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${
+                        isOpen ? "visible" : "invisible"
+                    } duration-200 z-10 min-w-[160px]`}
                 >
                     <ul className="p-2">
                         <li>
                             <Link
-                                to={"/login"}
+                                to="/login"
                                 className={`text-gray-700 hover:text-gray-300 p-3 ${isAuth && "hidden"}`}
                                 onClick={navItemClicked}
                             >
@@ -56,7 +76,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                to={"/profile"}
+                                to="/profile"
                                 className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
                                 onClick={navItemClicked}
                             >
@@ -65,7 +85,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                to={"/expense"}
+                                to="/expense"
                                 className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
                                 onClick={navItemClicked}
                             >
@@ -74,7 +94,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                to={"/income"}
+                                to="/income"
                                 className={`text-gray-700 hover:text-gray-300 p-3 ${!isAuth && "hidden"}`}
                                 onClick={navItemClicked}
                             >
