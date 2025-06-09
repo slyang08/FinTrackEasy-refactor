@@ -49,17 +49,17 @@ const formSchema = z.object({
 export default function MyForm() {
     const [dropdown] = React.useState("dropdown");
 
-    const languages = [
-        { label: "English", value: "en" },
-        { label: "French", value: "fr" },
-        { label: "German", value: "de" },
-        { label: "Spanish", value: "es" },
-        { label: "Portuguese", value: "pt" },
-        { label: "Russian", value: "ru" },
-        { label: "Japanese", value: "ja" },
-        { label: "Korean", value: "ko" },
-        { label: "Chinese", value: "zh" },
-    ];
+    // const languages = [
+    //     { label: "English", value: "en" },
+    //     { label: "French", value: "fr" },
+    //     { label: "German", value: "de" },
+    //     { label: "Spanish", value: "es" },
+    //     { label: "Portuguese", value: "pt" },
+    //     { label: "Russian", value: "ru" },
+    //     { label: "Japanese", value: "ja" },
+    //     { label: "Korean", value: "ko" },
+    //     { label: "Chinese", value: "zh" },
+    // ];
 
     const categories = [
         { label: "Groceries", value: "Groceries" },
@@ -67,6 +67,12 @@ export default function MyForm() {
         { label: "Restaurants", value: "Restaurants" },
         { label: "Bills", value: "Bills" },
         { label: "Shopping", value: "Shopping" },
+    ];
+
+    const recurring = [
+        { label: "Bi-weekly", value: "Bi-weekly" },
+        { label: "Monthly", value: "Monthly" },
+        { label: "Weekly", value: "Weekly" },
     ];
 
     const form = useForm({
@@ -272,41 +278,40 @@ export default function MyForm() {
                                                     )}
                                                 >
                                                     {field.value
-                                                        ? languages.find(
+                                                        ? recurring.find(
                                                               (l) => l.value === field.value
                                                           )?.label
-                                                        : "Select language"}
+                                                        : "Select recurrence"}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[200px] p-0">
                                             <Command>
-                                                <CommandInput placeholder="Search language..." />
                                                 <CommandList>
-                                                    <CommandEmpty>No language found.</CommandEmpty>
+                                                    <CommandEmpty>No interval found.</CommandEmpty>
                                                     <CommandGroup>
-                                                        {languages.map((language) => (
+                                                        {recurring.map((interval) => (
                                                             <CommandItem
-                                                                value={language.label}
-                                                                key={language.value}
+                                                                value={interval.label}
+                                                                key={interval.value}
                                                                 onSelect={() => {
                                                                     form.setValue(
                                                                         "txnRecurring",
-                                                                        language.value
+                                                                        interval.value
                                                                     );
                                                                 }}
                                                             >
                                                                 <Check
                                                                     className={cn(
                                                                         "mr-2 h-4 w-4",
-                                                                        language.value ===
+                                                                        interval.value ===
                                                                             field.value
                                                                             ? "opacity-100"
                                                                             : "opacity-0"
                                                                     )}
                                                                 />
-                                                                {language.label}
+                                                                {interval.label}
                                                             </CommandItem>
                                                         ))}
                                                     </CommandGroup>
