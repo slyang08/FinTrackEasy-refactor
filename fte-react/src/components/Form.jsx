@@ -113,7 +113,7 @@ export default function MyForm() {
                                     <FormControl>
                                         <Textarea
                                             placeholder="e.g. shopping"
-                                            className="resize-none"
+                                            className="min-h-0 max-h 10"
                                             {...field}
                                         />
                                     </FormControl>
@@ -123,7 +123,7 @@ export default function MyForm() {
                         />
                     </div>
 
-                    <div className="col-span-6 flex flex-col gap-4">
+                    <div className="col-span-6 flex flex-col gap-5">
                         <FormField
                             control={form.control}
                             name="txnDate"
@@ -136,7 +136,7 @@ export default function MyForm() {
                                                 <Button
                                                     variant="outline"
                                                     className={cn(
-                                                        "w-[240px] pl-3 text-left font-normal",
+                                                        "w-full pl-3 text-left font-normal",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -147,13 +147,17 @@ export default function MyForm() {
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
+                                        <PopoverContent
+                                            className="w-[var(--radix-popover-trigger-width)] p-0"
+                                            align="start"
+                                        >
                                             <Calendar
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
                                                 captionLayout={dropdown}
                                                 initialFocus
+                                                className="w-full"
                                             />
                                         </PopoverContent>
                                     </Popover>
@@ -162,7 +166,8 @@ export default function MyForm() {
                             )}
                         />
                     </div>
-                </div>{" "}
+                </div>
+
                 <FormField
                     control={form.control}
                     name="txnCategory"
@@ -176,7 +181,7 @@ export default function MyForm() {
                                             variant="outline"
                                             role="combobox"
                                             className={cn(
-                                                "w-[200px] justify-between",
+                                                "w-full justify-between",
                                                 !field.value && "text-muted-foreground"
                                             )}
                                         >
@@ -188,7 +193,8 @@ export default function MyForm() {
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[200px] p-0">
+                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                    {" "}
                                     <Command>
                                         <CommandList>
                                             <CommandEmpty>No categories found.</CommandEmpty>
@@ -233,7 +239,7 @@ export default function MyForm() {
                             <FormControl>
                                 <Textarea
                                     placeholder="e.g. new sunglasses"
-                                    className="resize-none"
+                                    className="w-full min-h-30"
                                     {...field}
                                 />
                             </FormControl>
@@ -251,7 +257,7 @@ export default function MyForm() {
                                 <FormItem>
                                     <FormLabel>Amount</FormLabel>
                                     <FormControl>
-                                        <Textarea className="resize-none" {...field} />
+                                        <Textarea className="min-h-0 max-h-10" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -273,7 +279,7 @@ export default function MyForm() {
                                                     variant="outline"
                                                     role="combobox"
                                                     className={cn(
-                                                        "w-[200px] justify-between",
+                                                        "w-full justify-between", // Changed this line
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
@@ -286,7 +292,7 @@ export default function MyForm() {
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-[200px] p-0">
+                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                                             <Command>
                                                 <CommandList>
                                                     <CommandEmpty>No interval found.</CommandEmpty>
