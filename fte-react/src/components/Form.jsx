@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+// TO DO: Hook up Income/Expense API to on submit
+// import api from "@/api/axios.js";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -43,7 +45,13 @@ const formSchema = z.object({
     txnDate: z.coerce.date(),
     txnCategory: z.string(),
     txnNote: z.string().max(30).trim(),
-    txnAmount: z.string(),
+    txnAmount: z.coerce
+        .number({
+            invalid_type_error: "Amount must be a number",
+            required_error: "Amount is required",
+        })
+        .positive("Amount must be positive")
+        .refine((val) => !Number.isNaN(val), { message: "Amount must be a valid number" }),
     txnRecurring: z.string().optional(),
 });
 
@@ -87,12 +95,18 @@ export default function TransactionForm({ type, setOpen }) {
 
     const onSubmit = (values) => {
         try {
-            console.log(values);
+            if (type === "income") {
+                console.log("Income Entry:", values);
+            } else {
+                console.log("Expense Entry:", values);
+            }
+
             toast(
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
                     <code className="text-white">{JSON.stringify(values, null, 2)}</code>
                 </pre>
             );
+            setOpen(false);
         } catch (error) {
             console.error("Form submission error", error);
             toast.error("Failed to submit the form. Please try again.");
@@ -115,7 +129,11 @@ export default function TransactionForm({ type, setOpen }) {
                                     <FormLabel>Name</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="e.g. shopping"
+                                            placeholder={
+                                                type === "expense"
+                                                    ? "e.g. shopping"
+                                                    : "e.g. paycheque"
+                                            }
                                             className="min-h-0 max-h 10"
                                             {...field}
                                         />
@@ -242,7 +260,9 @@ export default function TransactionForm({ type, setOpen }) {
                             <FormLabel>Note</FormLabel>
                             <FormControl>
                                 <Textarea
-                                    placeholder="e.g. new sunglasses"
+                                    placeholder={
+                                        type === "expense" ? "bought new sunglasses" : "work bonus"
+                                    }
                                     className="w-full min-h-30"
                                     {...field}
                                 />
@@ -283,7 +303,7 @@ export default function TransactionForm({ type, setOpen }) {
                                                     variant="outline"
                                                     role="combobox"
                                                     className={cn(
-                                                        "w-full justify-between", // Changed this line
+                                                        "w-full justify-between",
                                                         !field.value && "text-muted-foreground"
                                                     )}
                                                 >
