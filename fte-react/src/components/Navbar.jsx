@@ -53,7 +53,7 @@ export default function Navbar() {
 
             {/* Right: Guest Links or User Icon */}
             {!isAuth ? (
-                <div className="hidden md:flex justify-end items-center gap-x-6 text-white">
+                <div className="hidden md:flex justify-end items-center gap-x-6">
                     <Button asChild variant="link">
                         <Link to="/">Home</Link>
                     </Button>
@@ -63,10 +63,10 @@ export default function Navbar() {
                     <Button asChild variant="link">
                         <Link to="/contact">Contact</Link>
                     </Button>
-                    <Button asChild variant="link">
+                    <Button asChild variant="outline">
                         <Link to="/login">Log In</Link>
                     </Button>
-                    <Button asChild variant="link">
+                    <Button asChild variant="outline">
                         <Link to="/register">Sign Up</Link>
                     </Button>
                 </div>
