@@ -52,7 +52,7 @@ export default function Navbar() {
 
             {/* Right: Guest Links or User Icon */}
             {!isAuth ? (
-                <div className="hidden md:flex justify-end items-center gap-x-6 w-1/3 text-white">
+                <div className="hidden md:flex justify-end items-center gap-x-6 text-white">
                     <Link to="/">Home</Link>
                     <Link to="/about">About Us</Link>
                     <Link to="/contact">Contact</Link>
@@ -85,7 +85,7 @@ export default function Navbar() {
                                     className="text-gray-700 hover:text-gray-300 p-3"
                                     onClick={navItemClicked}
                                 >
-                                    Profile
+                                    Settings
                                 </Link>
                             </li>
                             <li>
@@ -94,7 +94,7 @@ export default function Navbar() {
                                     className="text-gray-700 hover:text-gray-300 p-3"
                                     onClick={navItemClicked}
                                 >
-                                    Expense
+                                    Expense (Deprecated)
                                 </Link>
                             </li>
                             <li>
@@ -103,7 +103,7 @@ export default function Navbar() {
                                     className="text-gray-700 hover:text-gray-300 p-3"
                                     onClick={navItemClicked}
                                 >
-                                    Income
+                                    Income (Deprecated)
                                 </Link>
                             </li>
                             <li>
