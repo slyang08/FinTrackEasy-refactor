@@ -381,8 +381,6 @@ export default function TransactionForm({ type, setOpen }) {
                     </div>
                 </form>
             </Form>
-
-            {/* Confirmation Dialog goes here */}
             <ConfirmationDialog
                 open={showConfirm}
                 setOpen={setShowConfirm}
