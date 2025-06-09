@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 import { isAuthenticated } from "@/atoms/Atom";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -53,15 +54,21 @@ export default function Navbar() {
             {/* Right: Guest Links or User Icon */}
             {!isAuth ? (
                 <div className="hidden md:flex justify-end items-center gap-x-6 text-white">
-                    <Link to="/">Home</Link>
-                    <Link to="/about">About Us</Link>
-                    <Link to="/contact">Contact</Link>
-                    <Link to="/login" className="hover:underline">
-                        Log In
-                    </Link>
-                    <Link to="/register" className="hover:underline">
-                        Sign Up
-                    </Link>
+                    <Button asChild variant="link">
+                        <Link to="/">Home</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link to="/about">About Us</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link to="/contact">Contact</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link to="/login">Log In</Link>
+                    </Button>
+                    <Button asChild variant="link">
+                        <Link to="/register">Sign Up</Link>
+                    </Button>
                 </div>
             ) : (
                 <div
