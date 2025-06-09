@@ -39,12 +39,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
+import ConfirmationDialog from "./ConfirmationDialog";
+
 // Form Schema for validation
 const formSchema = z.object({
     txnName: z.string().max(30).trim(),
     txnDate: z.coerce.date(),
     txnCategory: z.string(),
-    txnNote: z.string().max(30).trim(),
+    txnNote: z.string().max(30, "Note must be 30 characters or fewer").trim().optional(),
     txnAmount: z.coerce
         .number({
             invalid_type_error: "Amount must be a number",
@@ -57,6 +59,8 @@ const formSchema = z.object({
 
 export default function TransactionForm({ type, setOpen }) {
     const [dropdown] = React.useState("dropdown");
+    const [showConfirm, setShowConfirm] = React.useState(false);
+    const [pendingValues, setPendingValues] = React.useState(null);
 
     // Category mapping for combo boxes
     const expenseCategories = [
@@ -78,6 +82,7 @@ export default function TransactionForm({ type, setOpen }) {
 
     // Recurrence mapping
     const recurring = [
+        { label: "None", value: "None" },
         { label: "Bi-weekly", value: "Bi-weekly" },
         { label: "Monthly", value: "Monthly" },
         { label: "Weekly", value: "Weekly" },
@@ -94,279 +99,301 @@ export default function TransactionForm({ type, setOpen }) {
     });
 
     const onSubmit = (values) => {
-        try {
-            if (type === "income") {
-                console.log("Income Entry:", values);
-            } else {
-                console.log("Expense Entry:", values);
-            }
+        setPendingValues({
+            ...values,
+            txnAmount: values.txnAmount ? Number(values.txnAmount) : null,
+        });
+        setShowConfirm(true);
+    };
 
-            toast(
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-                </pre>
-            );
-            setOpen(false);
-        } catch (error) {
-            console.error("Form submission error", error);
-            toast.error("Failed to submit the form. Please try again.");
-        }
+    const handleConfirm = () => {
+        // Now actually submit the data
+        console.log(`${type === "income" ? "Income" : "Expense"} Entry:`, pendingValues);
+        toast.success(`${type === "income" ? "Income" : "Expense"} entry added!`);
+        setOpen(false);
+        setShowConfirm(false);
+        form.reset();
     };
 
     return (
-        <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 max-w-3xl mx-auto py-10"
-            >
-                <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-6">
-                        <FormField
-                            control={form.control}
-                            name="txnName"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={
-                                                type === "expense"
-                                                    ? "e.g. shopping"
-                                                    : "e.g. paycheque"
-                                            }
-                                            className="min-h-0 max-h 10"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="col-span-6 flex flex-col gap-5">
-                        <FormField
-                            control={form.control}
-                            name="txnDate"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>Date</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    className={cn(
-                                                        "w-full pl-3 text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value
-                                                        ? format(field.value, "PPP")
-                                                        : "Pick a date"}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            className="w-[var(--radix-popover-trigger-width)] p-0"
-                                            align="start"
-                                        >
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                captionLayout={dropdown}
-                                                initialFocus
-                                                className="w-full"
+        <>
+            <Form {...form}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8 max-w-3xl mx-auto py-10"
+                >
+                    <div className="grid grid-cols-12 gap-4">
+                        <div className="col-span-6">
+                            <FormField
+                                control={form.control}
+                                name="txnName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Name</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder={
+                                                    type === "expense"
+                                                        ? "e.g. shopping"
+                                                        : "e.g. paycheque"
+                                                }
+                                                className="min-h-0 max-h 10"
+                                                {...field}
                                             />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                <FormField
-                    control={form.control}
-                    name="txnCategory"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Category</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            className={cn(
-                                                "w-full justify-between",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {field.value
-                                                ? categoryOptions.find(
-                                                      (l) => l.value === field.value
-                                                  )?.label
-                                                : "Select category"}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                    <Command>
-                                        <CommandList>
-                                            <CommandEmpty>No categories found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {categoryOptions.map((category) => (
-                                                    <CommandItem
-                                                        value={category.label}
-                                                        key={category.value}
-                                                        onSelect={() => {
-                                                            form.setValue(
-                                                                "txnCategory",
-                                                                category.value
-                                                            );
-                                                        }}
+                        <div className="col-span-6 flex flex-col gap-5">
+                            <FormField
+                                control={form.control}
+                                name="txnDate"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            "w-full pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
                                                     >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                category.value === field.value
-                                                                    ? "opacity-100"
-                                                                    : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {category.label}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="txnNote"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Note</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder={
-                                        type === "expense" ? "bought new sunglasses" : "work bonus"
-                                    }
-                                    className="w-full min-h-30"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormDescription>30 character limit</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-6">
-                        <FormField
-                            control={form.control}
-                            name="txnAmount"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Amount</FormLabel>
-                                    <FormControl>
-                                        <Textarea className="min-h-0 max-h-10" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                                        {field.value
+                                                            ? format(field.value, "PPP")
+                                                            : "Pick a date"}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                className="w-[var(--radix-popover-trigger-width)] p-0"
+                                                align="start"
+                                            >
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    captionLayout={dropdown}
+                                                    initialFocus
+                                                    className="w-full"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </div>
 
-                    <div className="col-span-6">
-                        <FormField
-                            control={form.control}
-                            name="txnRecurring"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>Recurrence (optional)</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className={cn(
-                                                        "w-full justify-between",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value
-                                                        ? recurring.find(
-                                                              (l) => l.value === field.value
-                                                          )?.label
-                                                        : "Select recurrence"}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                            <Command>
-                                                <CommandList>
-                                                    <CommandEmpty>No interval found.</CommandEmpty>
-                                                    <CommandGroup>
-                                                        {recurring.map((interval) => (
-                                                            <CommandItem
-                                                                value={interval.label}
-                                                                key={interval.value}
-                                                                onSelect={() => {
-                                                                    form.setValue(
-                                                                        "txnRecurring",
-                                                                        interval.value
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <Check
-                                                                    className={cn(
-                                                                        "mr-2 h-4 w-4",
-                                                                        interval.value ===
-                                                                            field.value
-                                                                            ? "opacity-100"
-                                                                            : "opacity-0"
-                                                                    )}
-                                                                />
-                                                                {interval.label}
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormDescription>
-                                        Set the time interval between each recurrence.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <FormField
+                        control={form.control}
+                        name="txnCategory"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Category</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                className={cn(
+                                                    "w-full justify-between",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {field.value
+                                                    ? categoryOptions.find(
+                                                          (l) => l.value === field.value
+                                                      )?.label
+                                                    : "Select category"}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                        <Command>
+                                            <CommandList>
+                                                <CommandEmpty>No categories found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {categoryOptions.map((category) => (
+                                                        <CommandItem
+                                                            value={category.label}
+                                                            key={category.value}
+                                                            onSelect={() => {
+                                                                form.setValue(
+                                                                    "txnCategory",
+                                                                    category.value
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    category.value === field.value
+                                                                        ? "opacity-100"
+                                                                        : "opacity-0"
+                                                                )}
+                                                            />
+                                                            {category.label}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="txnNote"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Note</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder={
+                                            type === "expense"
+                                                ? "bought new sunglasses"
+                                                : "work bonus"
+                                        }
+                                        className="w-full min-h-30"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormDescription>30 character limit</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <div className="grid grid-cols-12 gap-4">
+                        <div className="col-span-6">
+                            <FormField
+                                control={form.control}
+                                name="txnAmount"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Amount</FormLabel>
+                                        <FormControl>
+                                            <Textarea className="min-h-0 max-h-10" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="col-span-6">
+                            <FormField
+                                control={form.control}
+                                name="txnRecurring"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Recurrence (optional)</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn(
+                                                            "w-full justify-between",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value
+                                                            ? recurring.find(
+                                                                  (l) => l.value === field.value
+                                                              )?.label
+                                                            : "Select recurrence"}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                                <Command>
+                                                    <CommandList>
+                                                        <CommandEmpty>
+                                                            No interval found.
+                                                        </CommandEmpty>
+                                                        <CommandGroup>
+                                                            {recurring.map((interval) => (
+                                                                <CommandItem
+                                                                    value={interval.label}
+                                                                    key={interval.value}
+                                                                    onSelect={() => {
+                                                                        form.setValue(
+                                                                            "txnRecurring",
+                                                                            interval.value
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "mr-2 h-4 w-4",
+                                                                            interval.value ===
+                                                                                field.value
+                                                                                ? "opacity-100"
+                                                                                : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                    {interval.label}
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormDescription>
+                                            Set the time interval between each recurrence.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="flex justify-left gap-4 mt-4">
-                    {setOpen && (
-                        <Button variant="destructive" type="button" onClick={() => setOpen(false)}>
-                            Cancel
+                    <div className="flex justify-left gap-4 mt-4">
+                        {setOpen && (
+                            <Button
+                                variant="destructive"
+                                type="button"
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                        )}
+                        <Button variant="secondary" type="submit">
+                            Submit
                         </Button>
-                    )}
-                    <Button variant="secondary">Submit</Button>
-                </div>
-            </form>
-        </Form>
+                    </div>
+                </form>
+            </Form>
+
+            {/* Confirmation Dialog goes here */}
+            <ConfirmationDialog
+                open={showConfirm}
+                setOpen={setShowConfirm}
+                onConfirm={handleConfirm}
+                actionType="submit"
+                entry={{
+                    name: pendingValues?.txnName,
+                    note: pendingValues?.txnNote,
+                    amount: pendingValues?.txnAmount,
+                }}
+            />
+        </>
     );
 }
