@@ -59,7 +59,7 @@ export default function Navbar() {
                     <Link to="/login" className="hover:underline">
                         Log In
                     </Link>
-                    <Link to="/signup" className="hover:underline">
+                    <Link to="/register" className="hover:underline">
                         Sign Up
                     </Link>
                 </div>
