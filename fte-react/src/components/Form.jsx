@@ -54,9 +54,12 @@ export default function TransactionForm({ type, setOpen }) {
     const expenseCategories = [
         { label: "Groceries", value: "Groceries" },
         { label: "Gas", value: "Gas" },
-        { label: "Restaurants", value: "Restaurants" },
+        { label: "Food", value: "Food" },
         { label: "Bills", value: "Bills" },
-        { label: "Shopping", value: "Shopping" },
+        { label: "Rent", value: "Rent" },
+        { label: "Entertainment", value: "Entertainment" },
+        { label: "Utilities", value: "Utilities" },
+        { label: "Other", value: "Other" },
     ];
 
     const incomeCategories = [
