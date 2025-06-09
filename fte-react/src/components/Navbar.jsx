@@ -1,7 +1,7 @@
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtom } from "jotai";
-import { useState } from "react";
+// import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
@@ -19,13 +19,13 @@ import {
 } from "@/components/ui/navigation-menu";
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
+    // const [isOpen, setIsOpen] = useState(false);
     const [isAuth, setIsAuth] = useAtom(isAuthenticated);
     const navigate = useNavigate();
 
-    function navItemClicked() {
-        setIsOpen(false);
-    }
+    // function navItemClicked() {
+    //     setIsOpen(false);
+    // }
 
     async function handleLogout() {
         try {
@@ -48,40 +48,42 @@ export default function Navbar() {
 
             {/* Center: Authenticated-only Links */}
             {isAuth && (
-                <NavigationMenu className="hidden md:flex flex-1 justify-center">
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink asChild>
-                                <Link
-                                    to="/overview"
-                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
-                                >
-                                    Overview
-                                </Link>
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink asChild>
-                                <Link
-                                    to="/transactions"
-                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
-                                >
-                                    Transactions
-                                </Link>
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink asChild>
-                                <Link
-                                    to="/budgets"
-                                    className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
-                                >
-                                    Budgets
-                                </Link>
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
-                    </NavigationMenuList>
-                </NavigationMenu>
+                <div className="absolute left-1/2 transform -translate-x-1/2">
+                    <NavigationMenu className="hidden md:flex justify-center">
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link
+                                        to="/overview"
+                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                    >
+                                        Overview
+                                    </Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link
+                                        to="/transactions"
+                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                    >
+                                        Transactions
+                                    </Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link
+                                        to="/budgets"
+                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                    >
+                                        Budgets
+                                    </Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                </div>
             )}
 
             {/* Right: Guest Links or User Icon */}
@@ -142,59 +144,37 @@ export default function Navbar() {
                     </NavigationMenuList>
                 </NavigationMenu>
             ) : (
-                <div
-                    className="flex justify-end items-center w-1/3 relative group"
-                    onMouseEnter={() => setIsOpen(true)}
-                    onMouseLeave={() => setIsOpen(false)}
-                >
-                    <FontAwesomeIcon
-                        icon={faCircleUser}
-                        className="text-white text-2xl cursor-pointer"
-                    />
-                    <div
-                        className={`absolute top-full right-0 mt-1 bg-white rounded-md shadow-xl ${
-                            isOpen ? "visible" : "invisible"
-                        } duration-200 z-10 min-w-[160px]`}
-                    >
-                        <ul className="p-2">
-                            <li>
-                                <Link
-                                    to="/profile"
-                                    className="text-gray-700 hover:text-gray-300 p-3"
-                                    onClick={navItemClicked}
-                                >
-                                    Settings
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/expense"
-                                    className="text-gray-700 hover:text-gray-300 p-3"
-                                    onClick={navItemClicked}
-                                >
-                                    Expense (Deprecated)
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/income"
-                                    className="text-gray-700 hover:text-gray-300 p-3"
-                                    onClick={navItemClicked}
-                                >
-                                    Income (Deprecated)
-                                </Link>
-                            </li>
-                            <li>
-                                <a
-                                    className="text-gray-700 cursor-pointer hover:text-gray-300 p-3"
-                                    onClick={handleLogout}
-                                >
-                                    Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <NavigationMenu className="hidden md:flex justify-end items-center">
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger className="bg-transparent text-white hover:bg-transparent hover:text-gray-300">
+                                <FontAwesomeIcon icon={faCircleUser} className="text-2xl" />
+                            </NavigationMenuTrigger>
+
+                            <NavigationMenuContent>
+                                <ul className="gap-4">
+                                    <li>
+                                        <NavigationMenuLink asChild>
+                                            <Link to="/profile" className="flex items-center gap-2">
+                                                Settings
+                                            </Link>
+                                        </NavigationMenuLink>
+                                    </li>
+                                    <li>
+                                        <NavigationMenuLink asChild>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="flex items-center gap-2 w-full text-left px-4 py-2"
+                                            >
+                                                Logout
+                                            </button>
+                                        </NavigationMenuLink>
+                                    </li>
+                                </ul>
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
             )}
         </nav>
     );
