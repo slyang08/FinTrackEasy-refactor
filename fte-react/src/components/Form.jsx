@@ -42,7 +42,7 @@ const formSchema = z.object({
     txnDate: z.coerce.date(),
     txnCategory: z.string(),
     txnNote: z.string().max(30).trim(),
-    txnAmount: z.number(),
+    txnAmount: z.string(),
     txnRecurring: z.string().optional(),
 });
 
