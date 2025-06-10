@@ -8,8 +8,7 @@ import {
     getUserById,
     updateProfile,
 } from "../controllers/userController.js";
-import authAny from "../middlewares/authAny.js";
-import optionalJwt from "../middlewares/optionalJwt.js";
+import { authAny, optionalJwt } from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { updateProfileSchema } from "../validations/userValidation.js";
 

@@ -9,20 +9,19 @@ import {
     getIncomesByQuery,
     updateIncome,
 } from "../controllers/incomeController.js";
-import protect from "../middlewares/authMiddleware.js";
+import { attachAccount, ensureAuthenticated } from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 import { incomeQuerySchema } from "../validations/queryValidation.js";
 
 const router = express.Router();
 
-router.use(protect);
+router.use(ensureAuthenticated, attachAccount);
 
 // POST create income
 router.post("/", validate(incomeSchema), createIncome);
 
 // GET Get all income based on account ID
-// router.get("/account/:accountId", getIncomes); // Use it if want to view other people's account information
 router.get("/", getIncomes);
 
 // GET to get filtered revenue (filtered by category and time range)
