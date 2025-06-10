@@ -57,7 +57,49 @@ const formSchema = z.object({
     txnRecurring: z.string().optional(),
 });
 
+// Category mapping for combo boxes
+const expenseCategories = [
+    { label: "Groceries", value: "Groceries" },
+    { label: "Gas", value: "Gas" },
+    { label: "Food", value: "Food" },
+    { label: "Bills", value: "Bills" },
+    { label: "Rent", value: "Rent" },
+    { label: "Entertainment", value: "Entertainment" },
+    { label: "Utilities", value: "Utilities" },
+    { label: "Other", value: "Other" },
+];
+
+const incomeCategories = [
+    { label: "Gift", value: "Gift" },
+    { label: "Other", value: "Other" },
+    { label: "Pay", value: "Pay" },
+];
+
+// Recurrence mapping
+const recurring = [
+    { label: "None", value: "None" },
+    { label: "Bi-weekly", value: "Bi-weekly" },
+    { label: "Monthly", value: "Monthly" },
+    { label: "Weekly", value: "Weekly" },
+];
+
 export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
+    const [dropdown] = React.useState("dropdown");
+    const [showConfirm, setShowConfirm] = React.useState(false);
+    const [pendingValues, setPendingValues] = React.useState(null);
+
+    // Render the form depending on whether it is an expense or income form: default to expense for now
+    const categoryOptions = type === "income" ? incomeCategories : expenseCategories;
+
+    // Initialize form using zod and React Hook Form
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            txnDate: new Date(),
+        },
+    });
+
+    // Load the form with the existing transaction data if the button is an edit button and has passed the type
     React.useEffect(() => {
         if (editingData) {
             form.reset({
@@ -71,46 +113,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         }
     }, [editingData, form]);
 
-    const [dropdown] = React.useState("dropdown");
-    const [showConfirm, setShowConfirm] = React.useState(false);
-    const [pendingValues, setPendingValues] = React.useState(null);
-
-    // Category mapping for combo boxes
-    const expenseCategories = [
-        { label: "Groceries", value: "Groceries" },
-        { label: "Gas", value: "Gas" },
-        { label: "Food", value: "Food" },
-        { label: "Bills", value: "Bills" },
-        { label: "Rent", value: "Rent" },
-        { label: "Entertainment", value: "Entertainment" },
-        { label: "Utilities", value: "Utilities" },
-        { label: "Other", value: "Other" },
-    ];
-
-    const incomeCategories = [
-        { label: "Gift", value: "Gift" },
-        { label: "Other", value: "Other" },
-        { label: "Pay", value: "Pay" },
-    ];
-
-    // Recurrence mapping
-    const recurring = [
-        { label: "None", value: "None" },
-        { label: "Bi-weekly", value: "Bi-weekly" },
-        { label: "Monthly", value: "Monthly" },
-        { label: "Weekly", value: "Weekly" },
-    ];
-
-    // Render the form depending on whether it is an expense or income form: default to expense for now
-    const categoryOptions = type === "income" ? incomeCategories : expenseCategories;
-
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            txnDate: new Date(),
-        },
-    });
-
+    // On submit, show the confirmation dialog with the pending values in the form
+    // Coerces the entry in the Amount field to be a number and is formatted in currency in the confirmation dialog component
     const onSubmit = (values) => {
         setPendingValues({
             ...values,
@@ -119,6 +123,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         setShowConfirm(true);
     };
 
+    // Calls appropriate API for creating or updating depending on if an editID is passed in
     const handleConfirm = async () => {
         try {
             const endpoint = type === "income" ? "/incomes" : "/expenses";
