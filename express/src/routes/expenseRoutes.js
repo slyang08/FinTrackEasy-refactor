@@ -8,7 +8,12 @@ import {
     getExpensesByQuery,
     updateExpense,
 } from "../controllers/expenseController.js";
-import protect from "../middlewares/authMiddleware.js";
+import {
+    attachAccount,
+    ensureAuthenticated,
+    optionalJwt,
+    protect,
+} from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { expenseSchema, updateExpenseSchema } from "../validations/expenseValidation.js";
 import { expenseQuerySchema } from "../validations/queryValidation.js";
@@ -16,7 +21,7 @@ import { expenseQuerySchema } from "../validations/queryValidation.js";
 const router = express.Router();
 
 // Authentication middleware - protects all routes
-router.use(protect);
+router.use(ensureAuthenticated, attachAccount);
 
 // Create expenditure
 router.post("/", validate(expenseSchema), createExpense);

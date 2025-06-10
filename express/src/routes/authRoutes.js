@@ -13,8 +13,7 @@ import {
     resetPassword,
     verifyEmail,
 } from "../controllers/authController.js";
-import protect from "../middlewares/authMiddleware.js";
-import optionalJwt from "../middlewares/optionalJwt.js";
+import { optionalJwt, protect } from "../middlewares/authMiddleware.js";
 import { loginLimiter, registerLimiter } from "../middlewares/rateLimit.js";
 import validate from "../middlewares/validate.js";
 import passport from "../utils/googleOAuth.js";

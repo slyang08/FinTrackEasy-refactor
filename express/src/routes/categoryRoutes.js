@@ -6,9 +6,10 @@ import {
     getCategoriesForPeriod,
     getCategoryStats,
 } from "../controllers/categoryController.js";
-import protect from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
+
 router.use(protect);
 
 router.get("/", getAllCategories);

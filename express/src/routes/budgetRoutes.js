@@ -7,7 +7,7 @@ import {
     getBudgets,
     updateBudget,
 } from "../controllers/budgetController.js";
-import protect from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { budgetSchema } from "../validations/budgetValidation.js";
 
