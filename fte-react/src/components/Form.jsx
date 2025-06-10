@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 // TO DO: Hook up Income/Expense API to on submit
-// import api from "@/api/axios.js";
+import api from "@/api/axios.js";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -57,7 +57,20 @@ const formSchema = z.object({
     txnRecurring: z.string().optional(),
 });
 
-export default function TransactionForm({ type, setOpen }) {
+export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
+    React.useEffect(() => {
+        if (editingData) {
+            form.reset({
+                txnName: editingData.name || "",
+                txnDate: editingData.date ? new Date(editingData.date) : new Date(),
+                txnCategory: editingData.category || "",
+                txnNote: editingData.description || "",
+                txnAmount: editingData.amount || "",
+                txnRecurring: editingData.isRecurring ? editingData.isRecurring : undefined,
+            });
+        }
+    }, [editingData, form]);
+
     const [dropdown] = React.useState("dropdown");
     const [showConfirm, setShowConfirm] = React.useState(false);
     const [pendingValues, setPendingValues] = React.useState(null);
@@ -106,13 +119,34 @@ export default function TransactionForm({ type, setOpen }) {
         setShowConfirm(true);
     };
 
-    const handleConfirm = () => {
-        // Now actually submit the data
-        console.log(`${type === "income" ? "Income" : "Expense"} Entry:`, pendingValues);
-        toast.success(`${type === "income" ? "Income" : "Expense"} entry added!`);
-        setOpen(false);
-        setShowConfirm(false);
-        form.reset();
+    const handleConfirm = async () => {
+        try {
+            const endpoint = type === "income" ? "/incomes" : "/expenses";
+            const payload = {
+                name: pendingValues.txnName,
+                date: pendingValues.txnDate || undefined,
+                amount: pendingValues.txnAmount,
+                category: pendingValues.txnCategory,
+                description: pendingValues.txnNote,
+                isRecurring:
+                    pendingValues.txnRecurring === "None" ? null : pendingValues.txnRecurring,
+            };
+
+            if (editingId) {
+                await api.patch(`${endpoint}/${editingId}`, payload);
+                toast.success(`${type === "income" ? "Income" : "Expense"} entry updated!`);
+            } else {
+                await api.post(endpoint, payload);
+                toast.success(`${type === "income" ? "Income" : "Expense"} entry added!`);
+            }
+
+            setOpen(false);
+            setShowConfirm(false);
+            form.reset();
+        } catch (error) {
+            console.error("Submission failed:", error);
+            toast.error("Failed to save entry. Please try again.");
+        }
     };
 
     return (
