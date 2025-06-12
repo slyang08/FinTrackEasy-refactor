@@ -7,7 +7,7 @@ import {
     getMyAccounts,
     updateAccountStatus,
 } from "../controllers/accountController.js";
-import protect from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 

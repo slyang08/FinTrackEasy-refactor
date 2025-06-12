@@ -7,7 +7,7 @@ import {
     submitContactForm,
     updateContactStatus,
 } from "../controllers/contactController.js";
-import protect from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { generalContactSchema } from "../validations/contactValidation.js";
 

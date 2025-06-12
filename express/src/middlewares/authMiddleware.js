@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 import Account from "../models/Account.js";
 import User from "../models/User.js";
 
-const protect = async (req, res, next) => {
+// JWT Mandatory Verification
+export const protect = async (req, res, next) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         token = req.headers.authorization.split(" ")[1];
@@ -42,4 +43,58 @@ const protect = async (req, res, next) => {
     }
 };
 
-export default protect;
+// Session authentication (passport)
+export function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).json({ message: "Unauthorized" });
+}
+
+// Optional JWT validation
+export async function optionalJwt(req, res, next) {
+    let token = req.cookies.token;
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.userId = decoded.userId;
+            req.accountId = decoded.accountId;
+        } catch (err) {
+            console.error("JWT verification failed:", err);
+        }
+    }
+    next();
+}
+
+// Automatically hang accounts (for session authentication)
+export async function attachAccount(req, res, next) {
+    try {
+        if (req.user && !req.account) {
+            let account = await Account.findOne({ user: req.user._id });
+            if (!account) {
+                // Automatically create an account
+                account = await Account.create({
+                    user: req.user._id,
+                    password: "google-oauth", // Marked with a special string
+                    status: "Active",
+                });
+            }
+            req.account = account;
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+// Supports either JWT or Session authentication.
+export function authAny(req, res, next) {
+    if (req.userId || (req.isAuthenticated && req.isAuthenticated()) || req.user) {
+        return next();
+    }
+    res.status(401).json({ message: "Not authorized" });
+}
