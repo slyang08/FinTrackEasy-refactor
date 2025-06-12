@@ -6,9 +6,7 @@ export default function FormDialog({ open, setOpen, type }) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>
-                        {type === "income" ? "Add Income Entry" : "Add Expense Entry"}
-                    </DialogTitle>
+                    <DialogTitle>{type === "income" ? "Add Income" : "Add Expense"}</DialogTitle>
                 </DialogHeader>
                 <Form setOpen={setOpen} type={type} />
             </DialogContent>

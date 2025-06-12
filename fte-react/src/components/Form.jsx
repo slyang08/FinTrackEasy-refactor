@@ -7,10 +7,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-// TO DO: Hook up Income/Expense API to on submit
 import api from "@/api/axios.js";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Command,
     CommandEmpty,
@@ -29,6 +29,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Select,
     SelectContent,
@@ -41,47 +42,60 @@ import { cn } from "@/lib/utils";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 
-// Form Schema for validation
-const formSchema = z.object({
-    txnName: z.string().max(30).trim(),
-    txnDate: z.coerce.date(),
-    txnCategory: z.string(),
-    txnNote: z.string().max(30, "Note must be 30 characters or fewer").trim().optional(),
-    txnAmount: z.coerce
-        .number({
-            invalid_type_error: "Amount must be a number",
-            required_error: "Amount is required",
-        })
-        .positive("Amount must be positive")
-        .refine((val) => !Number.isNaN(val), { message: "Amount must be a valid number" }),
-    txnRecurring: z.string().optional(),
-});
+// Enforces that if the Category "Other" is chosen, a description must be added
+const formSchema = z
+    .object({
+        txnName: z.string().max(30).trim(),
+        txnDate: z.coerce.date(),
+        txnCategory: z.string(),
+        txnNote: z.string().max(30, "Note must be 30 characters or fewer").trim().optional(),
+        txnAmount: z.coerce
+            .number({
+                invalid_type_error: "Amount must be a number",
+                required_error: "Amount is required",
+            })
+            .positive("Amount must be positive")
+            .refine((val) => !Number.isNaN(val), { message: "Amount must be a valid number" }),
+        txnRecurring: z.boolean().optional(),
+    })
+    .refine((data) => data.txnCategory !== "Other" || !!data.txnNote?.trim(), {
+        message: "Please provide a description for 'Other' category",
+        path: ["txnNote"],
+    });
 
 // Category mapping for combo boxes
 const expenseCategories = [
-    { label: "Groceries", value: "Groceries" },
-    { label: "Gas", value: "Gas" },
-    { label: "Food", value: "Food" },
-    { label: "Bills", value: "Bills" },
-    { label: "Rent", value: "Rent" },
+    { label: "Food & Drink", value: "Food & Drink" },
+    { label: "Car", value: "Car" },
+    { label: "Shopping", value: "Food" },
+    { label: "Bills & Fees", value: "Bills & Fees" },
+    { label: "Home", value: "Home" },
     { label: "Entertainment", value: "Entertainment" },
-    { label: "Utilities", value: "Utilities" },
+    { label: "Travel", value: "Travel" },
+    { label: "Healthcare", value: "Healthcare" },
+    { label: "Family & Personal", value: "Family & Personal" },
+    { label: "Transport", value: "Transport" },
     { label: "Other", value: "Other" },
 ];
 
 const incomeCategories = [
-    { label: "Gift", value: "Gift" },
+    { label: "Gifts", value: "Gifts" },
     { label: "Other", value: "Other" },
-    { label: "Pay", value: "Pay" },
+    { label: "Salary", value: "Salary" },
+    { label: "Extra Income", value: "Extra Income" },
+    { label: "Loan", value: "Loan" },
+    { label: "Parental Leave", value: "Parental Leave" },
+    { label: "Business", value: "Business" },
+    { label: "Insurance Payout", value: "Insurance Payout" },
 ];
 
-// Recurrence mapping
-const recurring = [
-    { label: "None", value: "None" },
-    { label: "Bi-weekly", value: "Bi-weekly" },
-    { label: "Monthly", value: "Monthly" },
-    { label: "Weekly", value: "Weekly" },
-];
+// // Recurrence mapping - deprecated as recurring is now just a checkbox
+// const recurring = [
+//     { label: "None", value: "None" },
+//     { label: "Bi-weekly", value: "Bi-weekly" },
+//     { label: "Monthly", value: "Monthly" },
+//     { label: "Weekly", value: "Weekly" },
+// ];
 
 export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
     const [dropdown] = React.useState("dropdown");
@@ -103,7 +117,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
     React.useEffect(() => {
         if (editingData) {
             form.reset({
-                txnName: editingData.name || "",
+                // txnName: editingData.name || "",
                 txnDate: editingData.date ? new Date(editingData.date) : new Date(),
                 txnCategory: editingData.category || "",
                 txnNote: editingData.description || "",
@@ -116,6 +130,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
     // On submit, show the confirmation dialog with the pending values in the form
     // Coerces the entry in the Amount field to be a number and is formatted in currency in the confirmation dialog component
     const onSubmit = (values) => {
+        console.log("Submitting form with values:", values);
+
         setPendingValues({
             ...values,
             txnAmount: values.txnAmount ? Number(values.txnAmount) : null,
@@ -158,28 +174,76 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         <>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                        console.log("Form validation failed", errors);
+                    })}
                     className="space-y-8 max-w-3xl mx-auto py-10"
                 >
                     <div className="grid grid-cols-12 gap-4">
                         <div className="col-span-6">
                             <FormField
                                 control={form.control}
-                                name="txnName"
+                                name="txnCategory"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Name</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder={
-                                                    type === "expense"
-                                                        ? "e.g. shopping"
-                                                        : "e.g. paycheque"
-                                                }
-                                                className="min-h-0 max-h 10"
-                                                {...field}
-                                            />
-                                        </FormControl>
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Category</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn(
+                                                            "w-full justify-between",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value
+                                                            ? categoryOptions.find(
+                                                                  (l) => l.value === field.value
+                                                              )?.label
+                                                            : "Select category"}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <ScrollArea>
+                                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                                    <Command>
+                                                        <CommandList>
+                                                            <CommandEmpty>
+                                                                No categories found.
+                                                            </CommandEmpty>
+                                                            <CommandGroup>
+                                                                {categoryOptions.map((category) => (
+                                                                    <CommandItem
+                                                                        value={category.label}
+                                                                        key={category.value}
+                                                                        onSelect={() => {
+                                                                            form.setValue(
+                                                                                "txnCategory",
+                                                                                category.value
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4",
+                                                                                category.value ===
+                                                                                    field.value
+                                                                                    ? "opacity-100"
+                                                                                    : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                        {category.label}
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </ScrollArea>
+                                        </Popover>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -233,69 +297,6 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
 
                     <FormField
                         control={form.control}
-                        name="txnCategory"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Category</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                className={cn(
-                                                    "w-full justify-between",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value
-                                                    ? categoryOptions.find(
-                                                          (l) => l.value === field.value
-                                                      )?.label
-                                                    : "Select category"}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                        <Command>
-                                            <CommandList>
-                                                <CommandEmpty>No categories found.</CommandEmpty>
-                                                <CommandGroup>
-                                                    {categoryOptions.map((category) => (
-                                                        <CommandItem
-                                                            value={category.label}
-                                                            key={category.value}
-                                                            onSelect={() => {
-                                                                form.setValue(
-                                                                    "txnCategory",
-                                                                    category.value
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Check
-                                                                className={cn(
-                                                                    "mr-2 h-4 w-4",
-                                                                    category.value === field.value
-                                                                        ? "opacity-100"
-                                                                        : "opacity-0"
-                                                                )}
-                                                            />
-                                                            {category.label}
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
                         name="txnNote"
                         render={({ field }) => (
                             <FormItem>
@@ -316,8 +317,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                             </FormItem>
                         )}
                     />
-                    <div className="grid grid-cols-12 gap-4">
-                        <div className="col-span-6">
+                    <div className="grid grid-cols-12 gap-">
+                        <div className="col-span-5">
                             <FormField
                                 control={form.control}
                                 name="txnAmount"
@@ -325,7 +326,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                     <FormItem>
                                         <FormLabel>Amount</FormLabel>
                                         <FormControl>
-                                            <Textarea className="min-h-0 max-h-10" {...field} />
+                                            <Textarea className="min-h-4 max-h-10" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -333,72 +334,29 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                             />
                         </div>
 
-                        <div className="col-span-6">
+                        <div className="col-span-7">
                             <FormField
                                 control={form.control}
                                 name="txnRecurring"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Recurrence (optional)</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className={cn(
-                                                            "w-full justify-between",
-                                                            !field.value && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {field.value
-                                                            ? recurring.find(
-                                                                  (l) => l.value === field.value
-                                                              )?.label
-                                                            : "Select recurrence"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                                <Command>
-                                                    <CommandList>
-                                                        <CommandEmpty>
-                                                            No interval found.
-                                                        </CommandEmpty>
-                                                        <CommandGroup>
-                                                            {recurring.map((interval) => (
-                                                                <CommandItem
-                                                                    value={interval.label}
-                                                                    key={interval.value}
-                                                                    onSelect={() => {
-                                                                        form.setValue(
-                                                                            "txnRecurring",
-                                                                            interval.value
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4",
-                                                                            interval.value ===
-                                                                                field.value
-                                                                                ? "opacity-100"
-                                                                                : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    {interval.label}
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormDescription>
-                                            Set the time interval between each recurrence.
-                                        </FormDescription>
-                                        <FormMessage />
+                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value ?? false}
+                                                onCheckedChange={(checked) =>
+                                                    field.onChange(checked === true)
+                                                }
+                                            />
+                                        </FormControl>
+                                        <div className="space-y-1 leading-none">
+                                            <FormLabel className="text-sm font-medium">
+                                                Recurrence (optional)
+                                            </FormLabel>
+                                            <FormDescription>
+                                                Select this if the transaction recurs monthly.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </div>
                                     </FormItem>
                                 )}
                             />
@@ -426,7 +384,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                 onConfirm={handleConfirm}
                 actionType="submit"
                 entry={{
-                    name: pendingValues?.txnName,
+                    // name: pendingValues?.txnName,
+                    category: pendingValues?.txnCategory,
                     note: pendingValues?.txnNote,
                     amount: pendingValues?.txnAmount,
                 }}
