@@ -2,35 +2,61 @@
 import Joi from "joi";
 
 const expenseCategories = [
-    "Groceries",
-    "Gas",
+    "Food & Drink",
+    "Shopping",
+    "Transport",
+    "Home",
+    "Bills & Fees",
     "Entertainment",
-    "Bills",
-    "Rent",
-    "Utilities",
-    "Food",
+    "Groceries",
+    "Car",
+    "Travel",
+    "Family & Personal",
+    "Healthcare",
     "Other",
 ];
 
 // Joi schema for expense validation
 export const expenseSchema = Joi.object({
-    name: Joi.string().min(3).required(),
     date: Joi.date().required(),
     category: Joi.string()
         .valid(...expenseCategories)
         .required(),
     amount: Joi.number().min(0).required(),
-    description: Joi.string().optional(),
+    customCategory: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().min(1).required(),
+        otherwise: Joi.forbidden(),
+    }),
+    note: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().trim().min(1).required().messages({
+            "any.required": "Note is required when category is 'Other'",
+            "string.empty": "Note is required when category is 'Other'",
+        }),
+        otherwise: Joi.string().allow("", null).optional(),
+    }),
     isRecurring: Joi.boolean().default(false),
 });
 
 export const updateExpenseSchema = Joi.object({
-    name: Joi.string().min(3).optional(),
     date: Joi.date().optional(),
     category: Joi.string()
         .valid(...expenseCategories)
         .optional(),
     amount: Joi.number().min(0).optional(),
-    description: Joi.string().optional(),
+    customCategory: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().min(1).required(),
+        otherwise: Joi.forbidden(),
+    }),
+    note: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().trim().min(1).required().messages({
+            "any.required": "Note is required when category is 'Other'",
+            "string.empty": "Note is required when category is 'Other'",
+        }),
+        otherwise: Joi.string().allow("", null).optional(),
+    }),
     isRecurring: Joi.boolean().optional(),
 });

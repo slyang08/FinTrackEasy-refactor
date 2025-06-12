@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 import Income from "../models/Income.js";
+import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 
 // Helper: Check for valid MongoDB ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -13,17 +14,21 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  */
 export const createIncome = async (req, res, next) => {
     try {
-        const { name, date, amount, category, description, isRecurring } = req.body;
+        if (!req.account) {
+            return res.status(401).json({ message: "No account found in request" });
+        }
 
-        const income = await Income.create({
-            name,
-            date,
-            amount,
-            category,
-            description,
-            isRecurring,
+        const { error, value } = incomeSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        const incomeData = {
+            ...value,
             account: req.account._id,
-        });
+        };
+
+        const income = await Income.create(incomeData);
         res.status(201).json(income);
     } catch (err) {
         next(err);
@@ -107,10 +112,32 @@ export const updateIncome = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid income ID" });
         }
 
+        const { error, value } = updateIncomeSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        const updateData = { ...value };
+        const unsetData = {};
+
+        if (updateData.category && updateData.category !== "Other") {
+            unsetData.customCategory = "";
+        }
+
+        if ("note" in updateData && (updateData.note === null || updateData.note === "")) {
+            unsetData.note = "";
+            delete updateData.note;
+        }
+
+        const updateObj =
+            Object.keys(unsetData).length > 0
+                ? { $set: updateData, $unset: unsetData }
+                : updateData;
+
         const income = await Income.findOneAndUpdate(
             { _id: req.params.id, account: req.account._id },
-            req.body,
-            { new: true, runValidators: true }
+            updateObj,
+            { new: true, runValidators: true, timestamps: true }
         );
 
         if (!income) return res.status(404).json({ message: "Income not found" });

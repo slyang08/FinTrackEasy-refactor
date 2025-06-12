@@ -18,8 +18,7 @@ export const submitContactForm = async (req, res, next) => {
             "New Contact Us Submission",
             `<p>Name: ${contact.name || ""}<br/>
                 Email: ${contact.email}<br/>
-                Phone: ${contact.phone || ""}<br/>
-                Description: ${contact.description || ""}</p>`
+                Note: ${contact.note || ""}</p>`
         );
         res.status(201).json({ message: "Contact submitted", contact });
     } catch (err) {

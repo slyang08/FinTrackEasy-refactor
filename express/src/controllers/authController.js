@@ -14,7 +14,7 @@ import { generateVerificationToken, verificationContent } from "../utils/verific
  * @access  Public
  */
 export const register = async (req, res) => {
-    const { nickname, email, password, confirmPassword, phone } = req.body;
+    const { nickname, email, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
         return res.status(400).json({ message: "Passwords do not match" });
@@ -29,10 +29,9 @@ export const register = async (req, res) => {
                 return res.status(400).json({ message: "Email already exists" });
             }
             user.nickname = nickname;
-            user.phone = phone;
         } else {
             // New user
-            user = new User({ nickname, email, phone });
+            user = new User({ nickname, email });
             isNewUser = true;
         }
 
