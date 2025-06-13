@@ -14,12 +14,14 @@ import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Terms from "@/pages/Terms";
+import Test from "@/pages/Test";
 import VerifyEmail from "@/pages/VerifyEmail";
 
 // Public page (anyone can see it)
 export const publicRoutes = [
     { path: "/", element: <Home /> },
     { path: "/contact", element: <ContactUs /> },
+    { path: "/test", element: <Test /> },
     { path: "/terms", element: <Terms /> },
     { path: "/verify-email", element: <VerifyEmail /> },
     { path: "/forgotpassword", element: <ForgotPassword /> },
