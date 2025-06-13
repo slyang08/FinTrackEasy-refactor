@@ -9,29 +9,29 @@ import {
     getIncomesByQuery,
     updateIncome,
 } from "../controllers/incomeController.js";
-import { attachAccount, ensureAuthenticated } from "../middlewares/authMiddleware.js";
-import validate from "../middlewares/validate.js";
+import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { validateBody, validateQuery } from "../middlewares/validate.js";
 import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 import { incomeQuerySchema } from "../validations/queryValidation.js";
 
 const router = express.Router();
 
-router.use(ensureAuthenticated, attachAccount);
+router.use(optionalJwt, authAny, attachAccount);
 
 // POST create income
-router.post("/", validate(incomeSchema), createIncome);
+router.post("/", validateBody(incomeSchema), createIncome);
 
 // GET Get all income based on account ID
 router.get("/", getIncomes);
 
 // GET to get filtered revenue (filtered by category and time range)
-router.get("/filter", validate(incomeQuerySchema, "query"), getIncomesByQuery);
+router.get("/filter", validateQuery(incomeQuerySchema), getIncomesByQuery);
 
 // GET Get a single income based on income ID
 router.get("/:id", getIncome);
 
 // PATCH update income
-router.patch("/:id", validate(updateIncomeSchema), updateIncome);
+router.patch("/:id", validateBody(updateIncomeSchema), updateIncome);
 
 // DELETE delete income
 router.delete("/:id", deleteIncome);

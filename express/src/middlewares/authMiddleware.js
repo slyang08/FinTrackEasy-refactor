@@ -84,6 +84,12 @@ export async function attachAccount(req, res, next) {
                 });
             }
             req.account = account;
+        } else if (req.userId && !req.account) {
+            let account = await Account.findById(req.accountId);
+            if (!account) {
+                return res.status(401).json({ message: "Account not found" });
+            }
+            req.account = account;
         }
         next();
     } catch (err) {

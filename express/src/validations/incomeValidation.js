@@ -1,27 +1,58 @@
 // src/validations/incomeValidation.js
 import Joi from "joi";
 
-const incomeCategories = ["Pay", "Gift", "Other"];
+const incomeCategories = [
+    "Salary",
+    "Business",
+    "Gift",
+    "Extra Income",
+    "Loan",
+    "Parental Leave",
+    "Insurance Payout",
+    "Other",
+];
 
 // Joi schema for income validation
 export const incomeSchema = Joi.object({
-    name: Joi.string().min(3).required(),
     date: Joi.date().required(),
     category: Joi.string()
         .valid(...incomeCategories)
         .required(),
     amount: Joi.number().min(0).required(),
-    description: Joi.string().optional(),
+    customCategory: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().min(1).required(),
+        otherwise: Joi.forbidden(),
+    }),
+    note: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().trim().min(1).required().messages({
+            "any.required": "Note is required when category is 'Other'",
+            "string.empty": "Note is required when category is 'Other'",
+        }),
+        otherwise: Joi.string().allow("", null).optional(),
+    }),
     isRecurring: Joi.boolean().default(false),
 });
 
 export const updateIncomeSchema = Joi.object({
-    name: Joi.string().min(3).optional(),
     date: Joi.date().optional(),
     category: Joi.string()
         .valid(...incomeCategories)
         .optional(),
     amount: Joi.number().min(0).optional(),
-    description: Joi.string().optional(),
+    customCategory: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().min(1).required(),
+        otherwise: Joi.forbidden(),
+    }),
+    note: Joi.string().when("category", {
+        is: "Other",
+        then: Joi.string().trim().min(1).required().messages({
+            "any.required": "Note is required when category is 'Other'",
+            "string.empty": "Note is required when category is 'Other'",
+        }),
+        otherwise: Joi.string().allow("", null).optional(),
+    }),
     isRecurring: Joi.boolean().optional(),
 });

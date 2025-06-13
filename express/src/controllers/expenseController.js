@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 import Expense from "../models/Expense.js";
+import { expenseSchema, updateExpenseSchema } from "../validations/expenseValidation.js";
 
 // Helper: Check for valid MongoDB ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -13,17 +14,18 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  */
 export const createExpense = async (req, res, next) => {
     try {
-        const { name, date, amount, category, description, isRecurring } = req.body;
+        const { error, value } = expenseSchema.validate(req.body, { abortEarly: false });
 
-        const expense = await Expense.create({
-            name,
-            date,
-            amount,
-            category,
-            description,
-            isRecurring,
+        if (error) {
+            return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        const expenseData = {
+            ...value,
             account: req.account._id,
-        });
+        };
+
+        const expense = await Expense.create(expenseData);
         res.status(201).json(expense);
     } catch (err) {
         next(err);
@@ -107,10 +109,33 @@ export const updateExpense = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid expense ID" });
         }
 
+        const { error, value } = updateExpenseSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        const updateData = { ...value };
+        const unsetData = {};
+
+        if (updateData.category && updateData.category !== "Other") {
+            unsetData.customCategory = "";
+        }
+
+        if ("note" in updateData && (updateData.note === null || updateData.note === "")) {
+            unsetData.note = "";
+            delete updateData.note;
+        }
+
+        // Combine the update commands
+        const updateObj =
+            Object.keys(unsetData).length > 0
+                ? { $set: updateData, $unset: unsetData }
+                : updateData;
+
         const expense = await Expense.findOneAndUpdate(
             { _id: req.params.id, account: req.account._id },
-            req.body,
-            { new: true, runValidators: true }
+            updateObj,
+            { new: true, runValidators: true, timestamps: true }
         );
 
         if (!expense) return res.status(404).json({ message: "Expense not found" });

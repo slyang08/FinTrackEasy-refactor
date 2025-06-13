@@ -9,16 +9,37 @@ const incomeSchema = new mongoose.Schema(
             required: true,
             index: true,
         },
-        name: { type: String, required: true, minlength: 3 },
         date: { type: Date, default: Date.now, index: true },
         category: {
             type: String,
-            enum: ["Pay", "Gift", "Other"],
+            enum: [
+                "Salary",
+                "Business",
+                "Gift",
+                "Extra Income",
+                "Loan",
+                "Parental Leave",
+                "Insurance Payout",
+                "Other",
+            ],
             required: true,
             index: true,
         },
+        customCategory: {
+            type: String,
+            trim: true,
+            required: function () {
+                return this.category === "Other";
+            },
+        },
         amount: { type: Number, required: true, min: 0 },
-        description: { type: String, default: "", trim: true },
+        note: {
+            type: String,
+            trim: true,
+            required: function () {
+                return this.category === "Other";
+            },
+        },
         isRecurring: { type: Boolean, default: false },
     },
     { timestamps: true }
