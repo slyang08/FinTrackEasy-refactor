@@ -45,7 +45,6 @@ import ConfirmationDialog from "./ConfirmationDialog";
 // Enforces that if the Category "Other" is chosen, a description must be added
 const formSchema = z
     .object({
-        txnName: z.string().max(30).trim(),
         txnDate: z.coerce.date(),
         txnCategory: z.string(),
         txnNote: z.string().max(30, "Note must be 30 characters or fewer").trim().optional(),
@@ -79,7 +78,7 @@ const expenseCategories = [
 ];
 
 const incomeCategories = [
-    { label: "Gifts", value: "Gifts" },
+    { label: "Gift", value: "Gift" },
     { label: "Other", value: "Other" },
     { label: "Salary", value: "Salary" },
     { label: "Extra Income", value: "Extra Income" },
@@ -117,7 +116,6 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
     React.useEffect(() => {
         if (editingData) {
             form.reset({
-                // txnName: editingData.name || "",
                 txnDate: editingData.date ? new Date(editingData.date) : new Date(),
                 txnCategory: editingData.category || "",
                 txnNote: editingData.description || "",
@@ -132,26 +130,39 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
     const onSubmit = (values) => {
         console.log("Submitting form with values:", values);
 
+        // Convert txnDate to ISO format
+        const formattedDate = new Date(values.txnDate).toISOString();
+
+        // Ensure txnNote is properly reset to undefined if it's empty
+        const txnNote2 = values.txnNote?.trim() === "" ? undefined : values.txnNote;
+
         setPendingValues({
             ...values,
-            txnAmount: values.txnAmount ? Number(values.txnAmount) : null,
+            txnNote: txnNote2,
+            txnDate: formattedDate,
+            txnAmount: values.txnAmount ? Number(values.txnAmount) : null, // Ensure txnAmount is a number
         });
+
         setShowConfirm(true);
     };
 
     // Calls appropriate API for creating or updating depending on if an editID is passed in
     const handleConfirm = async () => {
+        console.log("Payload being submitted:", pendingValues);
+
         try {
             const endpoint = type === "income" ? "/incomes" : "/expenses";
             const payload = {
-                name: pendingValues.txnName,
                 date: pendingValues.txnDate || undefined,
                 amount: pendingValues.txnAmount,
                 category: pendingValues.txnCategory,
-                description: pendingValues.txnNote,
+                note: pendingValues.txnNote,
+                //description: pendingValues.txnNote,
                 isRecurring:
                     pendingValues.txnRecurring === "None" ? null : pendingValues.txnRecurring,
             };
+
+            console.log("Payload:", payload);
 
             if (editingId) {
                 await api.patch(`${endpoint}/${editingId}`, payload);
@@ -384,7 +395,6 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                 onConfirm={handleConfirm}
                 actionType="submit"
                 entry={{
-                    // name: pendingValues?.txnName,
                     category: pendingValues?.txnCategory,
                     note: pendingValues?.txnNote,
                     amount: pendingValues?.txnAmount,

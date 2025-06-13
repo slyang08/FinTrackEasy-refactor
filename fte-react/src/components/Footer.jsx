@@ -12,7 +12,7 @@ export default function Footer() {
                 Contact Us
             </Link>
 
-            <text className="text-white font-bold text-2xl">&#169;2025 FinTrackEasy</text>
+            <span className="text-white font-bold text-2xl">&#169;2025 FinTrackEasy</span>
 
             <div>
                 <Link to={"https://www.facebook.com/"}>
