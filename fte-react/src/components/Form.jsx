@@ -28,6 +28,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -42,7 +43,7 @@ import { cn } from "@/lib/utils";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 
-// Enforces that if the Category "Other" is chosen, a description must be added
+// Enforces that if the Category "Other" is chosen, a Custom Category must be addeds
 const formSchema = z
     .object({
         txnDate: z.coerce.date(),
@@ -56,17 +57,27 @@ const formSchema = z
             .positive("Amount must be positive")
             .refine((val) => !Number.isNaN(val), { message: "Amount must be a valid number" }),
         txnRecurring: z.boolean().optional(),
+        txnCustomCategory: z
+            .string()
+            .max(20, "Custom category must be 20 characters or fewer")
+            .trim()
+            .optional(),
     })
-    .refine((data) => data.txnCategory !== "Other" || !!data.txnNote?.trim(), {
-        message: "Please provide a description for 'Other' category",
-        path: ["txnNote"],
-    });
+    .refine(
+        (data) => {
+            return data.txnCategory !== "Other" || !!data.txnCustomCategory?.trim();
+        },
+        {
+            message: "Please provide a custom category name",
+            path: ["txnCustomCategory"],
+        }
+    );
 
 // Category mapping for combo boxes
 const expenseCategories = [
     { label: "Food & Drink", value: "Food & Drink" },
     { label: "Car", value: "Car" },
-    { label: "Shopping", value: "Food" },
+    { label: "Shopping", value: "Shopping" },
     { label: "Bills & Fees", value: "Bills & Fees" },
     { label: "Home", value: "Home" },
     { label: "Entertainment", value: "Entertainment" },
@@ -121,6 +132,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                 txnNote: editingData.description || "",
                 txnAmount: editingData.amount || "",
                 txnRecurring: editingData.isRecurring ? editingData.isRecurring : undefined,
+                txnCustomCategory:
+                    editingData.category === "Other" ? editingData.customCategory || "" : "",
             });
         }
     }, [editingData, form]);
@@ -146,20 +159,27 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         setShowConfirm(true);
     };
 
+    // Watch for the "Other" category being selected to pop up the Custom Category
+    const selectedCategory = form.watch("txnCategory");
+
     // Calls appropriate API for creating or updating depending on if an editID is passed in
     const handleConfirm = async () => {
         console.log("Payload being submitted:", pendingValues);
 
         try {
             const endpoint = type === "income" ? "/incomes" : "/expenses";
+
             const payload = {
                 date: pendingValues.txnDate || undefined,
                 amount: pendingValues.txnAmount,
                 category: pendingValues.txnCategory,
                 note: pendingValues.txnNote,
-                //description: pendingValues.txnNote,
                 isRecurring:
                     pendingValues.txnRecurring === "None" ? null : pendingValues.txnRecurring,
+                // include customCategory only if category is Other
+                ...(pendingValues.txnCategory === "Other" && {
+                    customCategory: pendingValues.txnCustomCategory,
+                }),
             };
 
             console.log("Payload:", payload);
@@ -255,6 +275,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                                 </PopoverContent>
                                             </ScrollArea>
                                         </Popover>
+
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -305,6 +326,27 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                             />
                         </div>
                     </div>
+
+                    {selectedCategory === "Other" && (
+                        <div className="col-span-6 mt-2">
+                            <FormField
+                                control={form.control}
+                                name="txnCustomCategory"
+                                render={({ field }) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Custom Category</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} placeholder="" />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Required when "Other" is selected.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    )}
 
                     <FormField
                         control={form.control}
