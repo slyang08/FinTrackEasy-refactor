@@ -31,9 +31,12 @@ export default function Overview() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
+
+    // Default date range to today
+    const today = new Date();
     const [dateRange, setDateRange] = useState({
-        from: new Date(),
-        to: new Date(),
+        from: today,
+        to: today,
     });
 
     // Debug
