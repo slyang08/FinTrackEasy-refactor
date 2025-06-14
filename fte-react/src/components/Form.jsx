@@ -118,7 +118,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
             form.reset({
                 txnDate: editingData.date ? new Date(editingData.date) : new Date(),
                 txnCategory: editingData.category || "",
-                txnNote: editingData.description || "",
+                txnNote: editingData.note || "",
                 txnAmount: editingData.amount || "",
                 txnRecurring: editingData.isRecurring ? editingData.isRecurring : undefined,
             });

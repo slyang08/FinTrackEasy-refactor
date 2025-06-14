@@ -18,12 +18,14 @@ import Test from "@/pages/Test";
 import VerifyEmail from "@/pages/VerifyEmail";
 
 import Overview from "../pages/Overview";
+import Test2 from "../pages/Test2";
 
 // Public page (anyone can see it)
 export const publicRoutes = [
     { path: "/", element: <Home /> },
     { path: "/contact", element: <ContactUs /> },
     { path: "/test", element: <Test /> },
+    { path: "/test2", element: <Test2 /> },
     { path: "/terms", element: <Terms /> },
     { path: "/verify-email", element: <VerifyEmail /> },
     { path: "/forgotpassword", element: <ForgotPassword /> },
