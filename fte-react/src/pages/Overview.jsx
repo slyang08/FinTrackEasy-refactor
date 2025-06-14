@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     CartesianGrid,
     Legend,
@@ -8,6 +9,11 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+
+import FormDialog from "@/components/FormDialog";
+import { Button } from "@/components/ui/button";
+
+import CategoryFilter from "../components/CategoryFilter";
 
 export default function Overview() {
     const incomeData = [
@@ -24,18 +30,36 @@ export default function Overview() {
         { date: "Jun 30", food: 180, drink: 120 },
     ];
 
+    const [open, setOpen] = useState(false);
+    const [type, setType] = useState(null);
+
+    const openDialog = (entryType) => {
+        setType(entryType);
+        setOpen(true);
+    };
+
     return (
         <div className="p-6">
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Top Controls */}
                 <div className="flex flex-wrap gap-4 items-center justify-between">
                     <div className="flex gap-2">
-                        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl">
+                        <Button
+                            variant="income"
+                            className="flex-1"
+                            onClick={() => openDialog("income")}
+                        >
                             Add Income
-                        </button>
-                        <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl">
+                        </Button>
+                        <Button
+                            variant="expense"
+                            className="flex-1"
+                            onClick={() => openDialog("expense")}
+                        >
                             Add Expense
-                        </button>
+                        </Button>
+
+                        <FormDialog open={open} setOpen={setOpen} type={type} />
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -46,9 +70,9 @@ export default function Overview() {
                         <button className="border border-black px-3 py-2 rounded">❯</button>
                     </div>
 
-                    <button className="border border-black px-4 py-2 rounded-xl">
-                        Filter by Categories ▾
-                    </button>
+                    <div className="flex items-center">
+                        <CategoryFilter className="w-full"></CategoryFilter>
+                    </div>
                 </div>
 
                 {/* Summary Cards */}

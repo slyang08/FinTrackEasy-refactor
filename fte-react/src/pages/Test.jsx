@@ -3,6 +3,7 @@ import { useState } from "react";
 import FormDialog from "@/components/FormDialog";
 import { Button } from "@/components/ui/button";
 
+import CategoryFilter from "../components/CategoryFilter";
 export default function Test() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null); // 'income' or 'expense'
@@ -16,7 +17,7 @@ export default function Test() {
         <div>
             <Button onClick={() => openDialog("income")}>Add Income</Button>
             <Button onClick={() => openDialog("expense")}>Add Expense</Button>
-
+            <CategoryFilter></CategoryFilter>
             <FormDialog open={open} setOpen={setOpen} type={type} />
         </div>
     );
