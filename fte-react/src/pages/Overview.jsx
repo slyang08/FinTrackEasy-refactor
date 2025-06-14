@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import {
     CartesianGrid,
     Legend,
@@ -10,12 +11,77 @@ import {
     YAxis,
 } from "recharts";
 
-import FormDialog from "@/components/FormDialog";
+import api from "@/api/axios";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
+import TransactionForm from "@/components/Form";
 import { Button } from "@/components/ui/button";
-
-import CategoryFilter from "../components/CategoryFilter";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function Overview() {
+    const [open, setOpen] = useState(false);
+    const [type, setType] = useState(null);
+    const [transactions, setTransactions] = useState([]);
+    const [editingData, setEditingData] = useState(null);
+    const [editingId, setEditingId] = useState(null);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [selectedDelete, setSelectedDelete] = useState(null);
+
+    const fetchTransactions = async () => {
+        try {
+            const [incomeRes, expenseRes] = await Promise.all([
+                api.get("/incomes"),
+                api.get("/expenses"),
+            ]);
+            const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+            const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            setTransactions(
+                [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
+            );
+        } catch (err) {
+            console.error("Error fetching transactions:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchTransactions();
+    }, []);
+
+    const openDialog = (entryType) => {
+        setType(entryType);
+        setOpen(true);
+    };
+
+    const handleEdit = (txn) => {
+        setEditingData(txn);
+        setEditingId(txn._id);
+        setType(txn.type);
+        setOpen(true);
+    };
+
+    const handleDelete = (txn) => {
+        setSelectedDelete(txn);
+        setConfirmDelete(true);
+    };
+
+    const confirmDeleteEntry = async () => {
+        try {
+            const endpoint = selectedDelete.type === "income" ? "/incomes" : "/expenses";
+            await api.delete(`${endpoint}/${selectedDelete._id}`);
+            setConfirmDelete(false);
+            setSelectedDelete(null);
+            fetchTransactions();
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    };
+
+    const handleFormClose = () => {
+        setOpen(false);
+        setEditingData(null);
+        setEditingId(null);
+        fetchTransactions();
+    };
+
     const incomeData = [
         { date: "Jun 01", salary: 500, other: 100 },
         { date: "Jun 10", salary: 700, other: 200 },
@@ -30,36 +96,18 @@ export default function Overview() {
         { date: "Jun 30", food: 180, drink: 120 },
     ];
 
-    const [open, setOpen] = useState(false);
-    const [type, setType] = useState(null);
-
-    const openDialog = (entryType) => {
-        setType(entryType);
-        setOpen(true);
-    };
-
     return (
         <div className="p-6">
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Top Controls */}
                 <div className="flex flex-wrap gap-4 items-center justify-between">
                     <div className="flex gap-2">
-                        <Button
-                            variant="income"
-                            className="flex-1"
-                            onClick={() => openDialog("income")}
-                        >
+                        <Button variant="income" onClick={() => openDialog("income")}>
                             Add Income
                         </Button>
-                        <Button
-                            variant="expense"
-                            className="flex-1"
-                            onClick={() => openDialog("expense")}
-                        >
+                        <Button variant="expense" onClick={() => openDialog("expense")}>
                             Add Expense
                         </Button>
-
-                        <FormDialog open={open} setOpen={setOpen} type={type} />
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -70,9 +118,9 @@ export default function Overview() {
                         <button className="border border-black px-3 py-2 rounded">❯</button>
                     </div>
 
-                    <div className="flex items-center">
-                        <CategoryFilter className="w-full"></CategoryFilter>
-                    </div>
+                    <button className="border border-black px-4 py-2 rounded-xl">
+                        Filter by Categories ▾
+                    </button>
                 </div>
 
                 {/* Summary Cards */}
@@ -146,34 +194,57 @@ export default function Overview() {
                 {/* Transactions + Budgets */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
-                        <div>
-                            <p className="text-sm font-semibold">June 02, 2025</p>
-                            <div className="text-sm">+500.00 CAD</div>
-                            <ul className="text-sm space-y-1">
-                                <li className="flex justify-between">
-                                    <span>Extra Income</span>
-                                    <span className="text-green-600">+100.00 CAD</span>
-                                </li>
-                                <li className="flex justify-between">
-                                    <span>Salary</span>
-                                    <span className="text-green-600">+500.00 CAD</span>
-                                </li>
-                                <li className="flex justify-between">
-                                    <span>Food & Drink</span>
-                                    <span className="text-red-600">-100.00 CAD</span>
-                                </li>
+                        <p className="font-semibold">Recent Transactions</p>
+
+                        {transactions.length === 0 ? (
+                            <div className="text-center text-gray-500 italic py-8">
+                                No transactions available. Please add income or expenses to get
+                                started.
+                            </div>
+                        ) : (
+                            <ul className="text-sm space-y-2">
+                                {transactions.map((txn) => (
+                                    <li
+                                        key={txn._id}
+                                        className="flex justify-between items-center border-b pb-1"
+                                    >
+                                        <div>
+                                            <p className="font-medium">{txn.category}</p>
+                                            <p className="text-xs text-gray-500">
+                                                {format(new Date(txn.date), "PPP")}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span
+                                                className={
+                                                    txn.type === "income"
+                                                        ? "text-green-600"
+                                                        : "text-red-600"
+                                                }
+                                            >
+                                                {txn.type === "income" ? "+" : "-"}$
+                                                {Number(txn.amount).toFixed(2)}
+                                            </span>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="bg-yellow-300 hover:bg-yellow-400 text-black"
+                                                onClick={() => handleEdit(txn)}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => handleDelete(txn)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
-                        </div>
-                        <div>
-                            <p className="text-sm font-semibold">June 01, 2025</p>
-                            <div className="text-sm">+500.00 CAD</div>
-                            <ul className="text-sm space-y-1">
-                                <li className="flex justify-between">
-                                    <span>Salary</span>
-                                    <span className="text-green-600">+500.00 CAD</span>
-                                </li>
-                            </ul>
-                        </div>
+                        )}
                     </div>
 
                     <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
@@ -197,8 +268,32 @@ export default function Overview() {
                             </div>
                         </div>
                     </div>
+
+                    <ConfirmationDialog
+                        open={confirmDelete}
+                        setOpen={setConfirmDelete}
+                        onConfirm={confirmDeleteEntry}
+                        actionType="delete"
+                        entry={{
+                            name: selectedDelete?.category,
+                            note: selectedDelete?.note,
+                            amount: selectedDelete?.amount,
+                        }}
+                    />
                 </div>
             </div>
+
+            {/* Edit / Add Transaction Form Modal */}
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="max-w-2xl">
+                    <TransactionForm
+                        type={type}
+                        setOpen={handleFormClose}
+                        editingId={editingId}
+                        editingData={editingData}
+                    />
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
