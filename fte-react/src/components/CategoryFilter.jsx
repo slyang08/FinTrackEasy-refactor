@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
+// TO DO: Hook up backend route to api/categories
 // Categories for mapping, maybe dynamimcally load from user's expenses and incomes in the future
 const expenseCategories = [
     { label: "Food & Drink", value: "Food & Drink" },
@@ -33,6 +34,28 @@ const incomeCategories = [
 ];
 
 export default function CategoryFilter({ selectedCategories = [], onChange }) {
+    //     const [incomeCategories, setIncomeCategories] = useState([]);
+    //     const [expenseCategories, setExpenseCategories] = useState([]);
+    //     const [loading, setLoading] = useState(false);
+    //     const [error, setError] = useState(null);
+
+    //   React.useEffect(() => {
+    //     async function fetchCategories() {
+    //       setLoading(true);
+    //       try {
+    //         const res = await api.get("/categories");
+    //         setIncomeCategories(res.data.income || []);
+    //         setExpenseCategories(res.data.expense || []);
+    //       } catch (err) {
+    //         setError("Failed to load categories");
+    //       } finally {
+    //         setLoading(false);
+    //       }
+    //     }
+
+    //     fetchCategories();
+    //   }, []);
+
     const toggleCategory = (value) => {
         if (!onChange) return;
         if (selectedCategories.includes(value)) {
