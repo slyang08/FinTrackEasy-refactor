@@ -17,6 +17,9 @@ import TransactionForm from "@/components/Form";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
+import CategoryFilter from "../components/CategoryFilter";
+import TransactionDateFilter from "../components/TransactionDateFilter";
+
 export default function Overview() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null);
@@ -111,11 +114,7 @@ export default function Overview() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button className="border border-black px-3 py-2 rounded">❮</button>
-                        <span className="px-4 py-2 border border-black rounded-xl font-medium">
-                            Jun 01, 2025 – Jun 30, 2025
-                        </span>
-                        <button className="border border-black px-3 py-2 rounded">❯</button>
+                        <TransactionDateFilter className="w-full"></TransactionDateFilter>
                     </div>
 
                     <button className="border border-black px-4 py-2 rounded-xl">

@@ -4,6 +4,7 @@ import FormDialog from "@/components/FormDialog";
 import { Button } from "@/components/ui/button";
 
 import CategoryFilter from "../components/CategoryFilter";
+import TransactionDateFilter from "../components/TransactionDateFilter";
 export default function Test() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null); // 'income' or 'expense'
@@ -18,6 +19,7 @@ export default function Test() {
             <Button onClick={() => openDialog("income")}>Add Income</Button>
             <Button onClick={() => openDialog("expense")}>Add Expense</Button>
             <CategoryFilter></CategoryFilter>
+            <TransactionDateFilter></TransactionDateFilter>
             <FormDialog open={open} setOpen={setOpen} type={type} />
         </div>
     );
