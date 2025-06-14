@@ -10,6 +10,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { toast } from "sonner";
 
 import api from "@/api/axios";
 // TO DO: Install Hook for fetching income/expense by filter
@@ -110,8 +111,9 @@ export default function Overview() {
             setConfirmDelete(false);
             setSelectedDelete(null);
             fetchTransactions();
+            toast.success("Entry deleted successfully");
         } catch (err) {
-            console.error("Delete failed:", err);
+            toast.error("Failed to delete entry");
         }
     };
 
