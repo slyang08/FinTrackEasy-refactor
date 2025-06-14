@@ -17,6 +17,8 @@ import Terms from "@/pages/Terms";
 import Test from "@/pages/Test";
 import VerifyEmail from "@/pages/VerifyEmail";
 
+import Overview from "../pages/Overview";
+
 // Public page (anyone can see it)
 export const publicRoutes = [
     { path: "/", element: <Home /> },
@@ -64,6 +66,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <ChangePassword />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/overview",
+        element: (
+            <ProtectedRoute>
+                <Overview />
             </ProtectedRoute>
         ),
     },
