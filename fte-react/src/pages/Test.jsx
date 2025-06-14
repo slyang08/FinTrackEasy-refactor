@@ -1,26 +1,41 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import FormDialog from "@/components/FormDialog";
-import { Button } from "@/components/ui/button";
+import api from "@/api/axios.js";
 
-import CategoryFilter from "../components/CategoryFilter";
-import TransactionDateFilter from "../components/TransactionDateFilter";
 export default function Test() {
-    const [open, setOpen] = useState(false);
-    const [type, setType] = useState(null); // 'income' or 'expense'
+    const [transactions, setTransactions] = useState([]);
 
-    const openDialog = (entryType) => {
-        setType(entryType);
-        setOpen(true);
+    const fetchFilteredTransactions = async ({ year, month, category }) => {
+        try {
+            const params = {};
+            if (year) params.year = Number(year); // Convert to number if it's a string
+            if (month) params.month = Number(month);
+            if (category) params.category = category;
+
+            const [incomeRes, expenseRes] = await Promise.all([
+                api.get("/incomes/filter", { params }),
+                api.get("/expenses/filter", { params }),
+            ]);
+
+            const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+            const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+
+            setTransactions(
+                [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
+            );
+        } catch (err) {
+            console.error("Error fetching filtered transactions:", err);
+        }
     };
+
+    useEffect(() => {
+        fetchFilteredTransactions({}); // ✅ no filters, but valid destructuring
+    }, []);
 
     return (
         <div>
-            <Button onClick={() => openDialog("income")}>Add Income</Button>
-            <Button onClick={() => openDialog("expense")}>Add Expense</Button>
-            <CategoryFilter></CategoryFilter>
-            <TransactionDateFilter></TransactionDateFilter>
-            <FormDialog open={open} setOpen={setOpen} type={type} />
+            <h1>Filtered Transactions</h1>
+            <pre>{JSON.stringify(transactions, null, 2)}</pre>
         </div>
     );
 }

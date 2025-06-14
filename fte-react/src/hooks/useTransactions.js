@@ -28,21 +28,33 @@ const incomeCategoriesList = [
     "Other",
 ];
 
-function dateRangeToQueryParams(range) {
+// function dateRangeToQueryParams(range) {
+//     if (!range?.from) return "";
+//     const params = new URLSearchParams();
+
+//     if (range.from) {
+//         params.append("from", range.from.toISOString());
+//     }
+//     if (range.to) {
+//         params.append("to", range.to.toISOString());
+//     }
+
+//     return params.toString();
+// }
+
+function dateRangeToYearMonthParams(range) {
     if (!range?.from) return "";
     const params = new URLSearchParams();
 
     if (range.from) {
-        params.append("from", range.from.toISOString());
-    }
-    if (range.to) {
-        params.append("to", range.to.toISOString());
+        params.append("year", range.from.getFullYear());
+        params.append("month", range.from.getMonth() + 1);
     }
 
     return params.toString();
 }
 
-function useTransactions(dateRange, categories = [], refreshCounter = 0) {
+function useTransactions(dateRange, categories = []) {
     const [incomes, setIncomes] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -56,26 +68,27 @@ function useTransactions(dateRange, categories = [], refreshCounter = 0) {
             setError(null);
 
             try {
-                const dateParams = dateRangeToQueryParams(dateRange);
+                // const dateParams = dateRangeToQueryParams(dateRange);
+                const dateParams = dateRangeToYearMonthParams(dateRange);
 
                 // Split categories by type
-                const incomeCats = categories.filter((cat) => incomeCategoriesList.includes(cat));
-                const expenseCats = categories.filter((cat) => expenseCategoriesList.includes(cat));
+                // const incomeCats = categories.filter((cat) => incomeCategoriesList.includes(cat));
+                // const expenseCats = categories.filter((cat) => expenseCategoriesList.includes(cat));
 
                 // Build separate query params for incomes and expenses
                 const incomeParams = new URLSearchParams(dateParams);
-                if (incomeCats.length > 0) {
-                    incomeParams.append("category", incomeCats.join(","));
-                }
+                // if (incomeCats.length > 0) {
+                //     incomeParams.append("category", incomeCats.join(","));
+                // }
 
                 const expenseParams = new URLSearchParams(dateParams);
-                if (expenseCats.length > 0) {
-                    expenseParams.append("category", expenseCats.join(","));
-                }
+                // if (expenseCats.length > 0) {
+                //     expenseParams.append("category", expenseCats.join(","));
+                // }
 
                 const [incomeRes, expenseRes] = await Promise.all([
-                    axios.get(`/api/incomes?${incomeParams.toString()}`),
-                    axios.get(`/api/expenses?${expenseParams.toString()}`),
+                    axios.get(`/api/incomes/filter?${incomeParams.toString()}`),
+                    axios.get(`/api/expenses/filter?${expenseParams.toString()}`),
                 ]);
 
                 setIncomes(incomeRes.data);
@@ -91,7 +104,7 @@ function useTransactions(dateRange, categories = [], refreshCounter = 0) {
         }
 
         fetchData();
-    }, [dateRange, categories, refreshCounter]);
+    }, [dateRange, categories]); // removed refreshCounter here
 
     return { incomes, expenses, loading, error };
 }
