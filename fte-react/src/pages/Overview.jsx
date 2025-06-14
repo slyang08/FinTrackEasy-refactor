@@ -71,6 +71,21 @@ export default function Overview() {
         fetchTransactions();
     }, []);
 
+    // Calculate totals (filtering by type)
+    const totalIncome = transactions
+        .filter((txn) => txn.type === "income")
+        // Uncomment when date filtering is fixed
+        //.filter((txn) => new Date(txn.date) >= dateRange.from && new Date(txn.date) <= dateRange.to)
+        .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    const totalExpenses = transactions
+        .filter((txn) => txn.type === "expense")
+        // Uncomment when date filtering is fixed
+        //.filter((txn) => new Date(txn.date) >= dateRange.from && new Date(txn.date) <= dateRange.to)
+        .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    const balance = totalIncome - totalExpenses;
+
     const openDialog = (entryType) => {
         setType(entryType);
         setOpen(true);
@@ -147,15 +162,20 @@ export default function Overview() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-white shadow rounded p-4 border border-black">
                         <p className="text-sm">Current Balance</p>
-                        <p className="text-green-600 font-bold">+1,000.00 CAD</p>
+                        <p
+                            className={`font-bold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}
+                        >
+                            {balance >= 0 ? "+" : "-"}
+                            {Math.abs(balance).toFixed(2)} CAD
+                        </p>
                     </div>
                     <div className="bg-white shadow rounded p-4 border border-black">
                         <p className="text-sm">Total Period Expenses</p>
-                        <p className="text-red-600 font-bold">-500.00 CAD</p>
+                        <p className="text-red-600 font-bold">-{totalExpenses.toFixed(2)} CAD</p>
                     </div>
                     <div className="bg-white shadow rounded p-4 border border-black">
                         <p className="text-sm">Total Period Income</p>
-                        <p className="text-green-600 font-bold">+1,500.00 CAD</p>
+                        <p className="text-green-600 font-bold">+{totalIncome.toFixed(2)} CAD</p>
                     </div>
                 </div>
 
