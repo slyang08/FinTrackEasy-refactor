@@ -1,8 +1,6 @@
 // TO DO: add api functionality
 // import api from "@/api/axios.js";
 
-import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -34,13 +32,14 @@ const incomeCategories = [
     { label: "Other", value: "Other" },
 ];
 
-export default function CategoryFilter() {
-    const [selectedCategories, setSelectedCategories] = useState([]);
-
+export default function CategoryFilter({ selectedCategories = [], onChange }) {
     const toggleCategory = (value) => {
-        setSelectedCategories((prev) =>
-            prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-        );
+        if (!onChange) return;
+        if (selectedCategories.includes(value)) {
+            onChange(selectedCategories.filter((v) => v !== value));
+        } else {
+            onChange([...selectedCategories, value]);
+        }
     };
 
     return (

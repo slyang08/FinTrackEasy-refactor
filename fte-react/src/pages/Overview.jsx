@@ -12,6 +12,8 @@ import {
 } from "recharts";
 
 import api from "@/api/axios";
+// TO DO: Install Hook for fetching income/expense by filter
+//import useTransactions from "../hooks/useTransactions";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import TransactionForm from "@/components/Form";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,23 @@ export default function Overview() {
     const [editingId, setEditingId] = useState(null);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [dateRange, setDateRange] = useState({
+        from: new Date(),
+        to: new Date(),
+    });
+
+    // Debug
+    useEffect(() => {
+        console.log("Selected categories updated:", selectedCategories);
+    }, [selectedCategories]);
+
+    useEffect(() => {
+        console.log("Date range updated:", {
+            from: dateRange.from.toISOString(),
+            to: dateRange.to.toISOString(),
+        });
+    }, [dateRange]);
 
     const fetchTransactions = async () => {
         try {
@@ -112,14 +131,13 @@ export default function Overview() {
                             Add Expense
                         </Button>
                     </div>
-
                     <div className="flex items-center gap-2">
-                        <TransactionDateFilter className="w-full"></TransactionDateFilter>
+                        <TransactionDateFilter dateRange={dateRange} onChange={setDateRange} />
                     </div>
-
-                    <button className="border border-black px-4 py-2 rounded-xl">
-                        Filter by Categories ▾
-                    </button>
+                    <CategoryFilter
+                        selectedCategories={selectedCategories}
+                        onChange={setSelectedCategories}
+                    ></CategoryFilter>{" "}
                 </div>
 
                 {/* Summary Cards */}
