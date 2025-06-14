@@ -90,13 +90,13 @@ const expenseCategories = [
 
 const incomeCategories = [
     { label: "Gift", value: "Gift" },
-    { label: "Other", value: "Other" },
     { label: "Salary", value: "Salary" },
     { label: "Extra Income", value: "Extra Income" },
     { label: "Loan", value: "Loan" },
     { label: "Parental Leave", value: "Parental Leave" },
     { label: "Business", value: "Business" },
     { label: "Insurance Payout", value: "Insurance Payout" },
+    { label: "Other", value: "Other" },
 ];
 
 // // Recurrence mapping - deprecated as recurring is now just a checkbox

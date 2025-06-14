@@ -13,6 +13,8 @@ import {
 import FormDialog from "@/components/FormDialog";
 import { Button } from "@/components/ui/button";
 
+import CategoryFilter from "../components/CategoryFilter";
+
 export default function Overview() {
     const incomeData = [
         { date: "Jun 01", salary: 500, other: 100 },
@@ -68,9 +70,9 @@ export default function Overview() {
                         <button className="border border-black px-3 py-2 rounded">❯</button>
                     </div>
 
-                    <button className="border border-black px-4 py-2 rounded-xl">
-                        Filter by Categories ▾
-                    </button>
+                    <div className="flex items-center">
+                        <CategoryFilter className="w-full"></CategoryFilter>
+                    </div>
                 </div>
 
                 {/* Summary Cards */}
