@@ -24,14 +24,15 @@ export const incomeSchema = Joi.object({
         then: Joi.string().min(1).required(),
         otherwise: Joi.forbidden(),
     }),
-    note: Joi.string().when("category", {
-        is: "Other",
-        then: Joi.string().trim().min(1).required().messages({
-            "any.required": "Note is required when category is 'Other'",
-            "string.empty": "Note is required when category is 'Other'",
-        }),
-        otherwise: Joi.string().allow("", null).optional(),
-    }),
+    note: Joi.string().optional(),
+    // note: Joi.string().when("category", {
+    //     is: "Other",
+    //     then: Joi.string().trim().min(1).required().messages({
+    //         "any.required": "Note is required when category is 'Other'",
+    //         "string.empty": "Note is required when category is 'Other'",
+    //     }),
+    //     otherwise: Joi.string().allow("", null).optional(),
+    // }),
     isRecurring: Joi.boolean().default(false),
 });
 
@@ -46,13 +47,14 @@ export const updateIncomeSchema = Joi.object({
         then: Joi.string().min(1).required(),
         otherwise: Joi.forbidden(),
     }),
-    note: Joi.string().when("category", {
-        is: "Other",
-        then: Joi.string().trim().min(1).required().messages({
-            "any.required": "Note is required when category is 'Other'",
-            "string.empty": "Note is required when category is 'Other'",
-        }),
-        otherwise: Joi.string().allow("", null).optional(),
-    }),
+    note: Joi.string().optional(),
+    // note: Joi.string().when("category", {
+    //     is: "Other",
+    //     then: Joi.string().trim().min(1).required().messages({
+    //         "any.required": "Note is required when category is 'Other'",
+    //         "string.empty": "Note is required when category is 'Other'",
+    //     }),
+    //     otherwise: Joi.string().allow("", null).optional(),
+    // }),
     isRecurring: Joi.boolean().optional(),
 });

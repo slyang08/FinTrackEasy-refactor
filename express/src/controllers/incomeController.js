@@ -50,6 +50,56 @@ export const getIncomes = async (req, res, next) => {
 };
 
 /**
+ * @desc    Get all used income categories for the current user in a date range
+ * @route   GET /api/incomes/categories?startDate=2025-01-01&endDate=2025-06-30
+ * @query   startDate, endDate
+ * @access  Private
+ */
+export const getIncomeCategories = async (req, res, next) => {
+    try {
+        const { startDate, endDate } = req.query;
+        const filter = { account: req.account._id };
+
+        if (startDate && endDate) {
+            filter.date = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate),
+            };
+        }
+
+        const categories = await Income.distinct("category", filter);
+        res.json(categories.sort());
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc    Filter income records by date range and multiple categories
+ * @route   GET /api/incomes/filter or /api/incomes/filter?startDate=2025-01-01&endDate=2025-06-30&categories=Salary,Business
+ * @query   startDate, endDate, categories
+ * @access  Private
+ */
+export const filterIncomes = async (req, res, next) => {
+    try {
+        const { startDate, endDate, categories } = req.query;
+        const filter = { account: req.account._id };
+
+        if (startDate && endDate) {
+            filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+        if (categories) {
+            filter.category = { $in: categories.split(",") };
+        }
+
+        const incomeResults = await Income.find(filter);
+        res.json(incomeResults);
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
  * @desc    Get all Incomes (with optional query filters)
  * @route   GET /api/incomes/query?category=&year=&month=
  * @access  Private (valid JWT required)

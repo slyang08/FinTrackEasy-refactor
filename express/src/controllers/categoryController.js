@@ -5,6 +5,7 @@ import Income from "../models/Income.js";
 /**
  * @desc    Get all categories for filter dropdown
  * @route   GET /api/categories
+ * @query   None
  * @access  Private
  */
 export const getAllCategories = async (req, res, next) => {
@@ -27,6 +28,7 @@ export const getAllCategories = async (req, res, next) => {
 /**
  * @desc    Get category statistics for dashboard
  * @route   GET /api/categories/stats
+ * @query   startDate, endDate
  * @access  Private
  */
 export const getCategoryStats = async (req, res, next) => {
