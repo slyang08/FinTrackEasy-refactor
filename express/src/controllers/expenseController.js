@@ -47,6 +47,56 @@ export const getExpenses = async (req, res, next) => {
 };
 
 /**
+ * @desc    Get all used expense categories for the current user in a date range
+ * @route   GET /api/expenses/categories?startDate=2025-01-01&endDate=2025-06-30
+ * @query   startDate, endDate
+ * @access  Private
+ */
+export const getExpenseCategories = async (req, res, next) => {
+    try {
+        const { startDate, endDate } = req.query;
+        const filter = { account: req.account._id };
+
+        if (startDate && endDate) {
+            filter.date = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate),
+            };
+        }
+
+        const categories = await Expense.distinct("category", filter);
+        res.json(categories.sort());
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc    Filter expense records by date range and multiple categories
+ * @route   GET /api/expenses/filter or /api/expenses/filter?startDate=2025-01-01&endDate=2025-06-30&categories=Salary,Business
+ * @query   startDate, endDate, categories
+ * @access  Private
+ */
+export const filterExpenses = async (req, res, next) => {
+    try {
+        const { startDate, endDate, categories } = req.query;
+        const filter = { account: req.account._id };
+
+        if (startDate && endDate) {
+            filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+        if (categories) {
+            filter.category = { $in: categories.split(",") };
+        }
+
+        const expenseResults = await Expense.find(filter);
+        res.json(expenseResults);
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
  * @desc    Get all Expenses (with optional query filters)
  * @route   GET /api/expenses/query
  * @access  Private (valid JWT required)
