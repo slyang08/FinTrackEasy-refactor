@@ -33,9 +33,11 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
     const dateKeys = Object.keys(groupedTransactions).sort((a, b) => new Date(b) - new Date(a));
 
     return (
-        <div className="max-h-[400px] overflow-y-auto border rounded-md relative shadow-sm">
+        <div className="max-h-[400px] overflow-y-auto border rounded-md relative shadow-sm px-4">
             {/* Sticky Transaction header */}
-            <div className="sticky top-0 bg-white z-20 py-3 text-center text-lg">Transactions</div>
+            <div className="sticky top-0 left-0 right-0 bg-white z-20 -mx-4 -mt-4 px-4 py-3 text-center">
+                Transactions
+            </div>
 
             <div>
                 {dateKeys.map((date, idx) => (
@@ -55,7 +57,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                 {groupedTransactions[date].map((txn) => (
                                     <TableRow key={txn._id} className="border-none">
                                         <TableCell className="border-none">
-                                            <p>{txn.category}</p>
+                                            <p className="text-sm">{txn.category}</p>
                                             {txn.recurring && (
                                                 <p className="text-xs text-muted-foreground italic">
                                                     Recurring
