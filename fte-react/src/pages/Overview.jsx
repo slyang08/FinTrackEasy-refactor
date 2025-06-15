@@ -24,10 +24,7 @@ import SummarySection from "../components/SummarySection";
 import TransactionDateFilter from "../components/TransactionDateFilter";
 import TransactionList from "../components/TransactionList";
 
-const formatToISODate = (date) => (date ? date.toISOString().slice(0, 10) : "");
-
 // Dictionaries for sorting filtered categories for incomes and expenses
-
 const allIncome = [
     "Gift",
     "Salary",

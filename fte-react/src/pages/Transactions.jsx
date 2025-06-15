@@ -1,15 +1,4 @@
-import { format, parseISO } from "date-fns";
 import { useEffect, useState } from "react";
-import {
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
 import { toast } from "sonner";
 
 import api from "@/api/axios";
@@ -233,7 +222,7 @@ export default function Transactions() {
                     }))}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                    showNote={false}
+                    showNote={true}
                     className="max-h-none"
                 />
 
