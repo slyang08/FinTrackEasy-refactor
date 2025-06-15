@@ -62,6 +62,7 @@ export default function Overview() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Default date range to today
     const today = new Date();
@@ -147,7 +148,7 @@ export default function Overview() {
     // Fetch whenever dateRange or categories change
     useEffect(() => {
         fetchTransactions();
-    }, [dateRange, selectedCategories]);
+    }, [dateRange, selectedCategories, refreshTrigger]);
 
     // const fetchTransactions = async () => {
     //     try {
@@ -219,8 +220,10 @@ export default function Overview() {
         setOpen(false);
         setEditingData(null);
         setEditingId(null);
-        fetchTransactions();
+        triggerRefresh();
     };
+
+    const triggerRefresh = () => setRefreshTrigger((prev) => prev + 1);
 
     const incomeData = [
         { date: "Jun 01", salary: 500, other: 100 },
@@ -256,6 +259,7 @@ export default function Overview() {
                         selectedCategories={selectedCategories}
                         dateRange={dateRange}
                         onChange={setSelectedCategories}
+                        refreshTrigger={refreshTrigger}
                     ></CategoryFilter>{" "}
                 </div>
 
@@ -370,6 +374,7 @@ export default function Overview() {
                         setOpen={handleFormClose}
                         editingId={editingId}
                         editingData={editingData}
+                        triggerRefresh={triggerRefresh}
                     />
                 </DialogContent>
             </Dialog>

@@ -50,7 +50,12 @@ const allExpense = [
     "Other",
 ];
 
-export default function CategoryFilter({ selectedCategories = [], onChange, dateRange }) {
+export default function CategoryFilter({
+    selectedCategories = [],
+    onChange,
+    dateRange,
+    refreshTrigger = 0,
+}) {
     const [incomeCategories, setIncomeCategories] = useState([]);
     const [expenseCategories, setExpenseCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -94,7 +99,7 @@ export default function CategoryFilter({ selectedCategories = [], onChange, date
         }
 
         fetchCategories();
-    }, [dateRange]);
+    }, [dateRange, refreshTrigger]);
 
     const toggleCategory = (value) => {
         if (!onChange) return;
