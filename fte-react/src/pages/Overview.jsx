@@ -24,6 +24,8 @@ import SummarySection from "../components/SummarySection";
 import TransactionDateFilter from "../components/TransactionDateFilter";
 import TransactionList from "../components/TransactionList";
 
+const formatToISODate = (date) => (date ? date.toISOString().slice(0, 10) : "");
+
 export default function Overview() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null);
@@ -55,23 +57,77 @@ export default function Overview() {
 
     const fetchTransactions = async () => {
         try {
+            // Convert dateRange.from (local midnight) to UTC ISO string
+            const startLocal = new Date(dateRange.from);
+            startLocal.setHours(0, 0, 0, 0); // local midnight
+
+            // Convert local midnight start to UTC ISO string
+            const startDate = new Date(
+                startLocal.getTime() - startLocal.getTimezoneOffset() * 60000
+            ).toISOString();
+
+            // Convert dateRange.to (local midnight next day) to UTC ISO string
+            const endLocal = new Date(dateRange.to);
+            endLocal.setHours(0, 0, 0, 0);
+            endLocal.setDate(endLocal.getDate() + 1); // next day midnight local
+
+            // Convert local midnight end to UTC ISO string
+            const endDate = new Date(
+                endLocal.getTime() - endLocal.getTimezoneOffset() * 60000
+            ).toISOString();
+
+            const params = {
+                startDate,
+                endDate,
+            };
+
+            if (selectedCategories.length > 0) {
+                params.categories = selectedCategories.join(",");
+            }
+
             const [incomeRes, expenseRes] = await Promise.all([
-                api.get("/incomes"),
-                api.get("/expenses"),
+                api.get("/incomes/filter", { params }),
+                api.get("/expenses/filter", { params }),
             ]);
+
+            // Tag each transaction with type for UI filtering
             const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
             const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+
+            // Combine and sort by date descending
             setTransactions(
                 [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
             );
         } catch (err) {
-            console.error("Error fetching transactions:", err);
+            console.error("Error fetching filtered transactions:", err);
+            // optionally show toast or error state
         }
     };
 
+    // Fetch whenever dateRange or categories change
     useEffect(() => {
         fetchTransactions();
-    }, []);
+    }, [dateRange, selectedCategories]);
+
+    // const fetchTransactions = async () => {
+    //     try {
+    //         const [incomeRes, expenseRes] = await Promise.all([
+    //             api.get("/incomes"),
+    //             api.get("/expenses"),
+    //         ]);
+    //         const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+    //         const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+    //         setTransactions(
+    //             [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
+    //         );
+    //     } catch (err) {
+    //         console.error("Error fetching transactions:", err);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     fetchTransactions();
+    // }, []);
 
     // Calculate totals (filtering by type)
     const totalIncome = transactions

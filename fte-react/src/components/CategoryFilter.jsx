@@ -1,6 +1,7 @@
 // TO DO: add api functionality
 // import api from "@/api/axios.js";
 
+import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 import api from "@/api/axios";
@@ -37,7 +38,7 @@ const allExpense = [
     "Other",
 ];
 
-export default function CategoryFilter({ selectedCategories = [], onChange, startDate, endDate }) {
+export default function CategoryFilter({ selectedCategories = [], onChange, dateRange }) {
     const [incomeCategories, setIncomeCategories] = useState([]);
     const [expenseCategories, setExpenseCategories] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -45,27 +46,38 @@ export default function CategoryFilter({ selectedCategories = [], onChange, star
     useEffect(() => {
         async function fetchCategories() {
             setLoading(true);
+
+            const startDate = dateRange?.from;
+            const endDate = dateRange?.to;
+
             try {
                 if (startDate && endDate) {
-                    const res = await api.get("/categories/period", {
+                    // Fetch income categories
+                    const incomeRes = await api.get("/incomes/getIncomeCategories", {
                         params: { startDate, endDate },
                     });
 
-                    const received = res.data || [];
+                    // Fetch expense categories
+                    const expenseRes = await api.get("/expenses/getExpenseCategories", {
+                        params: { startDate, endDate },
+                    });
 
-                    const income = received.filter((c) => allIncome.includes(c));
-                    const expense = received.filter((c) => allExpense.includes(c));
+                    const income = incomeRes.data || [];
+                    const expense = expenseRes.data || [];
 
                     setIncomeCategories(income.map((c) => ({ label: c, value: c })));
                     setExpenseCategories(expense.map((c) => ({ label: c, value: c })));
                 } else {
-                    const res = await api.get("/categories");
+                    // If no dateRange, get all categories without filtering
+                    const incomeRes = await api.get("/income/getIncomeCategories");
+                    const expenseRes = await api.get("/expense/getExpenseCategories");
 
-                    const income = res.data.income || [];
-                    const expense = res.data.expense || [];
-
-                    setIncomeCategories(income.map((c) => ({ label: c, value: c })));
-                    setExpenseCategories(expense.map((c) => ({ label: c, value: c })));
+                    setIncomeCategories(
+                        (incomeRes.data || []).map((c) => ({ label: c, value: c }))
+                    );
+                    setExpenseCategories(
+                        (expenseRes.data || []).map((c) => ({ label: c, value: c }))
+                    );
                 }
             } catch (err) {
                 console.error("Failed to fetch categories", err);
@@ -75,7 +87,7 @@ export default function CategoryFilter({ selectedCategories = [], onChange, star
         }
 
         fetchCategories();
-    }, [startDate, endDate]);
+    }, [dateRange]);
 
     const toggleCategory = (value) => {
         if (!onChange) return;
@@ -95,9 +107,10 @@ export default function CategoryFilter({ selectedCategories = [], onChange, star
             </PopoverTrigger>
             <PopoverContent className="w-full max-w-[450px] max-h-[300px] overflow-y-auto">
                 {loading ? (
-                    <div className="p-4 text-center text-sm text-muted-foreground">
+                    <Button size="sm" disabled>
+                        <Loader2Icon className="animate-spin" />
                         Loading categories...
-                    </div>
+                    </Button>
                 ) : incomeCategories.length === 0 && expenseCategories.length === 0 ? (
                     <div className="p-4 text-center text-sm text-muted-foreground">
                         No categories found for the selected period.
