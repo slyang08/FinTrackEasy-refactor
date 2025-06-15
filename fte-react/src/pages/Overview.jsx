@@ -164,9 +164,12 @@ export default function Overview() {
 
                 {/* Summary Cards */}
                 <SummarySection balance={balance} income={totalIncome} expenses={totalExpenses} />
-
+                {/* Generate Report Button TO DO: Implement functionality*/}
+                <div className="grid justify-items-end">
+                    <Button variant="report">Generate Report</Button>
+                </div>
                 {/* Charts */}
-                <div className="flex flex-col md:flex-row justify-center items-center gap-8">
+                <div className="flex flex-col md:flex-row justify-center items-center gap-10">
                     <div className="bg-white shadow rounded p-4 h-64 w-full md:w-[90%]">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={incomeData}>
