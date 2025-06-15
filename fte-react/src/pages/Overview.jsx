@@ -21,7 +21,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import CategoryFilter from "../components/CategoryFilter";
+import SummarySection from "../components/SummarySection";
 import TransactionDateFilter from "../components/TransactionDateFilter";
+import TransactionList from "../components/TransactionList";
 
 export default function Overview() {
     const [open, setOpen] = useState(false);
@@ -161,25 +163,7 @@ export default function Overview() {
                 </div>
 
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white shadow rounded p-4 border border-black">
-                        <p className="text-sm">Current Balance</p>
-                        <p
-                            className={`font-bold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}
-                        >
-                            {balance >= 0 ? "+" : "-"}
-                            {Math.abs(balance).toFixed(2)} CAD
-                        </p>
-                    </div>
-                    <div className="bg-white shadow rounded p-4 border border-black">
-                        <p className="text-sm">Total Period Expenses</p>
-                        <p className="text-red-600 font-bold">-{totalExpenses.toFixed(2)} CAD</p>
-                    </div>
-                    <div className="bg-white shadow rounded p-4 border border-black">
-                        <p className="text-sm">Total Period Income</p>
-                        <p className="text-green-600 font-bold">+{totalIncome.toFixed(2)} CAD</p>
-                    </div>
-                </div>
+                <SummarySection balance={balance} income={totalIncome} expenses={totalExpenses} />
 
                 {/* Charts */}
                 <div className="flex flex-col md:flex-row justify-center items-center gap-8">
@@ -237,56 +221,11 @@ export default function Overview() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
                         <p className="font-semibold">Recent Transactions</p>
-
-                        {transactions.length === 0 ? (
-                            <div className="text-center text-gray-500 italic py-8">
-                                No transactions available. Please add income or expenses to get
-                                started.
-                            </div>
-                        ) : (
-                            <ul className="text-sm space-y-2">
-                                {transactions.map((txn) => (
-                                    <li
-                                        key={txn._id}
-                                        className="flex justify-between items-center border-b pb-1"
-                                    >
-                                        <div>
-                                            <p className="font-medium">{txn.category}</p>
-                                            <p className="text-xs text-gray-500">
-                                                {format(new Date(txn.date), "PPP")}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span
-                                                className={
-                                                    txn.type === "income"
-                                                        ? "text-green-600"
-                                                        : "text-red-600"
-                                                }
-                                            >
-                                                {txn.type === "income" ? "+" : "-"}$
-                                                {Number(txn.amount).toFixed(2)}
-                                            </span>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="bg-yellow-300 hover:bg-yellow-400 text-black"
-                                                onClick={() => handleEdit(txn)}
-                                            >
-                                                Edit
-                                            </Button>
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() => handleDelete(txn)}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                        <TransactionList
+                            transactions={transactions}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
                     </div>
 
                     <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
