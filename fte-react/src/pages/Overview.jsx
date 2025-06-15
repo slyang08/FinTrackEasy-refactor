@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import {
     CartesianGrid,
@@ -116,6 +115,7 @@ export default function Overview() {
             toast.success("Entry deleted successfully");
         } catch (err) {
             toast.error("Failed to delete entry");
+            console.error(err);
         }
     };
 
@@ -222,14 +222,12 @@ export default function Overview() {
 
                 {/* Transactions + Budgets */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
-                        <p className="font-semibold">Recent Transactions</p>
-                        <TransactionList
-                            transactions={transactions}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                        />
-                    </div>
+                    <TransactionList
+                        transactions={transactions}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        showNote={false}
+                    ></TransactionList>
 
                     <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
                         <p className="font-semibold">Monthly Budgets</p>

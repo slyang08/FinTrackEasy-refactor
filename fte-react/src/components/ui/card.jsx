@@ -75,4 +75,4 @@ function CardFooter({ className, ...props }) {
     );
 }
 
-export { Card, CardAction, CardContent,CardDescription, CardFooter, CardHeader, CardTitle };
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };
