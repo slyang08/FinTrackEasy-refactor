@@ -40,9 +40,6 @@ const expenseSchema = new mongoose.Schema(
         note: {
             type: String,
             trim: true,
-            required: function () {
-                return this.category === "Other";
-            },
         },
         isRecurring: { type: Boolean, default: false },
     },

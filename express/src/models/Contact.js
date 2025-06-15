@@ -13,7 +13,7 @@ const contactFormSchema = new mongoose.Schema(
             required: true,
             match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         },
-        description: { type: String },
+        note: { type: String },
         status: { type: String, enum: ["pending", "resolved"], default: "pending" },
     },
     { timestamps: true }
