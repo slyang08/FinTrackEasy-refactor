@@ -17,6 +17,7 @@ import savingRoutes from "./routes/savingRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import passport from "./utils/googleOAuth.js";
+import recurringTransaction from "./utils/postRecurringTransaction.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -77,6 +78,9 @@ process.on("uncaughtException", (err) => {
     console.error("Uncaught Exception:", err);
     process.exit(1);
 });
+
+// Run recurring job
+recurringTransaction();
 
 // Start server
 app.listen(port, () => {
