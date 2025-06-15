@@ -126,20 +126,6 @@ export default function Transactions() {
         fetchTransactions();
     };
 
-    const incomeData = [
-        { date: "Jun 01", salary: 500, other: 100 },
-        { date: "Jun 10", salary: 700, other: 200 },
-        { date: "Jun 20", salary: 800, other: 150 },
-        { date: "Jun 30", salary: 600, other: 250 },
-    ];
-
-    const foodDrinkData = [
-        { date: "Jun 01", food: 120, drink: 80 },
-        { date: "Jun 10", food: 150, drink: 90 },
-        { date: "Jun 20", food: 200, drink: 100 },
-        { date: "Jun 30", food: 180, drink: 120 },
-    ];
-
     return (
         <div className="p-6">
             <div className="max-w-5xl mx-auto space-y-6">
