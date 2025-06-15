@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { useEffect, useState } from "react";
 import {
     CartesianGrid,
@@ -12,17 +13,41 @@ import {
 import { toast } from "sonner";
 
 import api from "@/api/axios";
-// TO DO: Install Hook for fetching income/expense by filter
-//import useTransactions from "../hooks/useTransactions";
+import CategoryFilter from "@/components/CategoryFilter";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import TransactionForm from "@/components/Form";
+import TransactionDateFilter from "@/components/TransactionDateFilter";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-import CategoryFilter from "../components/CategoryFilter";
 import SummarySection from "../components/SummarySection";
-import TransactionDateFilter from "../components/TransactionDateFilter";
 import TransactionList from "../components/TransactionList";
+
+// Category lists
+const allIncome = [
+    "Gift",
+    "Salary",
+    "Extra Income",
+    "Loan",
+    "Parental Leave",
+    "Business",
+    "Insurance Payout",
+    "Other",
+];
+
+const allExpense = [
+    "Food & Drink",
+    "Car",
+    "Shopping",
+    "Bills & Fees",
+    "Home",
+    "Entertainment",
+    "Travel",
+    "Healthcare",
+    "Family & Personal",
+    "Transport",
+    "Other",
+];
 
 export default function Transactions() {
     const [open, setOpen] = useState(false);
@@ -55,23 +80,69 @@ export default function Transactions() {
 
     const fetchTransactions = async () => {
         try {
-            const [incomeRes, expenseRes] = await Promise.all([
-                api.get("/incomes"),
-                api.get("/expenses"),
-            ]);
-            const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
-            const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            // Convert date range to ISO strings (your existing timezone-safe logic)
+            const startLocal = new Date(dateRange.from);
+            startLocal.setHours(0, 0, 0, 0);
+            const startDate = new Date(
+                startLocal.getTime() - startLocal.getTimezoneOffset() * 60000
+            ).toISOString();
+
+            const endLocal = new Date(dateRange.to);
+            endLocal.setHours(0, 0, 0, 0);
+            endLocal.setDate(endLocal.getDate() + 1);
+            const endDate = new Date(
+                endLocal.getTime() - endLocal.getTimezoneOffset() * 60000
+            ).toISOString();
+
+            const incomeCategories = selectedCategories.filter((c) => allIncome.includes(c));
+            const expenseCategories = selectedCategories.filter((c) => allExpense.includes(c));
+
+            const incomeParams = { startDate, endDate };
+            const expenseParams = { startDate, endDate };
+
+            if (incomeCategories.length > 0) {
+                incomeParams.categories = incomeCategories.join(",");
+            }
+            if (expenseCategories.length > 0) {
+                expenseParams.categories = expenseCategories.join(",");
+            }
+
+            let incomes = [];
+            let expenses = [];
+
+            if (
+                selectedCategories.length === 0 || // no filter → fetch both
+                (incomeCategories.length > 0 && expenseCategories.length > 0)
+            ) {
+                const [incomeRes, expenseRes] = await Promise.all([
+                    api.get("/incomes/filter", { params: incomeParams }),
+                    api.get("/expenses/filter", { params: expenseParams }),
+                ]);
+                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            } else if (incomeCategories.length > 0) {
+                const incomeRes = await api.get("/incomes/filter", {
+                    params: incomeParams,
+                });
+                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+            } else if (expenseCategories.length > 0) {
+                const expenseRes = await api.get("/expenses/filter", {
+                    params: expenseParams,
+                });
+                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            }
+
             setTransactions(
                 [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
             );
         } catch (err) {
-            console.error("Error fetching transactions:", err);
+            console.error("Error fetching filtered transactions:", err);
         }
     };
 
     useEffect(() => {
         fetchTransactions();
-    }, []);
+    }, [dateRange, selectedCategories]);
 
     // Calculate totals (filtering by type)
     const totalIncome = transactions
@@ -144,6 +215,7 @@ export default function Transactions() {
                     </div>
                     <CategoryFilter
                         selectedCategories={selectedCategories}
+                        dateRange={dateRange}
                         onChange={setSelectedCategories}
                     />
                 </div>
@@ -152,7 +224,13 @@ export default function Transactions() {
                 <SummarySection balance={balance} income={totalIncome} expenses={totalExpenses} />
 
                 <TransactionList
-                    transactions={transactions}
+                    transactions={transactions.map((txn) => ({
+                        ...txn,
+                        displayCategory:
+                            txn.category === "Other" && txn.customCategory
+                                ? txn.customCategory
+                                : txn.category,
+                    }))}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     showNote={false}

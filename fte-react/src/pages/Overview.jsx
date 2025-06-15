@@ -324,7 +324,13 @@ export default function Overview() {
                 {/* Transactions + Budgets */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <TransactionList
-                        transactions={transactions}
+                        transactions={transactions.map((txn) => ({
+                            ...txn,
+                            displayCategory:
+                                txn.category === "Other" && txn.customCategory
+                                    ? txn.customCategory
+                                    : txn.category,
+                        }))}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
                         showNote={false}

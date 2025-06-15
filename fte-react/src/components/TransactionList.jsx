@@ -59,7 +59,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                 {groupedTransactions[date].map((txn) => (
                                     <TableRow key={txn._id} className="border-none">
                                         <TableCell className="border-none">
-                                            <p className="text-sm">{txn.category}</p>
+                                            <p className="text-sm">{txn.displayCategory}</p>
                                             {txn.recurring && (
                                                 <p className="text-xs text-muted-foreground italic">
                                                     Recurring
