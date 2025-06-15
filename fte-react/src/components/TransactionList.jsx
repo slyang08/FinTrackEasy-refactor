@@ -10,7 +10,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-export default function TransactionList({ transactions, onEdit, onDelete, showNote = false }) {
+export default function TransactionList({ transactions, onEdit, onDelete, showNote, className }) {
     if (!transactions || transactions.length === 0) {
         return (
             <div className="text-center text-gray-500 italic py-8">
@@ -33,7 +33,9 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
     const dateKeys = Object.keys(groupedTransactions).sort((a, b) => new Date(b) - new Date(a));
 
     return (
-        <div className="max-h-[400px] overflow-y-auto border rounded-md relative shadow-sm px-4">
+        <div
+            className={`max-h-[400px] overflow-y-auto border rounded-md relative shadow-sm px-4 ${className}`}
+        >
             {/* Sticky Transaction header */}
             <div className="sticky top-0 left-0 right-0 bg-white z-20 -mx-4 -mt-4 px-4 py-3 text-center">
                 Transactions
@@ -67,7 +69,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
 
                                         {showNote && (
                                             <TableCell className="text-muted-foreground italic truncate border-none">
-                                                {txn.note || "-"}
+                                                {txn.note || ""}
                                             </TableCell>
                                         )}
 
