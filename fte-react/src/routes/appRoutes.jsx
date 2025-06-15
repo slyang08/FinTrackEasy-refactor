@@ -15,6 +15,7 @@ import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Terms from "@/pages/Terms";
 import Test from "@/pages/Test";
+import Transactions from "@/pages/Transactions";
 import VerifyEmail from "@/pages/VerifyEmail";
 
 import Overview from "../pages/Overview";
@@ -92,6 +93,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <Income />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/transactions",
+        element: (
+            <ProtectedRoute>
+                <Transactions />
             </ProtectedRoute>
         ),
     },
