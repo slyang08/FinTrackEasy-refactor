@@ -1,6 +1,3 @@
-// TO DO: add api functionality
-// import api from "@/api/axios.js";
-
 import { Loader2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
@@ -10,45 +7,42 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-// TO DO: Hook up backend route to api/categories, wait for a fix
-// for sorting the expense and income categories, only returns a flat array at this time
-function formatToStartOfDayISO(date) {
-    const d = new Date(date);
-    d.setUTCHours(0, 0, 0, 0);
-    return d.toISOString();
-}
+//     const d = new Date(date);
+//     d.setUTCHours(0, 0, 0, 0);
+//     return d.toISOString();
+// }
 
-function formatToStartOfNextDayISO(date) {
-    const d = new Date(date);
-    d.setUTCDate(d.getUTCDate() + 1);
-    d.setUTCHours(0, 0, 0, 0);
-    return d.toISOString();
-}
+// function formatToStartOfNextDayISO(date) {
+//     const d = new Date(date);
+//     d.setUTCDate(d.getUTCDate() + 1);
+//     d.setUTCHours(0, 0, 0, 0);
+//     return d.toISOString();
+// }
 
-const allIncome = [
-    "Gift",
-    "Salary",
-    "Extra Income",
-    "Loan",
-    "Parental Leave",
-    "Business",
-    "Insurance Payout",
-    "Other",
-];
+// const allIncome = [
+//     "Gift",
+//     "Salary",
+//     "Extra Income",
+//     "Loan",
+//     "Parental Leave",
+//     "Business",
+//     "Insurance Payout",
+//     "Other",
+// ];
 
-const allExpense = [
-    "Food & Drink",
-    "Car",
-    "Shopping",
-    "Bills & Fees",
-    "Home",
-    "Entertainment",
-    "Travel",
-    "Healthcare",
-    "Family & Personal",
-    "Transport",
-    "Other",
-];
+// const allExpense = [
+//     "Food & Drink",
+//     "Car",
+//     "Shopping",
+//     "Bills & Fees",
+//     "Home",
+//     "Entertainment",
+//     "Travel",
+//     "Healthcare",
+//     "Family & Personal",
+//     "Transport",
+//     "Other",
+// ];
 
 export default function CategoryFilter({
     selectedCategories = [],
