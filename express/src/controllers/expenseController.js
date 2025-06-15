@@ -83,7 +83,7 @@ export const filterExpenses = async (req, res, next) => {
         const filter = { account: req.account._id };
 
         if (startDate && endDate) {
-            filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+            filter.date = { $gte: new Date(startDate), $lt: new Date(endDate) };
         }
         if (categories) {
             filter.category = { $in: categories.split(",") };
