@@ -26,6 +26,33 @@ import TransactionList from "../components/TransactionList";
 
 const formatToISODate = (date) => (date ? date.toISOString().slice(0, 10) : "");
 
+// Dictionaries for sorting filtered categories for incomes and expenses
+
+const allIncome = [
+    "Gift",
+    "Salary",
+    "Extra Income",
+    "Loan",
+    "Parental Leave",
+    "Business",
+    "Insurance Payout",
+    "Other",
+];
+
+const allExpense = [
+    "Food & Drink",
+    "Car",
+    "Shopping",
+    "Bills & Fees",
+    "Home",
+    "Entertainment",
+    "Travel",
+    "Healthcare",
+    "Family & Personal",
+    "Transport",
+    "Other",
+];
+
 export default function Overview() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null);
@@ -57,50 +84,63 @@ export default function Overview() {
 
     const fetchTransactions = async () => {
         try {
-            // Convert dateRange.from (local midnight) to UTC ISO string
+            // Convert date range to ISO strings (your existing timezone-safe logic)
             const startLocal = new Date(dateRange.from);
-            startLocal.setHours(0, 0, 0, 0); // local midnight
-
-            // Convert local midnight start to UTC ISO string
+            startLocal.setHours(0, 0, 0, 0);
             const startDate = new Date(
                 startLocal.getTime() - startLocal.getTimezoneOffset() * 60000
             ).toISOString();
 
-            // Convert dateRange.to (local midnight next day) to UTC ISO string
             const endLocal = new Date(dateRange.to);
             endLocal.setHours(0, 0, 0, 0);
-            endLocal.setDate(endLocal.getDate() + 1); // next day midnight local
-
-            // Convert local midnight end to UTC ISO string
+            endLocal.setDate(endLocal.getDate() + 1);
             const endDate = new Date(
                 endLocal.getTime() - endLocal.getTimezoneOffset() * 60000
             ).toISOString();
 
-            const params = {
-                startDate,
-                endDate,
-            };
+            const incomeCategories = selectedCategories.filter((c) => allIncome.includes(c));
+            const expenseCategories = selectedCategories.filter((c) => allExpense.includes(c));
 
-            if (selectedCategories.length > 0) {
-                params.categories = selectedCategories.join(",");
+            const incomeParams = { startDate, endDate };
+            const expenseParams = { startDate, endDate };
+
+            if (incomeCategories.length > 0) {
+                incomeParams.categories = incomeCategories.join(",");
+            }
+            if (expenseCategories.length > 0) {
+                expenseParams.categories = expenseCategories.join(",");
             }
 
-            const [incomeRes, expenseRes] = await Promise.all([
-                api.get("/incomes/filter", { params }),
-                api.get("/expenses/filter", { params }),
-            ]);
+            let incomes = [];
+            let expenses = [];
 
-            // Tag each transaction with type for UI filtering
-            const incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
-            const expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            if (
+                selectedCategories.length === 0 || // no filter → fetch both
+                (incomeCategories.length > 0 && expenseCategories.length > 0)
+            ) {
+                const [incomeRes, expenseRes] = await Promise.all([
+                    api.get("/incomes/filter", { params: incomeParams }),
+                    api.get("/expenses/filter", { params: expenseParams }),
+                ]);
+                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            } else if (incomeCategories.length > 0) {
+                const incomeRes = await api.get("/incomes/filter", {
+                    params: incomeParams,
+                });
+                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
+            } else if (expenseCategories.length > 0) {
+                const expenseRes = await api.get("/expenses/filter", {
+                    params: expenseParams,
+                });
+                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
+            }
 
-            // Combine and sort by date descending
             setTransactions(
                 [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
             );
         } catch (err) {
             console.error("Error fetching filtered transactions:", err);
-            // optionally show toast or error state
         }
     };
 
