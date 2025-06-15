@@ -12,6 +12,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 // TO DO: Hook up backend route to api/categories, wait for a fix
 // for sorting the expense and income categories, only returns a flat array at this time
+function formatToStartOfDayISO(date) {
+    const d = new Date(date);
+    d.setUTCHours(0, 0, 0, 0);
+    return d.toISOString();
+}
+
+function formatToStartOfNextDayISO(date) {
+    const d = new Date(date);
+    d.setUTCDate(d.getUTCDate() + 1);
+    d.setUTCHours(0, 0, 0, 0);
+    return d.toISOString();
+}
 
 const allIncome = [
     "Gift",
@@ -46,39 +58,34 @@ export default function CategoryFilter({ selectedCategories = [], onChange, date
     useEffect(() => {
         async function fetchCategories() {
             setLoading(true);
+            console.log("Received dateRange:", dateRange);
 
-            const startDate = dateRange?.from;
-            const endDate = dateRange?.to;
+            const params = {};
+
+            if (dateRange?.from) {
+                const start = new Date(dateRange.from);
+                start.setUTCHours(0, 0, 0, 0);
+                params.startDate = start.toISOString();
+            }
+
+            if (dateRange?.to) {
+                const end = new Date(dateRange.to);
+                end.setUTCDate(end.getUTCDate() + 1); // move to start of next day
+                end.setUTCHours(0, 0, 0, 0);
+                params.endDate = end.toISOString();
+            }
 
             try {
-                if (startDate && endDate) {
-                    // Fetch income categories
-                    const incomeRes = await api.get("/incomes/getIncomeCategories", {
-                        params: { startDate, endDate },
-                    });
+                const [incomeRes, expenseRes] = await Promise.all([
+                    api.get("/incomes/categories", { params }),
+                    api.get("/expenses/categories", { params }),
+                ]);
 
-                    // Fetch expense categories
-                    const expenseRes = await api.get("/expenses/getExpenseCategories", {
-                        params: { startDate, endDate },
-                    });
+                const income = incomeRes.data || [];
+                const expense = expenseRes.data || [];
 
-                    const income = incomeRes.data || [];
-                    const expense = expenseRes.data || [];
-
-                    setIncomeCategories(income.map((c) => ({ label: c, value: c })));
-                    setExpenseCategories(expense.map((c) => ({ label: c, value: c })));
-                } else {
-                    // If no dateRange, get all categories without filtering
-                    const incomeRes = await api.get("/income/getIncomeCategories");
-                    const expenseRes = await api.get("/expense/getExpenseCategories");
-
-                    setIncomeCategories(
-                        (incomeRes.data || []).map((c) => ({ label: c, value: c }))
-                    );
-                    setExpenseCategories(
-                        (expenseRes.data || []).map((c) => ({ label: c, value: c }))
-                    );
-                }
+                setIncomeCategories(income.map((c) => ({ label: c, value: c })));
+                setExpenseCategories(expense.map((c) => ({ label: c, value: c })));
             } catch (err) {
                 console.error("Failed to fetch categories", err);
             } finally {

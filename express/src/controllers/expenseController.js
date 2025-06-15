@@ -60,7 +60,7 @@ export const getExpenseCategories = async (req, res, next) => {
         if (startDate && endDate) {
             filter.date = {
                 $gte: new Date(startDate),
-                $lte: new Date(endDate),
+                $lt: new Date(endDate),
             };
         }
 

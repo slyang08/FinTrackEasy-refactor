@@ -214,6 +214,7 @@ export default function Overview() {
                     </div>
                     <CategoryFilter
                         selectedCategories={selectedCategories}
+                        dateRange={dateRange}
                         onChange={setSelectedCategories}
                     ></CategoryFilter>{" "}
                 </div>
