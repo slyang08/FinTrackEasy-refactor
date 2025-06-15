@@ -98,7 +98,7 @@ export default function Profile() {
     }
 
     return (
-        <div className="mt-15 ml-15 w-full">
+        <div className="mt-15 ml-15">
             <h1 className="text-green-600 font-bold text-3xl">Profile</h1>
 
             <div
