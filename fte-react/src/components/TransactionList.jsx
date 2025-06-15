@@ -72,7 +72,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                         )}
 
                                         <TableCell className="text-right border-none">
-                                            <span
+                                            <p
                                                 className={
                                                     txn.type === "income"
                                                         ? "text-green-600"
@@ -81,20 +81,19 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                             >
                                                 {txn.type === "income" ? "+" : "-"}$
                                                 {Number(txn.amount).toFixed(2)}
-                                            </span>
+                                            </p>
                                         </TableCell>
 
                                         <TableCell className="text-right space-x-2 border-none">
                                             <Button
-                                                variant="ghost"
+                                                variant="edit"
                                                 size="sm"
-                                                className="bg-yellow-300 hover:bg-yellow-400 text-black"
                                                 onClick={() => onEdit(txn)}
                                             >
                                                 Edit
                                             </Button>
                                             <Button
-                                                variant="destructive"
+                                                variant="delete"
                                                 size="sm"
                                                 onClick={() => onDelete(txn)}
                                             >
