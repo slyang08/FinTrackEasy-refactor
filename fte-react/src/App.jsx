@@ -2,6 +2,7 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import api from "@/api/axios";
 import { isAuthenticated } from "@/atoms/Atom.js";
@@ -47,6 +48,7 @@ function App() {
                 </div>
             )}
             <Footer />
+            <Toaster richColors position="top-right" />
         </div>
     );
 }

@@ -17,6 +17,12 @@ const buttonVariants = cva(
                 secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
                 link: "text-primary underline-offset-4 hover:underline",
+                income: "border bg-lime-600 text-white shadow-xs hover:bg-green-700 focus-visible:ring-green-100 dark:bg-green-700 dark:hover:bg-green-800",
+                expense:
+                    "border bg-red-600 text-white shadow-xs hover:bg-red-700 focus-visible:ring-red-100 dark:bg-red-700 dark:hover:bg-red-800",
+                report: "border bg-blue-500 text-white shadow-xs hover:bg-blue-600 focus-visible:ring-blue-100 dark:bg-blue-600 dark:hover:bg-blue-700",
+                edit: "border bg-amber-300 text-amber-900 shadow-xs hover:bg-amber-400 focus-visible:ring-amber-100 dark:bg-amber-400 dark:hover:bg-amber-500",
+                delete: "border bg-destructive text-white shadow-sm hover:bg-red-700 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
             },
             size: {
                 default: "h-9 px-4 py-2 has-[>svg]:px-3",

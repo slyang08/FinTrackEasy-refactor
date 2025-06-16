@@ -14,12 +14,19 @@ import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Terms from "@/pages/Terms";
+import Test from "@/pages/Test";
+import Transactions from "@/pages/Transactions";
 import VerifyEmail from "@/pages/VerifyEmail";
+
+import Overview from "../pages/Overview";
+import Test2 from "../pages/Test2";
 
 // Public page (anyone can see it)
 export const publicRoutes = [
     { path: "/", element: <Home /> },
     { path: "/contact", element: <ContactUs /> },
+    { path: "/test", element: <Test /> },
+    { path: "/test2", element: <Test2 /> },
     { path: "/terms", element: <Terms /> },
     { path: "/verify-email", element: <VerifyEmail /> },
     { path: "/forgotpassword", element: <ForgotPassword /> },
@@ -66,6 +73,14 @@ export const protectedRoutes = [
         ),
     },
     {
+        path: "/overview",
+        element: (
+            <ProtectedRoute>
+                <Overview />
+            </ProtectedRoute>
+        ),
+    },
+    {
         path: "/expense",
         element: (
             <ProtectedRoute>
@@ -78,6 +93,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <Income />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/transactions",
+        element: (
+            <ProtectedRoute>
+                <Transactions />
             </ProtectedRoute>
         ),
     },
