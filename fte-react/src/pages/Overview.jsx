@@ -12,8 +12,6 @@ import {
 import { toast } from "sonner";
 
 import api from "@/api/axios";
-// TO DO: Install Hook for fetching income/expense by filter
-//import useTransactions from "../hooks/useTransactions";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import TransactionForm from "@/components/Form";
 import { Button } from "@/components/ui/button";
@@ -82,6 +80,11 @@ export default function Overview() {
 
     const fetchTransactions = async () => {
         try {
+            if (!dateRange?.from || !dateRange?.to) {
+                console.warn("Skipping fetch: dateRange is incomplete", dateRange);
+                return;
+            }
+
             // Convert date range to ISO strings (your existing timezone-safe logic)
             const startLocal = new Date(dateRange.from);
             startLocal.setHours(0, 0, 0, 0);
@@ -207,6 +210,7 @@ export default function Overview() {
             setSelectedDelete(null);
             fetchTransactions();
             toast.success("Entry deleted successfully");
+            triggerRefresh();
         } catch (err) {
             toast.error("Failed to delete entry");
             console.error(err);
@@ -250,7 +254,18 @@ export default function Overview() {
                         </Button>
                     </div>
                     <div className="flex items-center gap-2">
-                        <TransactionDateFilter dateRange={dateRange} onChange={setDateRange} />
+                        <TransactionDateFilter
+                            dateRange={dateRange}
+                            onChange={(range) => {
+                                if (!range?.from || !range?.to) {
+                                    const today = new Date();
+                                    today.setHours(0, 0, 0, 0);
+                                    setDateRange({ from: today, to: today });
+                                } else {
+                                    setDateRange(range);
+                                }
+                            }}
+                        />
                     </div>
                     <CategoryFilter
                         selectedCategories={selectedCategories}

@@ -7,47 +7,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-//     const d = new Date(date);
-//     d.setUTCHours(0, 0, 0, 0);
-//     return d.toISOString();
-// }
-
-// function formatToStartOfNextDayISO(date) {
-//     const d = new Date(date);
-//     d.setUTCDate(d.getUTCDate() + 1);
-//     d.setUTCHours(0, 0, 0, 0);
-//     return d.toISOString();
-// }
-
-// const allIncome = [
-//     "Gift",
-//     "Salary",
-//     "Extra Income",
-//     "Loan",
-//     "Parental Leave",
-//     "Business",
-//     "Insurance Payout",
-//     "Other",
-// ];
-
-// const allExpense = [
-//     "Food & Drink",
-//     "Car",
-//     "Shopping",
-//     "Bills & Fees",
-//     "Home",
-//     "Entertainment",
-//     "Travel",
-//     "Healthcare",
-//     "Family & Personal",
-//     "Transport",
-//     "Other",
-// ];
-
 export default function CategoryFilter({
     selectedCategories = [],
     onChange,
-    dateRange,
+    dateRange = {},
     refreshTrigger = 0,
 }) {
     const [incomeCategories, setIncomeCategories] = useState([]);
