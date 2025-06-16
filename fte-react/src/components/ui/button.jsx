@@ -23,6 +23,7 @@ const buttonVariants = cva(
                 report: "border bg-blue-500 text-white shadow-xs hover:bg-blue-600 focus-visible:ring-blue-100 dark:bg-blue-600 dark:hover:bg-blue-700",
                 edit: "border bg-amber-300 text-amber-900 shadow-xs hover:bg-amber-400 focus-visible:ring-amber-100 dark:bg-amber-400 dark:hover:bg-amber-500",
                 delete: "border bg-destructive text-white shadow-sm hover:bg-red-700 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+                submit: "border bg-[#348D37] text-white font-normal shadow-sm rounded-[12px] px-6 py-2.5 text-sm leading-6 hover:bg-[#2F7E32] focus-visible:ring-green-100",
             },
             size: {
                 default: "h-9 px-4 py-2 has-[>svg]:px-3",
