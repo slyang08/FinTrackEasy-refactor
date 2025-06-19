@@ -5,7 +5,7 @@ import Income from "../models/Income.js";
 
 // Recurring Job for handling recurring transaction
 export default async function startRecurringTransaction() {
-    cron.schedule("*/5 * * * *", async () => {
+    cron.schedule("0 0 * * *", async () => {
         console.log(`[${new Date().toISOString()}] Start posting Recurring Transaction`);
 
         // Post recurring transactions
