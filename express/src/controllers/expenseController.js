@@ -150,28 +150,36 @@ export const getExpense = async (req, res) => {
 
 /**
  * @desc    Update an Expense
- * @route   PUT /api/expenses/:id
+ * @route   PATCH /api/expenses/:id
  * @access  Private (valid JWT required)
  */
 export const updateExpense = async (req, res, next) => {
     try {
+        console.log("req.body:", req.body);
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).json({ message: "Invalid expense ID" });
         }
 
         const { error, value } = updateExpenseSchema.validate(req.body, { abortEarly: false });
         if (error) {
+            console.log("Joi error:", error.details);
             return res.status(400).json({ messages: error.details.map((e) => e.message) });
         }
 
         const updateData = { ...value };
         const unsetData = {};
 
+        console.log("updateData.note:", updateData.note);
         if (updateData.category && updateData.category !== "Other") {
             unsetData.customCategory = "";
         }
 
-        if ("note" in updateData && (updateData.note === null || updateData.note === "")) {
+        if (
+            !("note" in req.body) ||
+            req.body.note === null ||
+            req.body.note === undefined ||
+            req.body.note === ""
+        ) {
             unsetData.note = "";
             delete updateData.note;
         }
@@ -182,16 +190,24 @@ export const updateExpense = async (req, res, next) => {
                 ? { $set: updateData, $unset: unsetData }
                 : updateData;
 
+        console.log("updateObj:", updateObj);
+        console.log("before _id:", req.params.id);
+        console.log("account._id:", req.account._id);
+
         const expense = await Expense.findOneAndUpdate(
             { _id: req.params.id, account: req.account._id },
             updateObj,
             { new: true, runValidators: true, timestamps: true }
         );
+        console.log("after _id:", req.params.id);
+        console.log("account._id:", req.account._id);
 
         if (!expense) return res.status(404).json({ message: "Expense not found" });
 
+        console.log("Updated expense note:", expense.note);
         res.json(expense);
     } catch (err) {
+        console.log("Server error:", err);
         next(err);
     }
 };

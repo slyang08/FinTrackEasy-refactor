@@ -38,6 +38,91 @@ const allExpense = [
     "Other",
 ];
 
+// Customize Hook: Calculate Total Income, Total Expenses, Balance
+function useTransactionTotals(transactions) {
+    const totalIncome = transactions
+        .filter((txn) => txn.type === "income")
+        .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    const totalExpenses = transactions
+        .filter((txn) => txn.type === "expense")
+        .reduce((sum, txn) => sum + Number(txn.amount), 0);
+
+    const balance = totalIncome - totalExpenses;
+
+    return { totalIncome, totalExpenses, balance };
+}
+
+// Consolidation and sequencing transactions
+function mergeAndSortTransactions(incomes, expenses) {
+    return [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+// Obtaining income/expenditure information
+async function fetchIncomes(params) {
+    const res = await api.get("/incomes/filter", { params });
+    return res.data.map((txn) => ({ ...txn, type: "income" }));
+}
+
+async function fetchExpenses(params) {
+    const res = await api.get("/expenses/filter", { params });
+    return res.data.map((txn) => ({ ...txn, type: "expense" }));
+}
+
+// Filter transactions by date and classification
+async function fetchFilteredTransactions(dateRange, selectedCategories, allIncome, allExpense) {
+    if (!dateRange?.from || !dateRange?.to) {
+        console.warn("Skipping fetch: dateRange is incomplete", dateRange);
+        return [];
+    }
+
+    // Date handling: to ISO string
+    const startLocal = new Date(dateRange.from);
+    startLocal.setHours(0, 0, 0, 0);
+    const startDate = new Date(
+        startLocal.getTime() - startLocal.getTimezoneOffset() * 60000
+    ).toISOString();
+
+    const endLocal = new Date(dateRange.to);
+    endLocal.setHours(0, 0, 0, 0);
+    endLocal.setDate(endLocal.getDate() + 1);
+    const endDate = new Date(
+        endLocal.getTime() - endLocal.getTimezoneOffset() * 60000
+    ).toISOString();
+
+    const incomeCategories = selectedCategories.filter((c) => allIncome.includes(c));
+    const expenseCategories = selectedCategories.filter((c) => allExpense.includes(c));
+
+    const incomeParams = { startDate, endDate };
+    const expenseParams = { startDate, endDate };
+
+    if (incomeCategories.length > 0) {
+        incomeParams.categories = incomeCategories.join(",");
+    }
+    if (expenseCategories.length > 0) {
+        expenseParams.categories = expenseCategories.join(",");
+    }
+
+    let incomes = [];
+    let expenses = [];
+
+    if (
+        selectedCategories.length === 0 ||
+        (incomeCategories.length > 0 && expenseCategories.length > 0)
+    ) {
+        [incomes, expenses] = await Promise.all([
+            fetchIncomes(incomeParams),
+            fetchExpenses(expenseParams),
+        ]);
+    } else if (incomeCategories.length > 0) {
+        incomes = await fetchIncomes(incomeParams);
+    } else if (expenseCategories.length > 0) {
+        expenses = await fetchExpenses(expenseParams);
+    }
+
+    return mergeAndSortTransactions(incomes, expenses);
+}
+
 export default function Transactions() {
     const [open, setOpen] = useState(false);
     const [type, setType] = useState(null);
@@ -47,6 +132,7 @@ export default function Transactions() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Default date range to today
     const today = new Date();
@@ -54,6 +140,14 @@ export default function Transactions() {
         from: today,
         to: today,
     });
+
+    const { totalIncome, totalExpenses, balance } = useTransactionTotals(transactions);
+
+    useEffect(() => {
+        fetchFilteredTransactions(dateRange, selectedCategories, allIncome, allExpense)
+            .then(setTransactions)
+            .catch(console.error);
+    }, [dateRange, selectedCategories, refreshTrigger]);
 
     // Debug
     useEffect(() => {
@@ -66,87 +160,6 @@ export default function Transactions() {
             to: dateRange.to.toISOString(),
         });
     }, [dateRange]);
-
-    const fetchTransactions = async () => {
-        try {
-            // Convert date range to ISO strings (your existing timezone-safe logic)
-            const startLocal = new Date(dateRange.from);
-            startLocal.setHours(0, 0, 0, 0);
-            const startDate = new Date(
-                startLocal.getTime() - startLocal.getTimezoneOffset() * 60000
-            ).toISOString();
-
-            const endLocal = new Date(dateRange.to);
-            endLocal.setHours(0, 0, 0, 0);
-            endLocal.setDate(endLocal.getDate() + 1);
-            const endDate = new Date(
-                endLocal.getTime() - endLocal.getTimezoneOffset() * 60000
-            ).toISOString();
-
-            const incomeCategories = selectedCategories.filter((c) => allIncome.includes(c));
-            const expenseCategories = selectedCategories.filter((c) => allExpense.includes(c));
-
-            const incomeParams = { startDate, endDate };
-            const expenseParams = { startDate, endDate };
-
-            if (incomeCategories.length > 0) {
-                incomeParams.categories = incomeCategories.join(",");
-            }
-            if (expenseCategories.length > 0) {
-                expenseParams.categories = expenseCategories.join(",");
-            }
-
-            let incomes = [];
-            let expenses = [];
-
-            if (
-                selectedCategories.length === 0 || // no filter → fetch both
-                (incomeCategories.length > 0 && expenseCategories.length > 0)
-            ) {
-                const [incomeRes, expenseRes] = await Promise.all([
-                    api.get("/incomes/filter", { params: incomeParams }),
-                    api.get("/expenses/filter", { params: expenseParams }),
-                ]);
-                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
-                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
-            } else if (incomeCategories.length > 0) {
-                const incomeRes = await api.get("/incomes/filter", {
-                    params: incomeParams,
-                });
-                incomes = incomeRes.data.map((txn) => ({ ...txn, type: "income" }));
-            } else if (expenseCategories.length > 0) {
-                const expenseRes = await api.get("/expenses/filter", {
-                    params: expenseParams,
-                });
-                expenses = expenseRes.data.map((txn) => ({ ...txn, type: "expense" }));
-            }
-
-            setTransactions(
-                [...incomes, ...expenses].sort((a, b) => new Date(b.date) - new Date(a.date))
-            );
-        } catch (err) {
-            console.error("Error fetching filtered transactions:", err);
-        }
-    };
-
-    useEffect(() => {
-        fetchTransactions();
-    }, [dateRange, selectedCategories]);
-
-    // Calculate totals (filtering by type)
-    const totalIncome = transactions
-        .filter((txn) => txn.type === "income")
-        // Uncomment when date filtering is fixed
-        //.filter((txn) => new Date(txn.date) >= dateRange.from && new Date(txn.date) <= dateRange.to)
-        .reduce((sum, txn) => sum + Number(txn.amount), 0);
-
-    const totalExpenses = transactions
-        .filter((txn) => txn.type === "expense")
-        // Uncomment when date filtering is fixed
-        //.filter((txn) => new Date(txn.date) >= dateRange.from && new Date(txn.date) <= dateRange.to)
-        .reduce((sum, txn) => sum + Number(txn.amount), 0);
-
-    const balance = totalIncome - totalExpenses;
 
     const openDialog = (entryType) => {
         setType(entryType);
@@ -167,11 +180,11 @@ export default function Transactions() {
 
     const confirmDeleteEntry = async () => {
         try {
-            const endpoint = selectedDelete.type === "income" ? "/incomes" : "/expenses";
-            await api.delete(`${endpoint}/${selectedDelete._id}`);
+            const endpoint = selectedDelete.type === "income" ? "incomes" : "expenses";
+            await api.delete(`/${endpoint}/${selectedDelete._id}`);
             setConfirmDelete(false);
             setSelectedDelete(null);
-            fetchTransactions();
+            setRefreshTrigger((prev) => prev + 1);
             toast.success("Entry deleted successfully");
         } catch (err) {
             toast.error("Failed to delete entry");
@@ -183,7 +196,7 @@ export default function Transactions() {
         setOpen(false);
         setEditingData(null);
         setEditingId(null);
-        fetchTransactions();
+        setRefreshTrigger((prev) => prev + 1);
     };
 
     return (
@@ -192,10 +205,18 @@ export default function Transactions() {
                 {/* Top Controls */}
                 <div className="flex flex-wrap gap-4 items-center justify-between">
                     <div className="flex gap-2">
-                        <Button variant="income" onClick={() => openDialog("income")}>
+                        <Button
+                            variant="income"
+                            onClick={() => openDialog("income")}
+                            className="cursor-pointer"
+                        >
                             Add Income
                         </Button>
-                        <Button variant="expense" onClick={() => openDialog("expense")}>
+                        <Button
+                            variant="expense"
+                            onClick={() => openDialog("expense")}
+                            className="cursor-pointer"
+                        >
                             Add Expense
                         </Button>
                     </div>

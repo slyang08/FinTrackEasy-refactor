@@ -70,7 +70,10 @@ export default function CategoryFilter({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button className="block w-full md:inline-block md:w-auto" variant="outline">
+                <Button
+                    className="block w-full md:inline-block md:w-auto cursor-pointer"
+                    variant="outline"
+                >
                     Filter by Categories
                 </Button>
             </PopoverTrigger>

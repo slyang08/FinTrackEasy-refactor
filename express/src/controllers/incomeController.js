@@ -153,7 +153,7 @@ export const getIncome = async (req, res) => {
 
 /**
  * @desc    Update an Income by ID
- * @route   PUT /api/incomes/:id
+ * @route   PATCH /api/incomes/:id
  * @access  Private (valid JWT required)
  */
 export const updateIncome = async (req, res, next) => {
@@ -174,7 +174,10 @@ export const updateIncome = async (req, res, next) => {
             unsetData.customCategory = "";
         }
 
-        if ("note" in updateData && (updateData.note === null || updateData.note === "")) {
+        if (
+            ("note" in req.body || "note" in updateData) &&
+            (updateData.note === null || updateData.note === undefined || updateData.note === "")
+        ) {
             unsetData.note = "";
             delete updateData.note;
         }
@@ -184,6 +187,7 @@ export const updateIncome = async (req, res, next) => {
                 ? { $set: updateData, $unset: unsetData }
                 : updateData;
 
+        console.log("updateObj:", updateObj);
         const income = await Income.findOneAndUpdate(
             { _id: req.params.id, account: req.account._id },
             updateObj,
@@ -192,6 +196,7 @@ export const updateIncome = async (req, res, next) => {
 
         if (!income) return res.status(404).json({ message: "Income not found" });
 
+        console.log("Updated income note:", income.note);
         res.json(income);
     } catch (err) {
         next(err);

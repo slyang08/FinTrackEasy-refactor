@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -15,7 +15,6 @@ import {
     Command,
     CommandEmpty,
     CommandGroup,
-    CommandInput,
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
@@ -31,13 +30,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
@@ -107,10 +99,13 @@ const incomeCategories = [
 //     { label: "Weekly", value: "Weekly" },
 // ];
 
+const MAX_NOTE_LENGTH = 30;
+
 export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
-    const [dropdown] = React.useState("dropdown");
-    const [showConfirm, setShowConfirm] = React.useState(false);
-    const [pendingValues, setPendingValues] = React.useState(null);
+    const [dropdown] = useState("dropdown");
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [pendingValues, setPendingValues] = useState(null);
+    const [charCount, setCharCount] = useState(0);
 
     // Render the form depending on whether it is an expense or income form: default to expense for now
     const categoryOptions = type === "income" ? incomeCategories : expenseCategories;
@@ -120,18 +115,23 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         resolver: zodResolver(formSchema),
         defaultValues: {
             txnDate: new Date(),
+            txnAmount: "",
+            txnCategory: "",
+            txnNote: "",
+            txnRecurring: false,
+            txnCustomCategory: "",
         },
     });
 
     // Load the form with the existing transaction data if the button is an edit button and has passed the type
-    React.useEffect(() => {
+    useEffect(() => {
         if (editingData) {
             form.reset({
                 txnDate: editingData.date ? new Date(editingData.date) : new Date(),
                 txnCategory: editingData.category || "",
                 txnNote: editingData.note || "",
                 txnAmount: editingData.amount || "",
-                txnRecurring: editingData.isRecurring ? editingData.isRecurring : undefined,
+                txnRecurring: editingData.isRecurring ?? false,
                 txnCustomCategory:
                     editingData.category === "Other" ? editingData.customCategory || "" : "",
             });
@@ -167,15 +167,14 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         console.log("Payload being submitted:", pendingValues);
 
         try {
-            const endpoint = type === "income" ? "/incomes" : "/expenses";
+            const endpoint = type === "income" ? "incomes" : "expenses";
 
             const payload = {
                 date: pendingValues.txnDate || undefined,
                 amount: pendingValues.txnAmount,
                 category: pendingValues.txnCategory,
                 note: pendingValues.txnNote,
-                isRecurring:
-                    pendingValues.txnRecurring === "None" ? null : pendingValues.txnRecurring,
+                isRecurring: pendingValues.txnRecurring,
                 // include customCategory only if category is Other
                 ...(pendingValues.txnCategory === "Other" && {
                     customCategory: pendingValues.txnCustomCategory,
@@ -185,7 +184,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
             console.log("Payload:", payload);
 
             if (editingId) {
-                await api.patch(`${endpoint}/${editingId}`, payload);
+                await api.patch(`/${endpoint}/${editingId}`, payload);
                 toast.success(`${type === "income" ? "Income" : "Expense"} entry updated!`);
             } else {
                 await api.post(endpoint, payload);
@@ -362,10 +361,18 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                                 : "work bonus"
                                         }
                                         className="w-full min-h-30"
+                                        maxLength={MAX_NOTE_LENGTH}
                                         {...field}
+                                        onChange={(e) => {
+                                            setCharCount(e.target.value.length);
+                                            field.onChange(e);
+                                        }}
                                     />
                                 </FormControl>
-                                <FormDescription>30 character limit</FormDescription>
+                                <FormDescription>
+                                    {MAX_NOTE_LENGTH - charCount} character
+                                    {MAX_NOTE_LENGTH - charCount !== 1 ? "s" : ""} left
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -421,11 +428,12 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                 variant="destructive"
                                 type="button"
                                 onClick={() => setOpen(false)}
+                                className="cursor-pointer"
                             >
                                 Cancel
                             </Button>
                         )}
-                        <Button variant="secondary" type="submit">
+                        <Button variant="secondary" type="submit" className="cursor-pointer">
                             Submit
                         </Button>
                     </div>
@@ -438,6 +446,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                 actionType="submit"
                 entry={{
                     category: pendingValues?.txnCategory,
+                    customCategory: pendingValues?.txnCustomCategory,
                     note: pendingValues?.txnNote,
                     amount: pendingValues?.txnAmount,
                 }}

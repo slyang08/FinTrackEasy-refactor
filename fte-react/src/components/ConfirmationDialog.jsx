@@ -46,7 +46,10 @@ export default function ConfirmationDialog({
                         <br />
                         <strong>Summary:</strong>
                         <br />
-                        Name: {entry?.name || "N/A"}
+                        Category:{" "}
+                        {entry?.category === "Other"
+                            ? entry?.customCategory
+                            : entry?.category || "N/A"}
                         <br />
                         Note: {entry?.note || "N/A"}
                         <br />

@@ -44,7 +44,7 @@ export default function TransactionDateFilter({ dateRange = {}, onChange }) {
             <PopoverTrigger asChild>
                 <button
                     onClick={() => setOpen(!open)}
-                    className="px-4 py-2 border rounded-md shadow-sm text-sm"
+                    className="px-4 py-2 border rounded-md shadow-sm text-sm cursor-pointer"
                 >
                     {dateText}
                 </button>
