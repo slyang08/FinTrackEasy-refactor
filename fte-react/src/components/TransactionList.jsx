@@ -1,14 +1,7 @@
 import { format, parseISO } from "date-fns";
 
 import { Button } from "@/components/ui/button";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 export default function TransactionList({ transactions, onEdit, onDelete, showNote, className }) {
     if (!transactions || transactions.length === 0) {
@@ -57,10 +50,13 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                         <Table className="border-none">
                             <TableBody>
                                 {groupedTransactions[date].map((txn) => (
-                                    <TableRow key={txn._id} className="border-none">
-                                        <TableCell className="border-none">
+                                    <TableRow
+                                        key={txn._id}
+                                        className="flex border-none justify-between"
+                                    >
+                                        <TableCell className="w-[7rem] border-none">
                                             <p className="text-sm">{txn.displayCategory}</p>
-                                            {txn.recurring && (
+                                            {txn.isRecurring && (
                                                 <p className="text-xs text-muted-foreground italic">
                                                     Recurring
                                                 </p>
@@ -73,7 +69,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                             </TableCell>
                                         )}
 
-                                        <TableCell className="text-right border-none">
+                                        <TableCell className="w-[20rem] flex flex-row justify-end items-center text-right space-x-2 border-none">
                                             <p
                                                 className={
                                                     txn.type === "income"
@@ -82,15 +78,14 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                                 }
                                             >
                                                 {txn.type === "income" ? "+" : "-"}$
-                                                {Number(txn.amount).toFixed(2)}
+                                                {Number(txn.amount).toFixed(2)} CAD
                                             </p>
-                                        </TableCell>
 
-                                        <TableCell className="text-right space-x-2 border-none">
                                             <Button
                                                 variant="edit"
                                                 size="sm"
                                                 onClick={() => onEdit(txn)}
+                                                className="cursor-pointer"
                                             >
                                                 Edit
                                             </Button>
@@ -98,6 +93,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
                                                 variant="delete"
                                                 size="sm"
                                                 onClick={() => onDelete(txn)}
+                                                className="cursor-pointer"
                                             >
                                                 Delete
                                             </Button>
