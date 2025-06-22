@@ -7,7 +7,8 @@ import {
     getSavings,
     updateSaving,
 } from "../controllers/savingController.js";
-import protect, { validateBody } from "../middlewares/validate.js";
+import { protect } from "../middlewares/authMiddleware.js";
+import { validateBody } from "../middlewares/validate.js";
 import { savingSchema } from "../validations/savingValidation.js";
 
 const router = express.Router({ mergeParams: true }); // Make req.params.goalId available

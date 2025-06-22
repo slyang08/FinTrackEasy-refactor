@@ -33,14 +33,11 @@ export default function ChangePassword() {
             return;
         }
         try {
-            await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/auth/${selectedAccountId}/changepassword`,
-                {
-                    currentPassword,
-                    newPassword,
-                    confirmPassword,
-                }
-            );
+            await api.patch(`/auth/${selectedAccountId}/changepassword`, {
+                currentPassword,
+                newPassword,
+                confirmPassword,
+            });
             setMessage("Password changed successfully!");
             navigate("/profile");
         } catch (err) {
@@ -53,11 +50,10 @@ export default function ChangePassword() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
-            <header className="bg-green-900 h-12 w-full" />
+        <div className="min-h-[calc(100vh-2.5rem)] flex flex-col">
             <main className="flex-grow flex justify-center items-center">
-                <div className="border border-green-100 shadow-md p-10 rounded bg-white">
-                    <h2 className="text-3xl font-bold text-green-700 text-center mb-8">
+                <div className="shadow-2xl p-10 rounded-xl">
+                    <h2 className="text-3xl font-bold mb-6 text-green-600 text-center">
                         Change Password
                     </h2>
                     {message && (
@@ -67,31 +63,31 @@ export default function ChangePassword() {
                             {message}
                         </div>
                     )}
-                    <form onSubmit={handleSubmit} className="space-y-4 w-72">
+                    <form onSubmit={handleSubmit} className="space-y-4 w-xs">
                         <input
                             type="password"
                             placeholder="Current password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            className="w-full px-4 py-2 rounded-md bg-gray-200"
                         />
                         <input
                             type="password"
                             placeholder="New password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            className="w-full px-4 py-2 rounded-md bg-gray-200"
                         />
                         <input
                             type="password"
                             placeholder="Confirm new password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded bg-black placeholder-gray-600"
+                            className="w-full px-4 py-2 rounded-md bg-gray-200"
                         />
                         <button
                             type="submit"
-                            className="w-full bg-green-900 text-white py-2 rounded hover:bg-green-800 transition"
+                            className="w-full bg-green-700 text-white p-2 rounded-md hover:bg-green-800"
                         >
                             Change password
                         </button>

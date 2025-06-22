@@ -16,7 +16,7 @@ export default function VerifyEmail() {
             return;
         }
 
-        api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/verify-email?token=${token}&id=${id}`)
+        api.get(`/auth/verify-email?token=${token}&id=${id}`)
             .then(() => {
                 setStatus("success");
                 setTimeout(() => {

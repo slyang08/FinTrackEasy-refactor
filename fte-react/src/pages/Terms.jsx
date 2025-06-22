@@ -2,13 +2,10 @@ import React from "react";
 
 export default function Terms() {
     return (
-        <div className="bg-gray-50 min-h-screen text-gray-800">
-            <header className="bg-blue-600 text-white py-10 px-6 text-center shadow">
+        <div className="bg-gray-50 w-full text-gray-800">
+            <main className="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-lg shadow mt-10 space-y-8">
                 <h1 className="text-3xl font-semibold">FinTrackEasy - Terms of Service</h1>
                 <p className="mt-2 text-sm">Effective Date: April 24, 2025</p>
-            </header>
-
-            <main className="max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-lg shadow mt-10 space-y-8">
                 <section>
                     <h2 className="text-xl font-semibold text-blue-600">
                         1. Eligibility and Account Registration
@@ -120,18 +117,14 @@ export default function Terms() {
                         <br />
                         📧{" "}
                         <a
-                            href="mailto:support@fintrackeasy.com"
+                            href="mailto:fintrackeasy@gmail.com"
                             className="text-blue-500 hover:underline"
                         >
-                            support@fintrackeasy.com
+                            fintrackeasy@gmail.com
                         </a>
                     </p>
                 </section>
             </main>
-
-            <footer className="text-center text-gray-500 text-sm mt-10 mb-6">
-                &copy; 2025 FinTrackEasy. All rights reserved.
-            </footer>
         </div>
     );
 }

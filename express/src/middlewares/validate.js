@@ -14,12 +14,17 @@ const validate =
     (schema, type = "body") =>
     (req, res, next) => {
         const data = req[type]; // type can be "body", "query", "params"
-        const { error } = schema.validate(data, { abortEarly: false });
+        const { error, value } = schema.validate(data, { abortEarly: false });
 
         if (error) {
             const messages = error.details.map((detail) => detail.message);
             return res.status(400).json({ errors: messages });
         }
+
+        // Attach validated data for controller use
+        if (type === "body") req.validatedBody = value;
+        if (type === "query") req.validatedQuery = value;
+        if (type === "params") req.validatedParams = value;
 
         next();
     };

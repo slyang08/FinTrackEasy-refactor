@@ -1,4 +1,5 @@
 // express/server.js
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
@@ -7,13 +8,16 @@ import connectDB from "./config/dbConnect.js";
 import accountRoutes from "./routes/accountRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import savingRoutes from "./routes/savingRoutes.js";
+import transactionRoutes from "./routes/transactionRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import passport from "./utils/googleOAuth.js";
+import recurringTransaction from "./utils/postRecurringTransaction.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -23,36 +27,38 @@ connectDB();
 
 // Middleware
 app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
+app.use(cookieParser());
+app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            secure: false, // Must be false for local testing, set to true for official sites
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax", // or 'none' (cross-domain)
         },
     })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(
-    cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-    })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/accounts", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/budgets", budgetRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/incomes", incomeRoutes);
+app.use("/api/transactions", transactionRoutes);
 app.use("/api/goals/:goalId/savings", savingRoutes);
 app.use("/api/users", userRoutes);
 
@@ -72,6 +78,9 @@ process.on("uncaughtException", (err) => {
     console.error("Uncaught Exception:", err);
     process.exit(1);
 });
+
+// Run recurring job
+recurringTransaction();
 
 // Start server
 app.listen(port, () => {

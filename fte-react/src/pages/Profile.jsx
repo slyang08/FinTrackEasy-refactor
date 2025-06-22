@@ -1,9 +1,11 @@
 // src/pages/Profile.jsx
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 import { getUserInfo } from "@/api/user";
+import { isAuthenticated } from "@/atoms/Atom";
 
 export default function Profile() {
     const [profile, setProfile] = useState({
@@ -14,15 +16,10 @@ export default function Profile() {
         _id: "",
     });
 
-    // Form input
-    const [form, setForm] = useState({
-        nickname: "",
-        phone: "",
-        preferredLanguage: "English",
-    });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
+    const [isAuth, setIsAuth] = useAtom(isAuthenticated);
 
     const navigate = useNavigate();
 
@@ -31,25 +28,19 @@ export default function Profile() {
         getUserInfo()
             .then((user) => {
                 setProfile(user);
-                setForm({
-                    nickname: user.nickname || "",
-                    phone: user.phone || "",
-                    preferredLanguage: user.preferredLanguage || "English",
-                });
                 setLoading(false);
             })
             .catch((err) => {
-                setMessage(
-                    "Failed to load profile: " + (err?.response?.data?.message || err.message)
-                );
+                console.error(err?.response?.data?.message || err.message);
+                setMessage("Failed to load profile: ");
                 setLoading(false);
             });
     }, []);
 
-    // Handle form changes
+    // Handle profile changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({
+        setProfile((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -60,18 +51,14 @@ export default function Profile() {
         setSaving(true);
         setMessage("");
         try {
-            await api.patch(
-                `${import.meta.env.VITE_API_BASE_URL}/users/${profile._id}`,
-                {
-                    nickname: form.nickname,
-                    phone: form.phone,
-                    preferredLanguage: form.preferredLanguage,
-                },
-                { withCredentials: true }
-            );
+            await api.patch(`/users/${profile._id}`, {
+                nickname: profile.nickname,
+                phone: profile.phone,
+                preferredLanguage: profile.preferredLanguage,
+            });
             setMessage("Profile updated successfully!");
             // Re-obtain the latest data
-            const res = await api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`);
+            const res = await api.get("/auth/me");
             setProfile(res.data.user);
         } catch (err) {
             setMessage(
@@ -85,130 +72,108 @@ export default function Profile() {
 
     const handleLogout = async () => {
         try {
-            await api.get(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`);
+            // Clear both JWT tokens for traditional and Google OAuth
+            await api.get("/auth/logout");
         } catch (err) {
             setMessage(err);
         }
-        // Clear all JWT tokens
-        localStorage.removeItem("token");
-        delete api.defaults.headers.common["Authorization"];
-        navigate("/login");
+        setIsAuth(false);
+        navigate("/");
     };
 
-    // Jump to the password change page
-    const handleChangePassword = (e) => {
-        e.preventDefault();
-        navigate("/changepassword");
-    };
+    useEffect(() => {
+        if (!isAuth) navigate("/login");
+    }, [isAuth, navigate]);
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="flex w-full items-center justify-center">
                 <span>Loading...</span>
             </div>
         );
     }
 
+    if (!profile) {
+        return <div>No profile data available.</div>;
+    }
+
     return (
-        <div className="min-h-screen bg-white text-black font-sans">
-            <main className="max-w-xl mx-auto py-10 px-6">
-                <h2 className="text-2xl font-semibold text-green-700 mb-6">Profile</h2>
+        <div className="mt-15 ml-15">
+            <h1 className="text-green-600 font-bold text-3xl">Profile</h1>
 
-                {message && (
-                    <div
-                        className={`mb-4 p-2 rounded ${
-                            message.includes("success")
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                        }`}
+            <div
+                className={`h-10 mb-4 p-2 rounded ${message == "" ? "invisible" : "visible"} ${
+                    message.includes("success")
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                }`}
+            >
+                {message}
+            </div>
+
+            <div className="grid grid-cols-2 min-w-1/4 max-w-1/3 space-y-5 mt-10">
+                <p>Email:</p>
+                <p>{profile.email}</p>
+
+                <p>Password:</p>
+                <Link to={"/changepassword"} className="text-blue-600 hover:underline">
+                    Change Password
+                </Link>
+
+                <p className="flex items-center">Nickname:</p>
+                <input
+                    name="nickname"
+                    value={profile.nickname}
+                    onChange={handleChange}
+                    className="bg-gray-200 rounded-md py-1 px-3"
+                />
+
+                <p className="flex items-center">Phone:</p>
+                <input
+                    name="phone"
+                    value={profile.phone}
+                    onChange={handleChange}
+                    className="bg-gray-200 rounded-md py-1 px-3"
+                />
+
+                <p>Language:</p>
+                <select
+                    name="preferredLanguage"
+                    value={profile.preferredLanguage}
+                    onChange={handleChange}
+                    className="bg-gray-200 rounded-md py-1 px-3"
+                >
+                    <option value="en">English</option>
+                    <option value="fr">French</option>
+                </select>
+
+                <button
+                    onClick={handleSave}
+                    className="bg-green-700 hover:bg-green-800 rounded-xl col-start-2 text-white p-2"
+                    disabled={saving}
+                >
+                    {saving ? "Saving..." : "Save"}
+                </button>
+            </div>
+            <div className="space-y-5 mt-5">
+                <p>
+                    Contact us:{" "}
+                    <a
+                        href="mailto:fintrackeasy@gmail.com"
+                        className="text-blue-600 hover:underline"
                     >
-                        {message}
-                    </div>
-                )}
+                        fintrackeasy@gmail.com
+                    </a>
+                </p>
 
-                <div className="space-y-4">
-                    <div>
-                        <label className="block font-medium">Email:</label>
-                        <p className="text-gray-700">{profile.email}</p>
-                    </div>
+                <Link to={"/terms"} className="text-blue-600 hover:underline block">
+                    Terms and conditions
+                </Link>
 
-                    <div>
-                        <label className="block font-medium">Password:</label>
-                        <div className="flex items-center justify-between">
-                            <p className="text-black">●●●●●●●●</p>
-                            <a
-                                href="#"
-                                className="text-sm text-black underline"
-                                onClick={handleChangePassword}
-                            >
-                                Change password
-                            </a>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block font-medium">Nickname:</label>
-                        <input
-                            className="w-full px-4 py-2 rounded bg-gray-100"
-                            type="text"
-                            name="nickname"
-                            value={form.nickname}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-medium">Phone:</label>
-                        <input
-                            className="w-full px-4 py-2 rounded bg-gray-100"
-                            type="text"
-                            name="phone"
-                            value={form.phone}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block font-medium">Language:</label>
-                        <select
-                            className="w-full px-4 py-2 rounded bg-gray-100"
-                            name="preferredLanguage"
-                            value={form.preferredLanguage}
-                            onChange={handleChange}
-                        >
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
-                        </select>
-                    </div>
-
-                    <button
-                        className="bg-green-700 text-white px-6 py-2 rounded mt-4 hover:bg-green-800 transition"
-                        onClick={handleSave}
-                        disabled={saving}
-                    >
-                        {saving ? "Saving..." : "Save"}
-                    </button>
-                </div>
-
-                <div className="mt-10 space-y-3 text-sm">
-                    <p>
-                        Contact us:{" "}
-                        <a href="mailto:fintrackeasy@gmail.com" className="text-blue-600 underline">
-                            fintrackeasy@gmail.com
-                        </a>
-                    </p>
-                    <p>
-                        <a href="#" className="underline">
-                            Go to Privacy terms and conditions
-                        </a>
-                    </p>
-                    <p>
-                        <button onClick={handleLogout} className="underline text-red-600">
-                            Sign out
-                        </button>
-                    </p>
-                </div>
-            </main>
+                <button className="text-blue-600 hover:underline" onClick={handleLogout}>
+                    Sign out
+                </button>
+            </div>
         </div>
     );
 }

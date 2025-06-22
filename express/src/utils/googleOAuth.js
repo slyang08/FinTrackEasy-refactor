@@ -2,6 +2,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
+import Account from "../models/Account.js";
 import User from "../models/User.js";
 
 passport.use(
@@ -19,7 +20,13 @@ passport.use(
                     googleId: profile.id,
                     email: profile.emails[0].value,
                     nickname: profile.displayName,
+                    verified: true,
                     // Other fields
+                });
+                await Account.create({
+                    user: user._id,
+                    password: "google-oauth", // Marked with a special string
+                    status: "Active",
                 });
             }
             return done(null, user);
