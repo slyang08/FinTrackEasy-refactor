@@ -23,7 +23,7 @@ export default function Login() {
 
             setIsAuth(true);
 
-            navigate("/profile");
+            navigate("/overview");
         } catch (err) {
             console.error(err);
             setError("Invalid email or password.");
@@ -32,7 +32,7 @@ export default function Login() {
 
     useEffect(() => {
         if (isAuth) {
-            navigate("/profile", { replace: true });
+            navigate("/overview", { replace: true });
         }
     }, [isAuth, navigate]);
 
