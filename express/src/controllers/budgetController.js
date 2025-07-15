@@ -27,7 +27,15 @@ export const createBudget = async (req, res, next) => {
  */
 export const getBudgets = async (req, res, next) => {
     try {
-        const budgets = await Budget.find({ account: req.account._id }).sort({ createdAt: -1 });
+        const { startDate, endDate } = req.query;
+        const filter = { account: req.account._id };
+
+        if (startDate && endDate) {
+            filter["dateRange.start"] = { $lte: new Date(endDate) };
+            filter["dateRange.end"] = { $gte: new Date(startDate) };
+        }
+
+        const budgets = await Budget.find(filter).sort({ createdAt: -1 });
         res.json(budgets);
     } catch (err) {
         next(err);
