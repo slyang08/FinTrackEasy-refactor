@@ -18,6 +18,7 @@ import Test from "@/pages/Test";
 import Transactions from "@/pages/Transactions";
 import VerifyEmail from "@/pages/VerifyEmail";
 
+import Budgets from "../pages/Budgets";
 import Overview from "../pages/Overview";
 import Test2 from "../pages/Test2";
 
@@ -101,6 +102,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <Transactions />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/budgets",
+        element: (
+            <ProtectedRoute>
+                <Budgets />
             </ProtectedRoute>
         ),
     },

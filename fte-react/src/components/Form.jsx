@@ -66,7 +66,7 @@ const formSchema = z
     );
 
 // Category mapping for combo boxes
-const expenseCategories = [
+export const expenseCategories = [
     { label: "Food & Drink", value: "Food & Drink" },
     { label: "Car", value: "Car" },
     { label: "Shopping", value: "Shopping" },
