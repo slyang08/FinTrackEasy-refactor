@@ -1,8 +1,7 @@
 // src/pages/Login.jsx
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
+import { FaGoogle } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -100,7 +99,7 @@ export default function Login() {
                     onClick={handleGoogleLogin}
                     className="w-full text-gray-500 py-2 border border-gray-300 rounded-md hover:bg-gray-100 flex justify-center items-center"
                 >
-                    <FontAwesomeIcon icon={faGoogle} className="mr-4 border p-1 rounded-xl" />
+                    <FaGoogle className="text-3xl mr-4 border-2 p-1 rounded-xl" />
                     Sign in with Google
                 </button>
             </div>

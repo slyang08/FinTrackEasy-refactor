@@ -1,8 +1,6 @@
-import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+import { FaFacebookF } from "react-icons/fa6";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaInstagram } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -14,26 +12,16 @@ export default function Footer() {
 
             <span className="text-white font-bold text-2xl">&#169;2025 FinTrackEasy</span>
 
-            <div>
+            <div className="flex gap-3">
                 <Link to={"https://www.facebook.com/"}>
-                    <FontAwesomeIcon
-                        icon={faFacebookF}
-                        className="text-white text-3xl mx-1.5 hover:text-gray-300"
-                    />
+                    <FaFacebookF className="text-white text-3xl hover:text-gray-300" />
                 </Link>
                 <Link to={"https://x.com/"}>
-                    <FontAwesomeIcon
-                        icon={faXTwitter}
-                        className="text-white text-3xl mx-1.5 hover:text-gray-300"
-                    />
+                    <FaXTwitter className="text-white text-3xl hover:text-gray-300" />
                 </Link>
                 <Link to={"https://www.instagram.com/"}>
-                    <FontAwesomeIcon
-                        icon={faInstagram}
-                        className="text-white text-3xl mx-1.5 hover:text-gray-300"
-                    />
+                    <FaInstagram className="text-white text-3xl hover:text-gray-300" />
                 </Link>
-                {/* <FontAwesomeIcon icon={faEnvelope} className="text-white text-3xl mx-1.5"/> */}
             </div>
         </div>
     );
