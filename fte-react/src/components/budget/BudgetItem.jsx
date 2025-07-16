@@ -18,7 +18,13 @@ import {
 
 const currMonth = new Date().getMonth();
 
-export default function BudgetItem({ budget, usedAmount, isDeleted, setIsDeleted }) {
+export default function BudgetItem({
+    budget,
+    usedAmount,
+    isDeleted,
+    setIsDeleted,
+    className = "my-10",
+}) {
     const [progress, setProgress] = useState(0);
     const [amount, setAmount] = useState(usedAmount);
 
@@ -52,35 +58,29 @@ export default function BudgetItem({ budget, usedAmount, isDeleted, setIsDeleted
     }
 
     return (
-        <div className="my-10">
+        <div className={`min-w-sm ${className}`}>
             {/* Category */}
-            <div className="font-semibold text-lg my-2">{budget.category}</div>
+            <div className="font-semibold text-sm my-2">{budget.category}</div>
             <div>
                 <div className="flex justify-between">
-                    <div>{convertDateFormat(budget.dateRange.start)}</div>
-                    <div>{(progress || 0).toFixed(0)}%</div>
-                    <div>{convertDateFormat(budget.dateRange.end)}</div>
+                    <div className="text-sm">{convertDateFormat(budget.dateRange.start)}</div>
+                    <div className="text-sm">{(progress || 0).toFixed(0)}%</div>
+                    <div className="text-sm">{convertDateFormat(budget.dateRange.end)}</div>
                 </div>
                 <Progress value={progress} className="my-3" />
                 <div className="flex justify-between">
-                    <div>$0.00</div>
-                    <div>${(amount || 0).toFixed(2)}</div>
-                    <div>{`$${budget.amount.toFixed(2)}`}</div>
+                    <div className="text-sm">$0.00</div>
+                    <div className="text-sm">${(amount || 0).toFixed(2)}</div>
+                    <div className="text-sm">{`$${budget.amount.toFixed(2)}`}</div>
                 </div>
                 <div className="flex justify-between mt-2">
-                    <div className="mt-2">
+                    <div className="mt-2 text-sm">
                         Residual amount: ${(budget.amount - usedAmount || budget.amount).toFixed(2)}
                     </div>
-                    <div>
+                    {new Date(budget.dateRange.start).getMonth() === currMonth && (
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button
-                                    variant="destructive"
-                                    className="group"
-                                    disabled={
-                                        new Date(budget.dateRange.start).getMonth() !== currMonth
-                                    }
-                                >
+                                <Button variant="destructive" className="group">
                                     <FaRegTrashCan className="group-hover:hidden transition" />
                                     <FaTrashCan className="hidden group-hover:inline-block transition" />
                                 </Button>
@@ -106,7 +106,7 @@ export default function BudgetItem({ budget, usedAmount, isDeleted, setIsDeleted
                                 </div>
                             </DialogContent>
                         </Dialog>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
