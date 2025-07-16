@@ -17,6 +17,7 @@ import TransactionForm from "@/components/Form";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
+import BudgetSummary from "../components/budget/BudgetSummary";
 import CategoryFilter from "../components/CategoryFilter";
 import SummarySection from "../components/SummarySection";
 import TransactionDateFilter from "../components/TransactionDateFilter";
@@ -328,6 +329,7 @@ export default function Overview() {
 
                 {/* Transactions + Budgets */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Transactions */}
                     <TransactionList
                         transactions={transactions.map((txn) => ({
                             ...txn,
@@ -341,27 +343,12 @@ export default function Overview() {
                         showNote={false}
                     ></TransactionList>
 
-                    <div className="bg-white shadow rounded p-4 space-y-4 border border-black">
-                        <p className="font-semibold">Monthly Budgets</p>
-                        <div className="text-sm space-y-2">
-                            <div>
-                                <p>Entertainment</p>
-                                <div className="flex justify-between text-green-600">
-                                    <span>60%</span>
-                                    <span>$120.00 / $200.00</span>
-                                </div>
-                                <p className="text-xs">Remaining amount: $80.00</p>
-                            </div>
-                            <div>
-                                <p>Fuel</p>
-                                <div className="flex justify-between text-green-600">
-                                    <span>40%</span>
-                                    <span>$80.00 / $200.00</span>
-                                </div>
-                                <p className="text-xs">Remaining amount: $120.00</p>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Budgets */}
+                    <BudgetSummary
+                        dateRange={dateRange}
+                        confirmDelete={confirmDelete}
+                        confirmEdit={open}
+                    />
 
                     <ConfirmationDialog
                         open={confirmDelete}
