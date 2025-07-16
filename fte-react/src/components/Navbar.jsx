@@ -76,6 +76,16 @@ export default function Navbar() {
                                     </Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link
+                                        to="/goals"
+                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                    >
+                                        Goals
+                                    </Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>
                 </div>
