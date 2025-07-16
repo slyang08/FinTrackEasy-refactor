@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import {
     CartesianGrid,
@@ -106,29 +107,20 @@ async function fetchFilteredTransactions(dateRange, selectedCategories, allIncom
     const incomeParams = { startDate, endDate };
     const expenseParams = { startDate, endDate };
 
+    // Only add categories if there is a selection
     if (incomeCategories.length > 0) {
         incomeParams.categories = incomeCategories.join(",");
     }
+
     if (expenseCategories.length > 0) {
         expenseParams.categories = expenseCategories.join(",");
     }
 
-    let incomes = [];
-    let expenses = [];
-
-    if (
-        selectedCategories.length === 0 ||
-        (incomeCategories.length > 0 && expenseCategories.length > 0)
-    ) {
-        [incomes, expenses] = await Promise.all([
-            fetchIncomes(incomeParams),
-            fetchExpenses(expenseParams),
-        ]);
-    } else if (incomeCategories.length > 0) {
-        incomes = await fetchIncomes(incomeParams);
-    } else if (expenseCategories.length > 0) {
-        expenses = await fetchExpenses(expenseParams);
-    }
+    // Always fetch both
+    const [incomes, expenses] = await Promise.all([
+        fetchIncomes(incomeParams),
+        fetchExpenses(expenseParams),
+    ]);
 
     return mergeAndSortTransactions(incomes, expenses);
 }
@@ -142,6 +134,9 @@ export default function Overview() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    useEffect(() => {
+        console.log("Selected Categories State:", selectedCategories);
+    }, [selectedCategories]);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Default date range to today
@@ -209,19 +204,46 @@ export default function Overview() {
         setRefreshTrigger((prev) => prev + 1);
     };
 
-    const incomeData = [
-        { date: "Jun 01", salary: 500, other: 100 },
-        { date: "Jun 10", salary: 700, other: 200 },
-        { date: "Jun 20", salary: 800, other: 150 },
-        { date: "Jun 30", salary: 600, other: 250 },
-    ];
+    // Prepare dynamic datasets for charts
+    const incomeTransactions = transactions.filter((txn) => txn.type === "income");
+    const expenseTransactions = transactions.filter((txn) => txn.type === "expense");
 
-    const foodDrinkData = [
-        { date: "Jun 01", food: 120, drink: 80 },
-        { date: "Jun 10", food: 150, drink: 90 },
-        { date: "Jun 20", food: 200, drink: 100 },
-        { date: "Jun 30", food: 180, drink: 120 },
-    ];
+    const incomeData = groupTransactionsByDateAndCategory(incomeTransactions);
+    const expenseData = groupTransactionsByDateAndCategory(expenseTransactions);
+
+    function groupTransactionsByDateAndCategory(transactions) {
+        const grouped = {};
+        const allCategories = new Set();
+
+        // First pass: collect categories
+        transactions.forEach((txn) => {
+            const category =
+                txn.category === "Other" && txn.customCategory ? txn.customCategory : txn.category;
+
+            allCategories.add(category);
+        });
+
+        // Second pass: group by date and category
+        transactions.forEach((txn) => {
+            const dateKey = format(new Date(txn.date), "MMM dd");
+            const category =
+                txn.category === "Other" && txn.customCategory ? txn.customCategory : txn.category;
+
+            if (!grouped[dateKey]) {
+                grouped[dateKey] = { date: dateKey };
+
+                // Initialize all categories to 0 for this date
+                allCategories.forEach((cat) => {
+                    grouped[dateKey][cat] = 0;
+                });
+            }
+
+            grouped[dateKey][category] += Number(txn.amount);
+        });
+
+        // Convert grouped object to sorted array
+        return Object.values(grouped).sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
 
     return (
         <div className="p-6">
@@ -284,43 +306,60 @@ export default function Overview() {
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="salary"
-                                    stroke="#4ade80"
-                                    strokeWidth={2}
-                                    activeDot={{ r: 8 }}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="other"
-                                    stroke="#22d3ee"
-                                    strokeWidth={2}
-                                />
+                                {incomeData.length > 0 &&
+                                    Object.keys(incomeData[0])
+                                        .filter((key) => key !== "date")
+                                        .map((category, idx) => (
+                                            <Line
+                                                key={category}
+                                                type="monotone"
+                                                dataKey={category}
+                                                stroke={
+                                                    [
+                                                        "#4ade80",
+                                                        "#22d3ee",
+                                                        "#10b981",
+                                                        "#3b82f6",
+                                                        "#facc15",
+                                                    ][idx % 5]
+                                                }
+                                                strokeWidth={2}
+                                                activeDot={{ r: 6 }}
+                                            />
+                                        ))}
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
 
                     <div className="bg-white shadow rounded p-4 h-64 w-full md:w-[90%]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={foodDrinkData}>
+                            <LineChart data={expenseData}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Line
-                                    type="monotone"
-                                    dataKey="food"
-                                    stroke="#ef4444"
-                                    strokeWidth={2}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="drink"
-                                    stroke="#f97316"
-                                    strokeWidth={2}
-                                />
+                                {expenseData.length > 0 &&
+                                    Object.keys(expenseData[0])
+                                        .filter((key) => key !== "date")
+                                        .map((category, idx) => (
+                                            <Line
+                                                key={category}
+                                                type="monotone"
+                                                dataKey={category}
+                                                stroke={
+                                                    [
+                                                        "#ef4444",
+                                                        "#f97316",
+                                                        "#eab308",
+                                                        "#8b5cf6",
+                                                        "#ec4899",
+                                                    ][idx % 5]
+                                                }
+                                                strokeWidth={2}
+                                                activeDot={{ r: 6 }}
+                                            />
+                                        ))}
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
