@@ -12,7 +12,7 @@ export default function OAuthCallback() {
         api.get("/auth/me")
             .then(() => {
                 // You can set global user status here
-                navigate("/profile");
+                navigate("/overview");
             })
             .catch(() => {
                 // If failed, jump back to the login page
