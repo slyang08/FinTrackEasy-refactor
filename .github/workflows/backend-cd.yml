@@ -1,0 +1,54 @@
+name: Deploy Express Backend
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - "express/**"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - "package.json"
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./express
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 9
+
+            - name: Install dependencies
+              run: pnpm install --filter ./express...
+
+            # If you have any tests, add them
+            # - name: Run tests
+            # run: pnpm --filter ./express... run test
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Build Docker image
+              run: |
+                  docker build \
+                    --platform=linux/amd64 \
+                    --no-cache \
+                    -f ./express/Dockerfile \
+                    -t ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-backend:${{ github.sha }} \
+                    .
+
+            - name: Push Docker image
+              run: |
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-backend:${{ github.sha }}
+
+            - name: Trigger Render Deploy Hook
+              run: |
+                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

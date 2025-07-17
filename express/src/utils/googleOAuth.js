@@ -13,31 +13,30 @@ passport.use(
             callbackURL: process.env.GOOGLE_CALLBACK_URL,
         },
         async (accessToken, refreshToken, profile, done) => {
-            // You can check the database or create a new account here
-            let user = await User.findOne({ googleId: profile.id });
-            if (!user) {
-                user = await User.create({
-                    googleId: profile.id,
-                    email: profile.emails[0].value,
-                    nickname: profile.displayName,
-                    verified: true,
-                    // Other fields
-                });
-                await Account.create({
-                    user: user._id,
-                    password: "google-oauth", // Marked with a special string
-                    status: "Active",
-                });
+            try {
+                // You can check the database or create a new account here
+                let user = await User.findOne({ googleId: profile.id });
+                if (!user) {
+                    user = await User.create({
+                        googleId: profile.id,
+                        email: profile.emails[0].value,
+                        nickname: profile.displayName,
+                        verified: true,
+                        // Other fields
+                    });
+                    await Account.create({
+                        user: user._id,
+                        password: "google-oauth", // Marked with a special string
+                        status: "Active",
+                    });
+                }
+                return done(null, user);
+            } catch (error) {
+                console.error("Error in Google OAuth strategy:", error);
+                return done(error);
             }
-            return done(null, user);
         }
     )
 );
-
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser(async (id, done) => {
-    const user = await User.findById(id);
-    done(null, user);
-});
 
 export default passport;

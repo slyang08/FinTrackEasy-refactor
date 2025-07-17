@@ -33,6 +33,7 @@ export const protect = async (req, res, next) => {
         if (!user) return res.status(401).json({ message: "User not found" });
 
         req.userId = decoded.userId;
+        req.accountId = decoded.accountId;
         req.account = account; // attach to request
         req.user = user;
 
@@ -43,20 +44,9 @@ export const protect = async (req, res, next) => {
     }
 };
 
-// Session authentication (passport)
-export function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated && req.isAuthenticated()) {
-        return next();
-    }
-    res.status(401).json({ message: "Unauthorized" });
-}
-
 // Optional JWT validation
 export async function optionalJwt(req, res, next) {
-    let token = req.cookies.token;
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
-        token = req.headers.authorization.split(" ")[1];
-    }
+    let token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (token) {
         try {
@@ -95,12 +85,4 @@ export async function attachAccount(req, res, next) {
     } catch (err) {
         next(err);
     }
-}
-
-// Supports either JWT or Session authentication.
-export function authAny(req, res, next) {
-    if (req.userId || (req.isAuthenticated && req.isAuthenticated()) || req.user) {
-        return next();
-    }
-    res.status(401).json({ message: "Not authorized" });
 }

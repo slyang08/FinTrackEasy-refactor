@@ -58,6 +58,14 @@ export const authRoutes = [
 // Only logged in users are allowed to enter the page
 export const protectedRoutes = [
     {
+        path: "/overview",
+        element: (
+            <ProtectedRoute>
+                <Overview />
+            </ProtectedRoute>
+        ),
+    },
+    {
         path: "/profile",
         element: (
             <ProtectedRoute>
@@ -70,14 +78,6 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <ChangePassword />
-            </ProtectedRoute>
-        ),
-    },
-    {
-        path: "/overview",
-        element: (
-            <ProtectedRoute>
-                <Overview />
             </ProtectedRoute>
         ),
     },
