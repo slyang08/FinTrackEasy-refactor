@@ -33,6 +33,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
+import CategoriesDropdown from "./CategoriesDropdown";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 // Enforces that if the Category "Other" is chosen, a Custom Category must be addeds
@@ -217,7 +218,15 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Category</FormLabel>
-                                        <Popover>
+                                        <FormControl>
+                                            <CategoriesDropdown
+                                                categories={categoryOptions}
+                                                type={type}
+                                                value={field.value}
+                                                onValueChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        {/* <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
@@ -273,7 +282,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                                     </Command>
                                                 </PopoverContent>
                                             </ScrollArea>
-                                        </Popover>
+                                        </Popover> */}
 
                                         <FormMessage />
                                     </FormItem>

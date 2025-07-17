@@ -6,6 +6,7 @@ import api from "@/api/axios.js";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
+import ExpenseIcon from "../icons/CategoryIcon";
 import {
     Dialog,
     DialogClose,
@@ -62,16 +63,23 @@ export default function BudgetItem({
             {/* Category */}
             <div className="font-semibold text-sm my-2">{budget.category}</div>
             <div>
-                <div className="flex justify-between">
-                    <div className="text-sm">{convertDateFormat(budget.dateRange.start)}</div>
-                    <div className="text-sm">{(progress || 0).toFixed(0)}%</div>
-                    <div className="text-sm">{convertDateFormat(budget.dateRange.end)}</div>
-                </div>
-                <Progress value={progress} className="my-3" />
-                <div className="flex justify-between">
-                    <div className="text-sm">$0.00</div>
-                    <div className="text-sm">${(amount || 0).toFixed(2)}</div>
-                    <div className="text-sm">{`$${budget.amount.toFixed(2)}`}</div>
+                <div className="flex gap-3 items-center">
+                    <ExpenseIcon icon={budget.category} type="expense" />
+                    <div className="w-full">
+                        <div className="flex justify-between">
+                            <div className="text-sm">
+                                {convertDateFormat(budget.dateRange.start)}
+                            </div>
+                            <div className="text-sm">{(progress || 0).toFixed(0)}%</div>
+                            <div className="text-sm">{convertDateFormat(budget.dateRange.end)}</div>
+                        </div>
+                        <Progress value={progress} className="my-3" />
+                        <div className="flex justify-between">
+                            <div className="text-sm">$0.00</div>
+                            <div className="text-sm">${(amount || 0).toFixed(2)}</div>
+                            <div className="text-sm">{`$${budget.amount.toFixed(2)}`}</div>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex justify-between mt-2">
                     <div className="mt-2 text-sm">
