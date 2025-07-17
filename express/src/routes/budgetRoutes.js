@@ -7,13 +7,13 @@ import {
     getBudgets,
     updateBudget,
 } from "../controllers/budgetController.js";
-import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { attachAccount, protect } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { budgetSchema } from "../validations/budgetValidation.js";
 
 const router = express.Router();
 
-router.use(optionalJwt, authAny, attachAccount);
+router.use(protect, attachAccount);
 
 // Create a budget
 router.post("/", validateBody(budgetSchema), createBudget);

@@ -10,7 +10,7 @@ import {
     getExpensesByQuery,
     updateExpense,
 } from "../controllers/expenseController.js";
-import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { attachAccount, protect } from "../middlewares/authMiddleware.js";
 import { validateBody, validateQuery } from "../middlewares/validate.js";
 import { expenseSchema, updateExpenseSchema } from "../validations/expenseValidation.js";
 import { expenseFilterQuerySchema, expenseQuerySchema } from "../validations/queryValidation.js";
@@ -18,7 +18,7 @@ import { expenseFilterQuerySchema, expenseQuerySchema } from "../validations/que
 const router = express.Router();
 
 // Authentication middleware - protects all routes
-router.use(optionalJwt, authAny, attachAccount);
+router.use(protect, attachAccount);
 
 // Create expenditure
 router.post("/", validateBody(expenseSchema), createExpense);

@@ -8,14 +8,31 @@ export default function OAuthCallback() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Try to obtain user information and confirm that the session has been established
-        api.get("/auth/me")
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        // 1. Failure to return to login without a token.
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        // 2. POST first to write a cookie to the backend.
+        api.post("/auth/set-cookie", { token })
             .then(() => {
-                // You can set global user status here
+                // 3. Successfully set cookie, authenticate immediately (will bring up stateless cookie)
+                setTimeout(() => {
+                    api.get("/auth/me")
+                        .then(() => navigate("/overview"))
+                        .catch(() => navigate("/login"));
+                }, 2000);
+            })
+            .then(() => {
+                // 4. Get the user to store and navigate to the global state.
                 navigate("/overview");
             })
             .catch(() => {
-                // If failed, jump back to the login page
+                // Failback login
                 navigate("/login");
             });
     }, [navigate]);
