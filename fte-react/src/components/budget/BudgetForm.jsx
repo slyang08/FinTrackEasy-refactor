@@ -17,6 +17,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import CategoriesDropdown from "../CategoriesDropdown";
+
 const categories = expenseCategories;
 const formSchema = z.object({
     budgetName: z.string().min(1, "Name is required"),
@@ -111,23 +113,12 @@ export default function BudgetForm({ setOpen, existBudgetCategories }) {
                             <FormItem className="flex-1/2">
                                 <FormLabel>Category</FormLabel>
                                 <FormControl>
-                                    <Select value={field.value} onValueChange={field.onChange}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select Category" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {budgetCategories.map((category) => (
-                                                    <SelectItem
-                                                        key={category.value}
-                                                        value={category.value}
-                                                    >
-                                                        {category.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    <CategoriesDropdown
+                                        categories={budgetCategories}
+                                        type="expense"
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    />
                                 </FormControl>
                             </FormItem>
                         )}

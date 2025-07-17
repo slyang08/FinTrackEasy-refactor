@@ -116,10 +116,10 @@ export default function BudgetSummary({ dateRange, confirmDelete, confirmEdit })
                 <CardHeader>
                     <CardTitle className="flex justify-center">Monthly Budget</CardTitle>
                 </CardHeader>
-                {/* {console.log(totalPerCategory)} */}
-                <CardContent className="max-h-[400px] overflow-y-auto overflow-x-auto pt-5">
+
+                <CardContent className="max-h-[400px] overflow-y-auto  pt-5">
                     {sortedDate.length > 0 ? (
-                        sortedDate.map((yearMonth) => (
+                        sortedDate.map((yearMonth, index) => (
                             <div key={yearMonth}>
                                 <div className="font-semibold text-gray-700">
                                     {new Date(yearMonth + "-02").toLocaleDateString("en-US", {
@@ -142,6 +142,9 @@ export default function BudgetSummary({ dateRange, confirmDelete, confirmEdit })
                                             />
                                         );
                                     })}
+                                {index < Object.keys(budgets).length - 1 && (
+                                    <div className="mx-auto my-10 h-[2px] w-[80%] bg-gray-300 rounded" />
+                                )}
                             </div>
                         ))
                     ) : (
