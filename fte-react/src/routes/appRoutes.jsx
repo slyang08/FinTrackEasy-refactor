@@ -19,6 +19,7 @@ import Transactions from "@/pages/Transactions";
 import VerifyEmail from "@/pages/VerifyEmail";
 
 import Budgets from "../pages/Budgets";
+import Goals from "../pages/Goals";
 import Overview from "../pages/Overview";
 import Test2 from "../pages/Test2";
 
@@ -110,6 +111,14 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <Budgets />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/goals",
+        element: (
+            <ProtectedRoute>
+                <Goals />
             </ProtectedRoute>
         ),
     },

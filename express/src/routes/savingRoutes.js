@@ -7,13 +7,13 @@ import {
     getSavings,
     updateSaving,
 } from "../controllers/savingController.js";
-import { protect } from "../middlewares/authMiddleware.js";
+import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { savingSchema } from "../validations/savingValidation.js";
 
 const router = express.Router({ mergeParams: true }); // Make req.params.goalId available
 
-router.use(protect);
+router.use(optionalJwt, authAny, attachAccount);
 
 router.get("/", getSavings);
 router.post("/", validateBody(savingSchema), addSaving);
