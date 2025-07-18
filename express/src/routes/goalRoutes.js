@@ -7,13 +7,13 @@ import {
     getGoals,
     updateGoal,
 } from "../controllers/goalController.js";
-import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { attachAccount, optionalJwt } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { goalSchema } from "../validations/goalValidation.js";
 
 const router = express.Router();
 
-router.use(optionalJwt, authAny, attachAccount);
+router.use(optionalJwt, attachAccount);
 
 // Create target
 router.post("/", validateBody(goalSchema), createGoal);
