@@ -1,21 +1,16 @@
-import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtom } from "jotai";
-// import { useState } from "react";
+import { FaCircleUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 
 import api from "@/api/axios";
 import { isAuthenticated } from "@/atoms/Atom";
-import { Button } from "@/components/ui/button";
 import {
     NavigationMenu,
     NavigationMenuContent,
-    NavigationMenuIndicator,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-    NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 
 export default function Navbar() {
@@ -78,6 +73,16 @@ export default function Navbar() {
                                         className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
                                     >
                                         Budgets
+                                    </Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link
+                                        to="/goals"
+                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                    >
+                                        Goals
                                     </Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
@@ -148,7 +153,7 @@ export default function Navbar() {
                     <NavigationMenuList>
                         <NavigationMenuItem>
                             <NavigationMenuTrigger className="bg-transparent text-white hover:bg-transparent hover:text-gray-300">
-                                <FontAwesomeIcon icon={faCircleUser} className="text-2xl" />
+                                <FaCircleUser className="text-3xl" />
                             </NavigationMenuTrigger>
 
                             <NavigationMenuContent>

@@ -1,8 +1,8 @@
 // express/server.js
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
-import session from "express-session";
 
 import connectDB from "./config/dbConnect.js";
 import accountRoutes from "./routes/accountRoutes.js";
@@ -19,34 +19,29 @@ import userRoutes from "./routes/userRoutes.js";
 import passport from "./utils/googleOAuth.js";
 import recurringTransaction from "./utils/postRecurringTransaction.js";
 
+dotenv.config();
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
+
+app.set("trust proxy", 1);
 
 // Connect to the database
 connectDB();
 
 // Middleware
+app.use(cookieParser());
+
+// CORS configuration
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: process.env.FRONTEND_URL,
         credentials: true,
     })
 );
-app.use(cookieParser());
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax", // or 'none' (cross-domain)
-        },
-    })
-);
+
+// Initialize Passport
 app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -70,7 +65,7 @@ app.get("/", (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: "Something broke!" });
+    res.status(500).json({ message: err.message || "Something broke!" });
 });
 
 // Catch all unhandled exceptions

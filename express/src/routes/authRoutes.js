@@ -5,18 +5,19 @@ import {
     changePassword,
     forgotPassword,
     getMe,
+    googleAuth,
     googleCallback,
     login,
     logout,
     register,
     resendVerificationEmail,
     resetPassword,
+    setCookie,
     verifyEmail,
 } from "../controllers/authController.js";
-import { optionalJwt, protect } from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import { loginLimiter, registerLimiter } from "../middlewares/rateLimit.js";
 import validate from "../middlewares/validate.js";
-import passport from "../utils/googleOAuth.js";
 import { changePasswordSchema, resetPasswordSchema } from "../validations/accountValidation.js";
 import { forgotPasswordSchema } from "../validations/userValidation.js";
 
@@ -26,25 +27,19 @@ router.post("/register", registerLimiter, register);
 router.post("/login", loginLimiter, login);
 router.get("/verify-email", verifyEmail);
 router.post("/resend-verification", resendVerificationEmail);
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/google", googleAuth);
 
-router.get(
-    "/google/callback",
-    passport.authenticate("google", { failureRedirect: "/login" }),
-    googleCallback,
-    (err) => {
-        console.error("Authentication error:", err);
-        res.status(500).json({ message: "Authentication failed", error: err });
-    }
-);
+router.get("/google/callback", googleCallback);
 
+router.post("/set-cookie", setCookie);
+
+// Protect the /me route
+router.get("/me", protect, getMe);
 router.get("/logout", logout);
 
 // Password Routes
 router.patch("/:accountId/changepassword", protect, validate(changePasswordSchema), changePassword);
 router.post("/forgotpassword", validate(forgotPasswordSchema), forgotPassword);
 router.patch("/:accountId/resetpassword", validate(resetPasswordSchema), resetPassword);
-
-router.get("/me", optionalJwt, getMe);
 
 export default router;

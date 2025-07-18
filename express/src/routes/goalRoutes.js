@@ -7,10 +7,13 @@ import {
     getGoals,
     updateGoal,
 } from "../controllers/goalController.js";
+import { attachAccount, optionalJwt } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { goalSchema } from "../validations/goalValidation.js";
 
 const router = express.Router();
+
+router.use(optionalJwt, attachAccount);
 
 // Create target
 router.post("/", validateBody(goalSchema), createGoal);
@@ -19,7 +22,7 @@ router.post("/", validateBody(goalSchema), createGoal);
 router.get("/", getGoals);
 
 // Get a target
-router.get("/", getGoal);
+router.get("/:id", getGoal);
 
 // Update the target
 router.patch("/:id", validateBody(goalSchema), updateGoal);

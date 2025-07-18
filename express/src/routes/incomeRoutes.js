@@ -11,14 +11,14 @@ import {
     getIncomesByQuery,
     updateIncome,
 } from "../controllers/incomeController.js";
-import { attachAccount, authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { attachAccount, protect } from "../middlewares/authMiddleware.js";
 import { validateBody, validateQuery } from "../middlewares/validate.js";
 import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 import { incomeFilterQuerySchema, incomeQuerySchema } from "../validations/queryValidation.js";
 
 const router = express.Router();
 
-router.use(optionalJwt, authAny, attachAccount);
+router.use(protect, attachAccount);
 
 // POST create income
 router.post("/", validateBody(incomeSchema), createIncome);

@@ -3,9 +3,12 @@ import crypto from "crypto";
 
 import Account from "../models/Account.js";
 import User from "../models/User.js";
+import { clearTokenCookie } from "../utils/clearTokenCookie.js";
 import generateToken from "../utils/generateToken.js";
+import passport from "../utils/googleOAuth.js";
 import { isPasswordReused } from "../utils/password.js";
 import sendEmail from "../utils/sendEmail.js";
+import { setTokenCookie } from "../utils/setTokenCookie.js";
 import { generateVerificationToken, verificationContent } from "../utils/verificateEmail.js";
 
 /**
@@ -70,9 +73,9 @@ export const register = async (req, res) => {
 };
 
 /**
- * @desc   Verify email address
- * @route  GET /api/auth/verify-email
- * @access public
+ * @desc    Verify email address
+ * @route   GET /api/auth/verify-email
+ * @access  Public
  */
 export const verifyEmail = async (req, res) => {
     const { token, id } = req.query;
@@ -135,9 +138,9 @@ export const verifyEmail = async (req, res) => {
 };
 
 /**
- * @desc   Resend verification email
- * @route  POST /api/auth/resend-verification
- * @access Public
+ * @desc    Resend verification email
+ * @route   POST /api/auth/resend-verification
+ * @access  Public
  */
 export const resendVerificationEmail = async (req, res) => {
     const { email } = req.body;
@@ -217,13 +220,7 @@ export const login = async (req, res) => {
 
         const token = generateToken({ userId: user._id, accountId: account._id });
         // Set the token in a cookie
-        res.cookie("token", token, {
-            path: "/",
-            httpOnly: true, // Prevents JavaScript access to the cookie
-            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            sameSite: "lax", // Adjust as necessary
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-        });
+        setTokenCookie(res, token);
 
         res.status(200).json({
             user: {
@@ -241,13 +238,52 @@ export const login = async (req, res) => {
 };
 
 /**
+ * @desc    Google OAuth authentication (directs to Google for login)
+ * @route   GET /api/auth/google
+ * @access  Public
+ */
+export const googleAuth = passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+});
+
+/**
  * @desc    Google OAuth callback
  * @route   GET /api/auth/google/callback
  * @access  Public
  */
-export const googleCallback = (req, res) => {
-    // Login successful, redirect to the front-end /oauth-callback
-    res.redirect(`${process.env.FRONTEND_URL}/oauth-callback`);
+export const googleCallback = (req, res, next) => {
+    passport.authenticate("google", { session: false }, async (err, user) => {
+        if (err || !user) return res.redirect(process.env.FRONTEND_URL + "/login");
+
+        const account = await Account.findOne({ user: user._id });
+        if (!account) return res.redirect(process.env.FRONTEND_URL + "/login");
+
+        const token = generateToken({
+            userId: user.id,
+            accountId: account._id,
+            email: user.email,
+            nickname: user.nickname,
+        });
+        try {
+            res.redirect(`${process.env.FRONTEND_URL}/oauth-callback?token=${token}`);
+        } catch (error) {
+            console.error("Token verification failed:", error);
+            return res.status(401).json({ message: "Invalid token" });
+        }
+    })(req, res, next);
+};
+
+/**
+ * @desc    Set JWT token to Cookie
+ * @route   POST /api/auth/set-cookie
+ * @access  Public
+ */
+export const setCookie = (req, res) => {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ message: "No token" });
+    setTokenCookie(res, token);
+    res.json({ success: true });
 };
 
 /**
@@ -272,18 +308,13 @@ export const getMe = async (req, res) => {
             return res.status(500).json({ message: "Failed to get user info" });
         }
     }
-
-    // Session method
-    if (typeof req.isAuthenticated === "function" && req.isAuthenticated()) {
-        return res.json({ user: req.user });
-    }
     return res.status(401).json({ message: "Not logged in" });
 };
 
 /**
- * @desc   Change account password
- * @route  PUT /api/auth/change-password/:accountId
- * @access Private (valid JWT required)
+ * @desc    Change account password
+ * @route   PUT /api/auth/change-password/:accountId
+ * @access  Private (valid JWT required)
  */
 export const changePassword = async (req, res, next) => {
     try {
@@ -406,18 +437,6 @@ export const resetPassword = async (req, res, next) => {
  * @access  Private
  */
 export const logout = (req, res) => {
-    req.logout(() => {
-        req.session.destroy(() => {
-            // Clear cookies
-            const cookieOptions = {
-                path: "/",
-                httpOnly: true,
-                sameSite: "lax",
-                secure: process.env.NODE_ENV === "production",
-            };
-            res.clearCookie("connect.sid", cookieOptions);
-            res.clearCookie("token", cookieOptions);
-            res.status(200).json({ message: "Logged out" });
-        });
-    });
+    clearTokenCookie(res);
+    res.status(200).json({ message: "Logged out" });
 };

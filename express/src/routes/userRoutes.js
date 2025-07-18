@@ -8,17 +8,19 @@ import {
     getUserById,
     updateProfile,
 } from "../controllers/userController.js";
-import { authAny, optionalJwt } from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { updateProfileSchema } from "../validations/userValidation.js";
 
 const router = express.Router();
 
+router.use(protect);
+
 // CRUD protected by token
-router.get("/", authAny, getAllUsers);
-router.get("/me", authAny, getMe);
-router.get("/:id", authAny, getUserById);
-router.patch("/:id", optionalJwt, authAny, validate(updateProfileSchema), updateProfile);
+router.get("/", getAllUsers);
+router.get("/me", getMe);
+router.get("/:id", getUserById);
+router.patch("/:id", validate(updateProfileSchema), updateProfile);
 router.delete("/:id", deleteUser);
 
 export default router;

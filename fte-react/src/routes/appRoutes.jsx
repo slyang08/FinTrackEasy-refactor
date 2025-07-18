@@ -18,6 +18,8 @@ import Test from "@/pages/Test";
 import Transactions from "@/pages/Transactions";
 import VerifyEmail from "@/pages/VerifyEmail";
 
+import Budgets from "../pages/Budgets";
+import Goals from "../pages/Goals";
 import Overview from "../pages/Overview";
 import Test2 from "../pages/Test2";
 
@@ -57,6 +59,14 @@ export const authRoutes = [
 // Only logged in users are allowed to enter the page
 export const protectedRoutes = [
     {
+        path: "/overview",
+        element: (
+            <ProtectedRoute>
+                <Overview />
+            </ProtectedRoute>
+        ),
+    },
+    {
         path: "/profile",
         element: (
             <ProtectedRoute>
@@ -69,14 +79,6 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <ChangePassword />
-            </ProtectedRoute>
-        ),
-    },
-    {
-        path: "/overview",
-        element: (
-            <ProtectedRoute>
-                <Overview />
             </ProtectedRoute>
         ),
     },
@@ -101,6 +103,22 @@ export const protectedRoutes = [
         element: (
             <ProtectedRoute>
                 <Transactions />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/budgets",
+        element: (
+            <ProtectedRoute>
+                <Budgets />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/goals",
+        element: (
+            <ProtectedRoute>
+                <Goals />
             </ProtectedRoute>
         ),
     },

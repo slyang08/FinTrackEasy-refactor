@@ -7,18 +7,18 @@ import {
     getBudgets,
     updateBudget,
 } from "../controllers/budgetController.js";
-import { protect } from "../middlewares/authMiddleware.js";
+import { attachAccount, protect } from "../middlewares/authMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { budgetSchema } from "../validations/budgetValidation.js";
 
 const router = express.Router();
 
-router.use(protect);
+router.use(protect, attachAccount);
 
 // Create a budget
 router.post("/", validateBody(budgetSchema), createBudget);
 
-// Get all budgets
+// Get all budgets in a date range
 router.get("/", getBudgets);
 
 // Get a budgets

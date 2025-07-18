@@ -39,7 +39,7 @@ export const addSaving = async (req, res) => {
         goal.currentSaving += amount;
         await goal.save();
 
-        res.status(201).json(goal.savings[goal.savings.length - 1]); // Return the newly added
+        res.status(201).json(goal.savings[goal.savings.length - 1]);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -60,8 +60,12 @@ export const deleteSaving = async (req, res) => {
         const saving = goal.savings.id(savingId);
         if (!saving) return res.status(404).json({ message: "Saving not found" });
 
+        // Remove saving by filtering out the one with savingId
+        goal.savings = goal.savings.filter((s) => s._id.toString() !== savingId);
+
+        // Adjust currentSaving
         goal.currentSaving -= saving.amount;
-        saving.remove();
+
         await goal.save();
 
         res.json({ message: "Saving deleted" });

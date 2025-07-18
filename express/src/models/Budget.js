@@ -10,24 +10,11 @@ const budgetSchema = new mongoose.Schema(
             index: true,
         },
         name: { type: String, required: true },
-        totalBudget: { type: Number, required: true, min: 0 },
-        categories: [
-            {
-                categoryName: { type: String, required: true, index: true },
-                allocatedAmount: { type: Number, required: true },
-                spentAmount: { type: Number, default: 0, min: 0 },
-            },
-        ],
+        amount: { type: Number, required: true, min: 0 },
+        category: { type: String, required: true, index: true },
         dateRange: {
             start: { type: Date, required: true, index: true },
             end: { type: Date, required: true, index: true },
-        },
-        currency: { type: String, default: "CAD" },
-        status: {
-            type: String,
-            enum: ["Active", "Closed", "Frozen"],
-            default: "Active",
-            index: true,
         },
     },
     { timestamps: true }

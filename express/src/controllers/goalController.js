@@ -13,15 +13,29 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
  */
 export const createGoal = async (req, res, next) => {
     try {
-        const { name, date, amount, currentSaving } = req.body;
+        const { name, targetAmount, currentSaving, startDate, targetDate } = req.body;
+
+        const savings = [];
+
+        // If there's an initial saving, add it to savings array
+        if (currentSaving > 0) {
+            savings.push({
+                name: "Opening Balance",
+                amount: currentSaving,
+                date: new Date(),
+            });
+        }
 
         const goal = await Goal.create({
             name,
-            date,
-            amount,
+            targetAmount,
             currentSaving,
+            startDate,
+            targetDate,
             account: req.account._id,
+            savings,
         });
+
         res.status(201).json(goal);
     } catch (err) {
         next(err);
