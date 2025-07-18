@@ -2,7 +2,8 @@ name: Deploy Express Backend
 
 on:
     push:
-        branches: [main]
+        branches: 
+            - main
         paths:
             - "express/**"
             - "pnpm-lock.yaml"
