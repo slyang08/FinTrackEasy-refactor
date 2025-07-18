@@ -21,6 +21,7 @@ const goalSchema = new mongoose.Schema(
         name: { type: String, required: true },
         targetAmount: { type: Number, required: true, min: 0 },
         currentSaving: { type: Number, default: 0, min: 0 },
+        startDate: { type: Date, required: true },
         targetDate: { type: Date, required: true, index: true },
         savings: [savingSchema],
     },

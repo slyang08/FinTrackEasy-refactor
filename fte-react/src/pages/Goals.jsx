@@ -1,153 +1,211 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import api from "@/api/axios";
+
+import AddGoalDialog from "../components/goals/AddGoalDialog";
+import ConfirmationDialog from "../components/goals/ConfirmationDialog";
+import GoalsTable from "../components/goals/GoalsTable";
+import GoalSummary from "../components/goals/GoalSummary";
+import SavingsDetail from "../components/goals/SavingsDetail";
 
 export default function Goals() {
-    const [showGoalForm, setShowGoalForm] = useState(false);
-    const [showSavingForm, setShowSavingForm] = useState(false);
+    const [goals, setGoals] = useState([]);
+    const [selectedGoal, setSelectedGoal] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const [editGoal, setEditGoal] = useState(null);
+    const [createGoalData, setCreateGoalData] = useState(null);
+    const [showCreateConfirm, setShowCreateConfirm] = useState(false);
+
+    useEffect(() => {
+        fetchGoals();
+    }, []);
+
+    const fetchGoals = async () => {
+        try {
+            const res = await api.get("/goals");
+            setGoals(res.data);
+            setSelectedGoal(res.data[0] || null);
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to load goals");
+        }
+    };
+
+    const currentSaving = selectedGoal ? selectedGoal.currentSaving : 0;
+    const targetAmount = selectedGoal ? selectedGoal.targetAmount : 1;
+    const progressPercent = Math.min((currentSaving / targetAmount) * 100, 100).toFixed(0);
+
+    const daysRemaining = selectedGoal
+        ? Math.max(
+              0,
+              Math.ceil((new Date(selectedGoal.targetDate) - new Date()) / (1000 * 60 * 60 * 24))
+          )
+        : "N/A";
+
+    // Create handler with confirmation
+    const handleCreate = (data) => {
+        setCreateGoalData(data);
+        setShowCreateConfirm(true);
+    };
+
+    const confirmCreateGoal = async () => {
+        try {
+            const payload = {
+                name: createGoalData.name,
+                targetAmount: Number(createGoalData.targetAmount),
+                currentSaving: Number(createGoalData.currentSaving),
+                startDate: createGoalData.startDate,
+                targetDate: createGoalData.targetDate,
+            };
+            await api.post("/goals", payload);
+            toast.success("Goal created!");
+            fetchGoals();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to create goal");
+        } finally {
+            setCreateGoalData(null);
+            setShowCreateConfirm(false);
+        }
+    };
+
+    // Update handler
+    const handleUpdate = async (data) => {
+        try {
+            const payload = {
+                name: data.name,
+                targetAmount: Number(data.targetAmount),
+                currentSaving: Number(data.currentSaving),
+                startDate: data.startDate,
+                targetDate: data.targetDate,
+            };
+            await api.patch(`/goals/${editGoal._id}`, payload);
+            toast.success("Goal updated!");
+            setEditGoal(null);
+            fetchGoals();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to update goal");
+        }
+    };
+
+    // Delete handler
+    const handleDelete = async (goal) => {
+        try {
+            await api.delete(`/goals/${goal._id}`);
+            toast.success("Goal deleted!");
+            if (selectedGoal?._id === goal._id) setSelectedGoal(null);
+            fetchGoals();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to delete goal");
+        }
+    };
+
+    const handleEditSaving = async (savingId, data) => {
+        try {
+            const payload = {
+                name: data.name,
+                amount: Number(data.amount),
+            };
+            await api.patch(`/goals/${selectedGoal._id}/savings/${savingId}`, payload);
+            toast.success("Saving updated!");
+            fetchGoals();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to update saving");
+        }
+    };
+
+    const handleDeleteSaving = async (savingId) => {
+        try {
+            await api.delete(`/goals/${selectedGoal._id}/savings/${savingId}`);
+            toast.success("Saving deleted!");
+            fetchGoals();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to delete saving");
+        }
+    };
 
     return (
         <div className="p-6 space-y-8">
-            {/* Header Summary */}
-            <div className="flex flex-col md:flex-row justify-around items-center gap-4">
-                <div className="text-center">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-2" />
-                    <p className="font-semibold">Current Total Savings</p>
-                </div>
-                <div className="text-center">
-                    <div className="bg-white shadow px-4 py-2 rounded-lg border">
-                        <p className="text-red-600 font-bold">191 days</p>
-                        <p className="text-sm text-muted-foreground">Time Remaining</p>
-                    </div>
-                </div>
-                <div className="text-center">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-2" />
-                    <p className="font-semibold">Savings Progress</p>
-                </div>
-            </div>
+            <GoalSummary
+                currentSaving={currentSaving}
+                daysRemaining={daysRemaining}
+                progressPercent={progressPercent}
+            />
 
-            {/* Goals Tracker Table */}
-            <Card>
-                <CardContent className="p-4 overflow-x-auto">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">Goals Tracker</h2>
-                        <Dialog open={showGoalForm} onOpenChange={setShowGoalForm}>
-                            <DialogTrigger asChild>
-                                <Button>Add Goal</Button>
-                            </DialogTrigger>
-                            <DialogContent className="space-y-4">
-                                <h3 className="text-lg font-semibold">Add a Goal</h3>
-                                <div className="grid gap-2">
-                                    <Label>Goal Name</Label>
-                                    <Input />
-                                    <Label>Goal Amount</Label>
-                                    <Input />
-                                    <Label>Current Savings</Label>
-                                    <Input />
-                                    <Label>Start Date</Label>
-                                    <Input type="date" />
-                                    <Label>Target Date</Label>
-                                    <Input type="date" />
-                                </div>
-                                <div className="flex justify-between">
-                                    <Button variant="ghost" onClick={() => setShowGoalForm(false)}>
-                                        Cancel
-                                    </Button>
-                                    <Button>Add Goal</Button>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+            <GoalsTable
+                goals={goals}
+                selectedGoal={selectedGoal}
+                setSelectedGoal={setSelectedGoal}
+                fetchGoals={fetchGoals}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                onEdit={(goal) => setEditGoal(goal)}
+                onDelete={handleDelete}
+            />
 
-                    {/* Table */}
-                    <table className="w-full text-sm border border-gray-200">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="text-left p-2">Name</th>
-                                <th className="text-left p-2">Goal Amount</th>
-                                <th className="text-left p-2">Saved Amount</th>
-                                <th className="text-left p-2">Start Date</th>
-                                <th className="text-left p-2">Target Date</th>
-                                <th className="text-left p-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="border-t">
-                                <td className="p-2">Vacation in Japan</td>
-                                <td className="p-2">$4,000</td>
-                                <td className="p-2">$1,800</td>
-                                <td className="p-2">June 20, 2025</td>
-                                <td className="p-2">Dec 14, 2025</td>
-                                <td className="p-2 space-x-2">
-                                    <Button size="sm" variant="secondary">
-                                        Edit
-                                    </Button>
-                                    <Button size="sm" variant="destructive">
-                                        Delete
-                                    </Button>
-                                </td>
-                            </tr>
-                            {/* Add more rows as needed */}
-                        </tbody>
-                    </table>
-                </CardContent>
-            </Card>
+            {selectedGoal && (
+                <SavingsDetail
+                    selectedGoal={selectedGoal}
+                    fetchGoals={fetchGoals}
+                    onEditSaving={handleEditSaving}
+                    onDeleteSaving={handleDeleteSaving}
+                />
+            )}
 
-            {/* Goal Details Section (expanded savings per goal) */}
-            <Card>
-                <CardContent className="p-4 space-y-4">
-                    <div className="flex justify-between items-center mb-2">
-                        <p className="font-medium">Vacation in Japan</p>
-                        <Dialog open={showSavingForm} onOpenChange={setShowSavingForm}>
-                            <DialogTrigger asChild>
-                                <Button>Add Savings</Button>
-                            </DialogTrigger>
-                            <DialogContent className="space-y-4">
-                                <h3 className="text-lg font-semibold">Add Saving</h3>
-                                <div className="grid gap-2">
-                                    <Label>Saving Name</Label>
-                                    <Input />
-                                    <Label>Saving Amount</Label>
-                                    <Input />
-                                </div>
-                                <div className="flex justify-between">
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => setShowSavingForm(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button>Add Saving</Button>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+            {/* Add Goal Dialog */}
+            {!editGoal && <AddGoalDialog onSubmit={handleCreate} />}
 
-                    <table className="w-full text-sm border border-gray-200">
-                        <tbody>
-                            <tr className="border-t">
-                                <td className="p-2">Loans</td>
-                                <td className="p-2">$500</td>
-                                <td className="p-2 space-x-2">
-                                    <Button size="sm" variant="secondary">
-                                        Edit
-                                    </Button>
-                                    <Button size="sm" variant="destructive">
-                                        Delete
-                                    </Button>
-                                </td>
-                            </tr>
-                            {/* More savings entries */}
-                        </tbody>
-                    </table>
+            {/* Edit Goal Dialog */}
+            {editGoal && (
+                <AddGoalDialog
+                    initialData={editGoal}
+                    confirmText="Update"
+                    onSubmit={handleUpdate}
+                    onClose={() => setEditGoal(null)}
+                />
+            )}
 
-                    <div className="text-right font-semibold">Saved Amount: $1,800</div>
-                </CardContent>
-            </Card>
+            {/* Create Goal Confirmation Dialog */}
+            <ConfirmationDialog
+                open={showCreateConfirm}
+                title="Confirm Goal Creation"
+                description="Please confirm the goal details below:"
+                details={
+                    <>
+                        <p>
+                            <strong>Name:</strong> {createGoalData?.name}
+                        </p>
+                        <p>
+                            <strong>Target Amount:</strong> $
+                            {Number(createGoalData?.targetAmount).toLocaleString()}
+                        </p>
+                        <p>
+                            <strong>Current Saving:</strong> $
+                            {Number(createGoalData?.currentSaving).toLocaleString()}
+                        </p>
+                        <p>
+                            <strong>Start Date:</strong>{" "}
+                            {new Date(createGoalData?.startDate).toLocaleDateString()}
+                        </p>
+                        <p>
+                            <strong>Target Date:</strong>{" "}
+                            {new Date(createGoalData?.targetDate).toLocaleDateString()}
+                        </p>
+                    </>
+                }
+                confirmText="Create Goal"
+                onConfirm={confirmCreateGoal}
+                onCancel={() => {
+                    setShowCreateConfirm(false);
+                    setCreateGoalData(null);
+                }}
+            />
         </div>
     );
 }
