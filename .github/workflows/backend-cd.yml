@@ -2,7 +2,8 @@ name: Deploy Express Backend
 
 on:
     push:
-        branches: [main]
+        branches: 
+            - main
         paths:
             - "express/**"
             - "pnpm-lock.yaml"
@@ -41,7 +42,7 @@ jobs:
                   docker build \
                     --platform=linux/amd64 \
                     --no-cache \
-                    -f ./express/Dockerfile \
+                    -f express/Dockerfile \
                     -t ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-backend:${{ github.sha }} \
                     .
 

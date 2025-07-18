@@ -2,7 +2,8 @@ name: Deploy React Frontend
 
 on:
     push:
-        branches: [main]
+        branches: 
+            - main
         paths:
             - "express/**"
             - "pnpm-lock.yaml"
@@ -40,7 +41,7 @@ jobs:
               run: |
                   docker build \
                     --platform=linux/amd64 \
-                    -f ./fte-react/Dockerfile \
+                    -f fte-react/Dockerfile \
                     -t ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-frontend:${{ github.sha }} \
                     .
 
