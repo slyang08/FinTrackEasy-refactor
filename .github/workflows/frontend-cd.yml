@@ -5,50 +5,48 @@ on:
         branches: 
             - main
         paths:
-            - "express/**"
+            - "fte-react/**"
             - "pnpm-lock.yaml"
             - "pnpm-workspace.yaml"
             - "package.json"
 
+env:
+    DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+    RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./fte-react
-
         steps:
             - uses: actions/checkout@v4
 
-            - uses: pnpm/action-setup@v2
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v2
               with:
                   version: 9
-
-            - name: Install dependencies
-              run: pnpm install --filter ./express...
-
-            # If you have any tests, add them
-            # - name: Run tests
-            # run: pnpm --filter ./express... run test
 
             - name: Log in to Docker Hub
               uses: docker/login-action@v3
               with:
-                  username: ${{ secrets.DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+                  username: ${{ env.DOCKER_USERNAME }}
+                  password: ${{ env.DOCKER_PASSWORD }}
+
+            - name: Install dependencies
+              run: pnpm install --filter ./fte-react...
 
             - name: Build Docker image
               run: |
                   docker build \
                     --platform=linux/amd64 \
                     -f fte-react/Dockerfile \
-                    -t ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-frontend:${{ github.sha }} \
+                    -t ${{ env.DOCKER_USERNAME }}/fintrackeasy-frontend:${{ github.sha }} \
                     .
 
             - name: Push Docker image
               run: |
-                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-frontend:${{ github.sha }}
+                  docker push ${{ env.DOCKER_USERNAME }}/fintrackeasy-frontend:${{ github.sha }}
 
             - name: Trigger Render Deploy Hook
               run: |
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+                  curl -X POST ${{ env.RENDER_DEPLOY_HOOK_URL }}
