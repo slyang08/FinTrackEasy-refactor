@@ -11,14 +11,11 @@ RUN corepack enable && pnpm install
 # Copy all front-end source code
 COPY . .
 
-# Build static files
-COPY index.html ./
-
 # Deployment stage, use nginx to serve static resources
 FROM nginx:alpine
 
 # Copy the static files built to the default directory of nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=builder /fte-react/dist /usr/share/nginx/html
 
