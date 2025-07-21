@@ -1,26 +1,28 @@
 # Build stage
 FROM node:20-slim AS builder
 
-WORKDIR /fte-react
+# WORKDIR /fte-react
+WORKDIR /app
 
 # Copy package.json of the front-end project
-# COPY package.json pnpm-lock.yaml ./
-COPY fte-react/package.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack enable && pnpm install
 
 # Copy all front-end source code
-COPY fte-react/. ./
+# COPY . .
+COPY fte-react ./fte-react
 
-# Build static files
-RUN pnpm build
+# RUN pnpm run build
+RUN pnpm install --filter ./fte-react...
+RUN pnpm --filter ./fte-react... run build
 
 # Deployment stage, use nginx to serve static resources
 FROM nginx:alpine
 
 # Copy the static files built to the default directory of nginx
-COPY fte-react/nginx.conf /etc/nginx/conf.d/default.conf
+COPY fte-react/nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=builder /fte-react/dist /usr/share/nginx/html
+COPY --from=builder /app/fte-react/dist /usr/share/nginx/html
 
 EXPOSE 80
 
