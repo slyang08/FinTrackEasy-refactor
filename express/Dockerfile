@@ -6,8 +6,12 @@ RUN corepack enable
 WORKDIR /express
 
 # Copy the lockfile and workspace configuration of the monorepo
+<<<<<<< HEAD
 # COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY express/package.json ./
+=======
+COPY package.json ./
+>>>>>>> 3238b25 (feat(deploy): deploy frontend and backend to Render)
 RUN pnpm install
 
 # Copy the express project file

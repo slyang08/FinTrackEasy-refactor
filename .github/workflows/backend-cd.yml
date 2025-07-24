@@ -10,32 +10,30 @@ on:
             - "pnpm-workspace.yaml"
             - "package.json"
 
+env:
+    DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+    RENDER_BACKEND_DEPLOY_HOOK_URL: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./express
-
         steps:
             - uses: actions/checkout@v4
 
-            - uses: pnpm/action-setup@v2
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v2
               with:
                   version: 9
-
-            - name: Install dependencies
-              run: pnpm install --filter ./express...
-
-            # If you have any tests, add them
-            # - name: Run tests
-            # run: pnpm --filter ./express... run test
 
             - name: Log in to Docker Hub
               uses: docker/login-action@v3
               with:
-                  username: ${{ secrets.DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+                  username: ${{ env.DOCKER_USERNAME }}
+                  password: ${{ env.DOCKER_PASSWORD }}
+
+            - name: Install dependencies
+              run: pnpm install --filter ./express...
 
             - name: Build Docker image
               run: |
@@ -43,13 +41,13 @@ jobs:
                     --platform=linux/amd64 \
                     --no-cache \
                     -f express/Dockerfile \
-                    -t ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-backend:${{ github.sha }} \
+                    -t ${{ env.DOCKER_USERNAME }}/fintrackeasy-backend:${{ github.sha }} \
                     .
 
             - name: Push Docker image
               run: |
-                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/fintrackeasy-backend:${{ github.sha }}
+                  docker push ${{ env.DOCKER_USERNAME }}/fintrackeasy-backend:${{ github.sha }}
 
             - name: Trigger Render Deploy Hook
               run: |
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+                  curl -X POST ${{ env.RENDER_BACKEND_DEPLOY_HOOK_URL }}
