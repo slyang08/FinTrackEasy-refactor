@@ -13,7 +13,7 @@ on:
 env:
     DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
     DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-    RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+    RENDER_BACKEND_DEPLOY_HOOK_URL: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}
 
 jobs:
     build-and-deploy:
@@ -50,4 +50,4 @@ jobs:
 
             - name: Trigger Render Deploy Hook
               run: |
-                  curl -X POST ${{ env.RENDER_DEPLOY_HOOK_URL }}
+                  curl -X POST ${{ env.RENDER_BACKEND_DEPLOY_HOOK_URL }}

@@ -6,7 +6,6 @@ RUN corepack enable
 WORKDIR /express
 
 # Copy the lockfile and workspace configuration of the monorepo
-# COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY package.json ./
 RUN pnpm install
 
