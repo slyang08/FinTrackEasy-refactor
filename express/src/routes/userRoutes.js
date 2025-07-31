@@ -9,12 +9,13 @@ import {
     updateProfile,
 } from "../controllers/userController.js";
 import { protect } from "../middlewares/authMiddleware.js";
+import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { updateProfileSchema } from "../validations/userValidation.js";
 
 const router = express.Router();
 
-router.use(protect);
+router.use(protect, TorontoTimeMiddleware);
 
 // CRUD protected by token
 router.get("/", getAllUsers);

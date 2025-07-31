@@ -17,11 +17,14 @@ import {
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { loginLimiter, registerLimiter } from "../middlewares/rateLimit.js";
+import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
 import validate from "../middlewares/validate.js";
 import { changePasswordSchema, resetPasswordSchema } from "../validations/accountValidation.js";
 import { forgotPasswordSchema } from "../validations/userValidation.js";
 
 const router = express.Router();
+
+router.use(TorontoTimeMiddleware);
 
 router.post("/register", registerLimiter, register);
 router.post("/login", loginLimiter, login);
