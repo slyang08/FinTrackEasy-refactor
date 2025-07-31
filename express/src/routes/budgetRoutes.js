@@ -1,3 +1,4 @@
+// src/routes/budgetRoutes.js
 import express from "express";
 
 import {
@@ -8,12 +9,13 @@ import {
     updateBudget,
 } from "../controllers/budgetController.js";
 import { attachAccount, protect } from "../middlewares/authMiddleware.js";
+import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
 import { validateBody } from "../middlewares/validate.js";
 import { budgetSchema } from "../validations/budgetValidation.js";
 
 const router = express.Router();
 
-router.use(protect, attachAccount);
+router.use(protect, attachAccount, TorontoTimeMiddleware);
 
 // Create a budget
 router.post("/", validateBody(budgetSchema), createBudget);
