@@ -8,11 +8,12 @@ import {
     updateAccountStatus,
 } from "../controllers/accountController.js";
 import { protect } from "../middlewares/authMiddleware.js";
+import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
 
 const router = express.Router();
 
 // Authentication middleware - protects all routes
-router.use(protect);
+router.use(protect, TorontoTimeMiddleware);
 
 // Login verification is required
 router.get("/", getMyAccounts);
