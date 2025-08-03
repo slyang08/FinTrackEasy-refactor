@@ -7,8 +7,17 @@ import sendEmail from "../utils/sendEmail.js";
 // @desc    Submit general contact form
 export const submitContactForm = async (req, res, next) => {
     try {
+        const { name, email, note, termsAccepted } = req.body;
+
+        if (!termsAccepted) {
+            return res.status(400).json({ message: "You must accept the terms and conditions." });
+        }
+
         const contact = await ContactForm.create({
-            ...req.body,
+            name,
+            email,
+            note,
+            termsAccepted,
             type: "general",
         });
 
