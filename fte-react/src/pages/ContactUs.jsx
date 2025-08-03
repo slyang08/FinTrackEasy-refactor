@@ -12,27 +12,30 @@ export default function ContactUs() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        description: "",
+        note: "",
     });
+    const [sending, setSending] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleCheckbox = (checked) => {
-        setFormData((prev) => ({ ...prev, acceptedTerms: checked }));
+        setFormData((prev) => ({ ...prev, termsAccepted: checked }));
     };
 
     const handleClear = () => {
         setFormData({
             name: "",
             email: "",
-            description: "",
+            note: "",
+            termsAccepted: false,
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSending(true);
         try {
             await api.post("/contact", formData);
             alert("Message sent!");
@@ -41,6 +44,8 @@ export default function ContactUs() {
             alert(
                 err.response?.data?.message || err.response?.data?.error || "Failed to send message"
             );
+        } finally {
+            setSending(false);
         }
     };
 
@@ -120,8 +125,8 @@ export default function ContactUs() {
                         </Label>
                         <Textarea
                             id="message"
-                            name="message"
-                            value={formData.message}
+                            name="note"
+                            value={formData.note}
                             onChange={handleChange}
                             placeholder="Type your message..."
                             rows={6}
@@ -133,7 +138,7 @@ export default function ContactUs() {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="terms"
-                            checked={formData.acceptedTerms}
+                            checked={formData.termsAccepted}
                             onCheckedChange={handleCheckbox}
                             className="border-2 border-black"
                         />
@@ -145,8 +150,8 @@ export default function ContactUs() {
                         </Label>
                     </div>
 
-                    <Button size="sm" type="submit" variant="submit">
-                        Submit
+                    <Button size="sm" type="submit" variant="submit" disabled={sending}>
+                        {sending ? "Sending..." : "Submit"}
                     </Button>
                 </form>
             </div>
