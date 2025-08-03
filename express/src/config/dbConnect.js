@@ -16,7 +16,11 @@ const connectDB = async () => {
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
         console.error(`Error: ${error.message}`);
-        process.exit(1);
+        if (process.env.NODE_ENV === "test") {
+            throw error; // Throwing error test program will capture, non-force exit
+        } else {
+            process.exit(1); // Production environment retained and exited directly
+        }
     }
 };
 
