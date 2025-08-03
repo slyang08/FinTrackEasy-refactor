@@ -1,6 +1,7 @@
 // src/utils/sendEmail.js
-import pkg from "google-auth-library";
-const { OAuth2Client } = pkg;
+// import pkg from "google-auth-library";
+// const { OAuth2Client } = pkg;
+import { OAuth2Client } from "google-auth-library";
 import nodemailer from "nodemailer";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_USER } = process.env;

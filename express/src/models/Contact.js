@@ -3,11 +3,7 @@ import mongoose from "mongoose";
 
 const contactFormSchema = new mongoose.Schema(
     {
-        name: { type: String },
-        phone: {
-            type: String,
-            match: /^\d{10}$/,
-        },
+        name: { type: String, required: true },
         email: {
             type: String,
             required: true,
@@ -15,6 +11,7 @@ const contactFormSchema = new mongoose.Schema(
         },
         note: { type: String },
         status: { type: String, enum: ["pending", "resolved"], default: "pending" },
+        termsAccepted: { type: Boolean, required: true },
     },
     { timestamps: true }
 );
