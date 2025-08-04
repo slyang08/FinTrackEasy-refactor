@@ -3,9 +3,11 @@ import cron from "node-cron";
 import Expense from "../models/Expense.js";
 import Income from "../models/Income.js";
 
+let task = null;
+
 // Recurring Job for handling recurring transaction
 export default async function startRecurringTransaction() {
-    cron.schedule("0 0 * * *", async () => {
+    task = cron.schedule("0 0 * * *", async () => {
         console.log(`[${new Date().toISOString()}] Start posting Recurring Transaction`);
 
         // Post recurring transactions
@@ -16,6 +18,16 @@ export default async function startRecurringTransaction() {
 
         console.log(`[${new Date().toISOString()}] Recurring Transaction End`);
     });
+
+    return task;
+}
+
+export function stopRecurringTransaction() {
+    if (task) {
+        task.stop();
+        task = null;
+        console.log("Recurring transaction task stopped.");
+    }
 }
 
 async function saveNewTransactions(Model, label) {

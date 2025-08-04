@@ -5,13 +5,13 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const connectDB = async () => {
-    // Check if you are already connected
-    if (mongoose.connection.readyState >= 1) {
-        console.log("MongoDB is already connected");
-        return;
-    }
-
     try {
+        // Check if you are already connected
+        if (mongoose.connection.readyState >= 1) {
+            console.log("MongoDB is already connected");
+            return;
+        }
+
         const conn = await mongoose.connect(process.env.MONGODB_URI);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {

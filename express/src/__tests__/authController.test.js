@@ -2,9 +2,9 @@
 import passport from "passport";
 import request from "supertest";
 
-import app from "../app.js";
 import Account from "../models/Account.js";
 import User from "../models/User.js";
+import app from "../server.js";
 
 jest.mock("../models/User.js");
 jest.mock("../models/Account.js");
@@ -77,10 +77,44 @@ describe("Login Controller", () => {
             .post("/api/auth/login")
             .send({ email: "test@example.com", password: "password123" });
 
-        console.log(response.body.user);
+        console.log("Response body:", response.body);
 
         expect(response.status).toBe(200);
         expect(response.body.user).toBeDefined();
         expect(response.body.user.email).toBe("test@example.com"); // Adjust based on your user object
+    });
+});
+
+describe("Google OAuth Login", () => {
+    it("should successfully login and return user and token", async () => {
+        const response = await request(app)
+            .get("/api/auth/google/callback")
+            .query({ code: "mockAuthCode" })
+            .expect(302);
+
+        expect(response.headers.location).toMatch(
+            new RegExp(`${process.env.FRONTEND_URL}/oauth-callback\\?token=`)
+        );
+    });
+
+    it("should redirect on failure", async () => {
+        jest.doMock("passport-google-oauth20", () => {
+            const Strategy = function (options, verify) {
+                this.name = "google";
+                this.authenticate = function (req) {
+                    this.fail("Authentication failed");
+                };
+            };
+            return { Strategy };
+        });
+
+        const response = await request(app)
+            .get("/api/auth/google/callback")
+            .query({ code: "invalidCode" })
+            .expect(302);
+
+        expect(response.headers.location).toMatch(
+            new RegExp(`${process.env.FRONTEND_URL}/oauth-callback\\?token=`)
+        );
     });
 });
