@@ -1,20 +1,10 @@
 // express/src/__tests__/contact.test.js
-import mongoose from "mongoose";
 import request from "supertest";
 
-import connectDB from "../config/dbConnect.js";
+import app from "../App.js";
 import ContactForm from "../models/Contact.js";
-import app from "../server.js";
 
 jest.mock("../models/Contact.js");
-
-beforeAll(async () => {
-    await connectDB();
-});
-
-afterAll(async () => {
-    await mongoose.connection.close();
-});
 
 describe("Contact Routes", () => {
     afterEach(() => {
