@@ -2,17 +2,13 @@
 import { formatToTorontoTime } from "../utils/timeUtils.js";
 
 export const TorontoTimeMiddleware = (req, res, next) => {
-    if (req.body.date) {
-        req.body.date = formatToTorontoTime(req.body.date);
-    }
-    if (req.body.startDate) {
-        req.body.startDate = formatToTorontoTime(req.body.startDate);
-    }
-    if (req.body.endDate) {
-        req.body.endDate = formatToTorontoTime(req.body.endDate);
-    }
-    if (req.body.targetDate) {
-        req.body.targetDate = formatToTorontoTime(req.body.targetDate);
+    if (req.body && typeof req.body === "object") {
+        const dateFields = ["date", "startDate", "endDate", "targetDate"];
+        dateFields.forEach((field) => {
+            if (req.body[field]) {
+                req.body[field] = formatToTorontoTime(req.body[field]);
+            }
+        });
     }
     next();
 };

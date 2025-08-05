@@ -2,7 +2,7 @@ name: Deploy Express Backend
 
 on:
     push:
-        branches: 
+        branches:
             - main
         paths:
             - "express/**"
