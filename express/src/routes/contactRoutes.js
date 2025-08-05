@@ -9,13 +9,13 @@ import {
 } from "../controllers/contactController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
-import { validateBody } from "../middlewares/validate.js";
+import validate from "../middlewares/validate.js";
 import { generalContactSchema } from "../validations/contactValidation.js";
 
 const router = express.Router();
 
 // Public routes
-router.post("/", validateBody(generalContactSchema), TorontoTimeMiddleware, submitContactForm);
+router.post("/", validate(generalContactSchema), TorontoTimeMiddleware, submitContactForm);
 
 router.use(protect, TorontoTimeMiddleware);
 

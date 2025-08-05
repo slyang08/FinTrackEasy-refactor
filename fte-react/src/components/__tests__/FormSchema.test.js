@@ -1,4 +1,4 @@
-import { formSchema } from "../../schema/formSchema";
+import { formSchema } from "../../schemas/formSchema";
 
 describe("formSchema validation", () => {
     test("valid data passes validation", () => {
