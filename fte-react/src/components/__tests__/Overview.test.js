@@ -1,12 +1,12 @@
+// test the functions that update the overview dashboard
+
 import * as OverviewModule from "../../pages/Overview";
 
-// Mock the exact module 'api/axios' that Overview uses
 jest.mock("@/api/axios", () => ({
     get: jest.fn(),
     post: jest.fn(),
 }));
 
-// Import the mocked api after jest.mock so it's properly mocked
 import api from "@/api/axios";
 
 describe("Overview module utilities", () => {
@@ -14,7 +14,6 @@ describe("Overview module utilities", () => {
         jest.clearAllMocks();
     });
 
-    // Your existing fetchFilteredTransactions test
     it("fetchFilteredTransactions merges and sorts transactions correctly", async () => {
         api.get.mockImplementation((url) => {
             if (url.includes("incomes")) {
@@ -40,13 +39,12 @@ describe("Overview module utilities", () => {
         );
 
         expect(result).toHaveLength(2);
-        expect(result[0].amount).toBe(100); // Food & Drink, 2025-08-04
-        expect(result[1].amount).toBe(200); // Salary, 2025-08-03
+        expect(result[0].amount).toBe(100);
+        expect(result[1].amount).toBe(200);
         expect(result[0].type).toBe("expense");
         expect(result[1].type).toBe("income");
     });
 
-    // New test for useTransactionTotals
     it("useTransactionTotals calculates totals correctly", () => {
         const transactions = [
             { type: "income", amount: "100" },
@@ -63,7 +61,6 @@ describe("Overview module utilities", () => {
         expect(balance).toBe(225);
     });
 
-    // New test for mergeAndSortTransactions
     it("mergeAndSortTransactions merges and sorts by date descending", () => {
         const incomes = [
             { amount: 100, date: "2025-08-01T00:00:00Z" },
@@ -83,7 +80,6 @@ describe("Overview module utilities", () => {
         expect(result[3].date).toBe("2025-07-31T00:00:00Z");
     });
 
-    // New test for fetchIncomes
     it("fetchIncomes fetches data and adds type", async () => {
         api.get.mockResolvedValue({
             data: [{ amount: 150, date: "2025-08-01" }],
@@ -96,7 +92,6 @@ describe("Overview module utilities", () => {
         expect(result).toEqual([{ amount: 150, date: "2025-08-01", type: "income" }]);
     });
 
-    // New test for fetchExpenses
     it("fetchExpenses fetches data and adds type", async () => {
         api.get.mockResolvedValue({
             data: [{ amount: 75, date: "2025-08-01" }],
