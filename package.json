@@ -5,7 +5,8 @@
     "type": "module",
     "description": "",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "pnpm -r --parallel test",
+        "test:express": "pnpm --filter express run test",
         "dev": "pnpm -r --parallel dev",
         "lint": "pnpm -r --parallel --stream lint",
         "lint:fix": "pnpm -r --parallel lint:fix",

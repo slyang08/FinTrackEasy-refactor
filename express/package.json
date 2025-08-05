@@ -5,7 +5,7 @@
     "description": "",
     "main": "src/server.js",
     "scripts": {
-        "test": "jest",
+        "test": "NODE_ENV=test jest --maxWorkers=1 --detectOpenHandles --verbose",
         "start": "node src/server.js",
         "dev": "nodemon src/server.js",
         "lint": "eslint .",
@@ -42,5 +42,14 @@
         "jest": "^30.0.5",
         "nodemon": "^3.1.10",
         "supertest": "^7.1.4"
+    },
+    "jest": {
+        "setupFiles": [
+            "<rootDir>/src/jest.process-exit-mock.js"
+        ],
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/jest.setup.js"
+        ],
+        "testTimeout": 30000
     }
 }

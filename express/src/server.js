@@ -1,4 +1,5 @@
 // express/server.js
+// https://www.perplexity.ai/search/yang-mac-express-pnpm-test-exp-gxTRyvwmRyqltB5zcmu6jg
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -69,19 +70,31 @@ app.use((err, req, res, next) => {
 });
 
 // Catch all unhandled exceptions
-process.on("uncaughtException", (err) => {
-    console.error("Uncaught Exception:", err);
-    process.exit(1);
-});
+if (process.env.NODE_ENV !== "test") {
+    process.on("uncaughtException", (err) => {
+        console.error("Uncaught Exception:", err);
+        process.exit(1);
+    });
+} else {
+    process.on("uncaughtException", (err) => {
+        console.error("Uncaught Exception:", err);
+    });
+}
 
-// Run recurring job
-recurringTransaction();
+console.log("process.env.MONGODB_URI: ", process.env.MONGODB_URI);
 
-// Start server
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-}).on("error", (err) => {
-    console.error("Error starting server:", err);
-});
+if (process.env.NODE_ENV !== "test") {
+    // Run recurring job
+    recurringTransaction();
+}
+
+if (process.env.NODE_ENV !== "test") {
+    // Start server
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    }).on("error", (err) => {
+        console.error("Error starting server:", err);
+    });
+}
 
 export default app;
