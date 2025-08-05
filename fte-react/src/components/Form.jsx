@@ -37,7 +37,7 @@ import CategoriesDropdown from "./CategoriesDropdown";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 // Enforces that if the Category "Other" is chosen, a Custom Category must be addeds
-const formSchema = z
+export const formSchema = z
     .object({
         txnDate: z.coerce.date(),
         txnCategory: z.string(),
