@@ -1,10 +1,12 @@
 import js from "@eslint/js";
+import jest from "eslint-plugin-jest"; // ✅ Add this import
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 
 export default [
     { ignores: ["dist"] },
+
     {
         files: ["**/*.{js,jsx}"],
         languageOptions: {
@@ -25,6 +27,22 @@ export default [
             ...reactHooks.configs.recommended.rules,
             "no-unused-vars": ["error", { varsIgnorePattern: "^(motion|[A-Z_])" }],
             "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+        },
+    },
+
+    {
+        files: ["**/*.test.{js,jsx}"],
+        plugins: {
+            jest,
+        },
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.jest, // ✅ Adds globals like `jest`, `test`, `describe`, etc.
+            },
+        },
+        rules: {
+            ...jest.configs.recommended.rules,
         },
     },
 ];
