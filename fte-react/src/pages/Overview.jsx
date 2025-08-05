@@ -25,7 +25,7 @@ import TransactionDateFilter from "../components/TransactionDateFilter";
 import TransactionList from "../components/TransactionList";
 
 // Dictionaries for sorting filtered categories for incomes and expenses
-const allIncome = [
+export const allIncome = [
     "Gift",
     "Salary",
     "Extra Income",
@@ -36,7 +36,7 @@ const allIncome = [
     "Other",
 ];
 
-const allExpense = [
+export const allExpense = [
     "Food & Drink",
     "Car",
     "Shopping",
@@ -419,3 +419,11 @@ export default function Overview() {
         </div>
     );
 }
+
+export {
+    fetchExpenses,
+    fetchFilteredTransactions,
+    fetchIncomes,
+    mergeAndSortTransactions,
+    useTransactionTotals,
+};
