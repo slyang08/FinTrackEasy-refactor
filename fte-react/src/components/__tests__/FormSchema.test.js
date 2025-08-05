@@ -1,6 +1,4 @@
-import { z } from "zod";
-
-import { formSchema } from "../../pages/__mocks__/formSchema";
+import { formSchema } from "./formSchema";
 
 describe("formSchema validation", () => {
     test("valid data passes validation", () => {
