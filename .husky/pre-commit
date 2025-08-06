@@ -2,4 +2,4 @@ pnpm format:check
 
 pnpm lint-staged
 
-pnpm test
+pnpm test
