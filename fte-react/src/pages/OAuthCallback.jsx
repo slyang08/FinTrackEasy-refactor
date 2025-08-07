@@ -24,7 +24,13 @@ export default function OAuthCallback() {
         api.post("/auth/set-cookie", { token })
             .then(() => {
                 // 3. Successfully set cookie, authenticate immediately (will bring up stateless cookie)
+<<<<<<< HEAD
                 return api.get("/auth/me");
+=======
+                setTimeout(() => {
+                    return api.get("/auth/me");
+                }, 200);
+>>>>>>> d13ee96 (fix(login): fix login redirect problem)
             })
             .then(() => {
                 // 4. Get the user to store and navigate to the global state.
