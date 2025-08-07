@@ -12,8 +12,9 @@ RUN corepack enable && pnpm install
 COPY fte-react ./fte-react
 
 # RUN pnpm run build
-RUN pnpm install --filter ./fte-react...
-RUN pnpm --filter ./fte-react... run build
+WORKDIR /app/fte-react
+RUN pnpm install
+RUN pnpm run build
 
 # Deployment stage, use nginx to serve static resources
 FROM nginx:alpine
