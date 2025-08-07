@@ -38,16 +38,27 @@ export default function Register() {
         try {
             setLoading(true);
 
-            await api.post("/auth/register", {
+            const response = await api.post("/auth/register", {
                 nickname,
                 email,
                 password,
                 confirmPassword,
             });
 
+            if (response.status !== 200) {
+                setError(response.data.message);
+                return;
+            }
             navigate("/login");
         } catch (err) {
-            setError("An error occurred while registering. Please try again." + err);
+            // Check if the error response has a message
+            if (err.response && err.response.data && err.response.data.message) {
+                // Use the error message from the response
+                setError(err.response.data.message);
+            } else {
+                // Fallback error message
+                setError("An error occurred while registering. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
