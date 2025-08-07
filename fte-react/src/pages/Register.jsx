@@ -11,7 +11,6 @@ export default function Register() {
         email: "",
         password: "",
         confirmPassword: "",
-        phone: "",
         agreeTerms: false,
     });
 
@@ -29,7 +28,7 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { nickname, email, password, confirmPassword, phone } = formData;
+        const { nickname, email, password, confirmPassword } = formData;
 
         if (password !== confirmPassword) {
             setError("Passwords do not match.");
@@ -44,7 +43,6 @@ export default function Register() {
                 email,
                 password,
                 confirmPassword,
-                phone,
             });
 
             navigate("/login");
@@ -102,17 +100,6 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Confirm Password"
-                    className="w-full bg-gray-200 px-4 py-2 rounded-md"
-                    required
-                />
-
-                {/* Phone */}
-                <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Phone"
                     className="w-full bg-gray-200 px-4 py-2 rounded-md"
                     required
                 />
