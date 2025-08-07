@@ -1,6 +1,7 @@
 // src/routes/appRoutes.js
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PublicRoute from "@/components/PublicRoute";
+import About from "@/pages/About";
 import ChangePassword from "@/pages/ChangePassword";
 import ContactUs from "@/pages/ContactUs";
 import Expense from "@/pages/Expense";
@@ -34,6 +35,7 @@ export const publicRoutes = [
     { path: "/forgotpassword", element: <ForgotPassword /> },
     { path: "/resetpassword", element: <ResetPassword /> },
     { path: "/oauth-callback", element: <OAuthCallback /> },
+    { path: "/about", element: <About /> },
 ];
 
 // Only allow non-logged in users to enter the page (such as login, registration)
