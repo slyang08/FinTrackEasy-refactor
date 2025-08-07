@@ -1,7 +1,7 @@
 // src/App.jsx
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import api from "@/api/axios";
@@ -14,9 +14,15 @@ import { appRoutes } from "./routes/appRoutes.jsx";
 function App() {
     const [, setIsAuth] = useAtom(isAuthenticated);
     const [verifying, setVerifying] = useState(true);
+    const location = useLocation();
 
     useEffect(() => {
         const verifyAuth = async () => {
+            if (location.pathname === "/oauth-callback") {
+                setVerifying(false);
+                return;
+            }
+
             try {
                 await api.get("/auth/me");
                 setIsAuth(true);
@@ -29,7 +35,7 @@ function App() {
         };
 
         verifyAuth();
-    }, [setIsAuth]);
+    }, [setIsAuth, location]);
 
     return (
         <div className="min-h-screen flex flex-col">

@@ -6,5 +6,5 @@ import { isAuthenticated } from "@/atoms/Atom";
 
 export default function PublicRoute({ children }) {
     const [isAuth] = useAtom(isAuthenticated);
-    return isAuth ? <Navigate to="/profile" replace /> : children;
+    return isAuth ? <Navigate to="/overview" replace /> : children;
 }
