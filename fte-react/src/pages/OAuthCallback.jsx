@@ -22,10 +22,8 @@ export default function OAuthCallback() {
             .then(() => {
                 // 3. Successfully set cookie, authenticate immediately (will bring up stateless cookie)
                 setTimeout(() => {
-                    api.get("/auth/me")
-                        .then(() => navigate("/overview"))
-                        .catch(() => navigate("/login"));
-                }, 2000);
+                    return api.get("/auth/me");
+                }, 200);
             })
             .then(() => {
                 // 4. Get the user to store and navigate to the global state.
