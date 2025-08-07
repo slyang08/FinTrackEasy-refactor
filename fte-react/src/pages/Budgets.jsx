@@ -15,6 +15,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 
 const today = new Date();
 
@@ -23,6 +24,7 @@ export default function Budgets() {
         from: new Date(today.getFullYear(), today.getMonth(), 1),
         to: new Date(today.getFullYear(), today.getMonth() + 1, 0),
     });
+    const [displayDate, setDisplayDate] = useState({});
     const [open, setOpen] = useState(false);
     const [currMonthBudgets, setCurrMonthBudgets] = useState([]);
     const [budgets, setBudgets] = useState([]);
@@ -61,11 +63,12 @@ export default function Budgets() {
     // Fetch expense to calculate the total expenses of each category
     useEffect(() => {
         const fetchExpense = async () => {
+            const categories = budgets.map((b) => b.category);
             try {
                 const params = {
                     startDate: dateRange.from,
                     endDate: dateRange.to,
-                    categories: existBudgetCategories.join(","),
+                    categories: categories.join(","),
                 };
                 if (params.categories) {
                     const res = await api.get("expenses/filter", { params });
@@ -85,10 +88,26 @@ export default function Budgets() {
         fetchExpense();
     }, [dateRange, existBudgetCategories, budgets]);
 
+    useEffect(() => {
+        setDisplayDate({
+            from: convertDateToDisplayDate(dateRange.from),
+            to: convertDateToDisplayDate(dateRange.to),
+        });
+    }, [dateRange]);
+
+    function convertDateToDisplayDate(date) {
+        return date.toLocaleDateString("en-CA", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            timeZone: "America/Toronto",
+        });
+    }
+
     return (
         <div className="min-h-screen p-6 mx-auto max-w-5xl">
             {/* Top Controls */}
-            <div className="grid grid-cols-3 w-full">
+            <div className="grid grid-cols-3 w-full items-center mb-5">
                 <div className="justify-self-start">
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
@@ -112,9 +131,16 @@ export default function Budgets() {
                     </Dialog>
                 </div>
 
-                <div className="justify-self-center">
-                    <BudgetCalendar dateRange={dateRange} setDateRange={setDateRange} />
-                </div>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <button className="py-2 border rounded-md shadow-sm text-sm cursor-pointer">
+                            {`${displayDate.from} - ${displayDate.to}`}
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="flex justify-center h-16">
+                        <BudgetCalendar dateRange={dateRange} setDateRange={setDateRange} />
+                    </PopoverContent>
+                </Popover>
             </div>
 
             {/* Monthly Budget Card */}
