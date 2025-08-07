@@ -24,6 +24,7 @@ export default function BudgetCalendar({ dateRange, setDateRange }) {
             </Popover>
             <Calendar
                 mode="single"
+                defaultMonth={selectedDate}
                 onMonthChange={(month) => setSelectedDate(month)}
                 captionLayout="dropdown"
                 className="[&_.rdp-root]: p-0 [&_.rdp-weekdays]:hidden [&_.rdp-weeks]:hidden"

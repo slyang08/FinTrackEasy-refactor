@@ -83,7 +83,7 @@ export default function BudgetItem({
                 </div>
                 <div className="flex justify-between mt-2">
                     <div className="mt-2 text-sm">
-                        Residual amount: ${(budget.amount - usedAmount || budget.amount).toFixed(2)}
+                        Residual amount: ${(budget.amount - (usedAmount ?? 0)).toFixed(2)}
                     </div>
                     {new Date(budget.dateRange.start).getMonth() === currMonth && (
                         <Dialog>
