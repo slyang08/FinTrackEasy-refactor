@@ -5,7 +5,7 @@
     "description": "",
     "main": "src/server.js",
     "scripts": {
-        "test": "NODE_ENV=test jest --maxWorkers=1 --detectOpenHandles --verbose",
+        "test": "cross-env NODE_ENV=test jest --maxWorkers=1 --detectOpenHandles --verbose",
         "start": "node src/server.js",
         "dev": "nodemon src/server.js",
         "lint": "eslint .",
@@ -37,6 +37,7 @@
         "@babel/preset-env": "^7.28.0",
         "@eslint/js": "^9.25.0",
         "babel-jest": "^30.0.5",
+        "cross-env": "^10.0.0",
         "eslint": "^9.26.0",
         "eslint-config-prettier": "^10.1.2",
         "jest": "^30.0.5",

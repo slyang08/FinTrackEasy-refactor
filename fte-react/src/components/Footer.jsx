@@ -1,27 +1,45 @@
-import { FaFacebookF } from "react-icons/fa6";
+import { FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
     return (
-        <div className="flex bg-green-800 justify-around items-center min-h-30">
-            <Link to={"/contact"} className="text-white text-2xl hover:text-gray-300">
-                Contact Us
-            </Link>
+        <div className="bg-green-800 text-white p-12">
+            <div className="border-1 mb-5" />
 
-            <span className="text-white font-bold text-2xl">&#169;2025 FinTrackEasy</span>
+            <div className="flex justify-between items-center">
+                <div className="font-roboto">
+                    <Link to="/" className="flex items-center text-lg hover:text-gray-300">
+                        <img src="fte-logo-final.svg" alt="fte-logo" className="h-10" />
+                        FinTrack<span className="font-bold ">Easy</span>
+                    </Link>
+                </div>
 
-            <div className="flex gap-3">
-                <Link to={"https://www.facebook.com/"}>
-                    <FaFacebookF className="text-white text-3xl hover:text-gray-300" />
-                </Link>
-                <Link to={"https://x.com/"}>
-                    <FaXTwitter className="text-white text-3xl hover:text-gray-300" />
-                </Link>
-                <Link to={"https://www.instagram.com/"}>
-                    <FaInstagram className="text-white text-3xl hover:text-gray-300" />
-                </Link>
+                <div className="flex gap-5">
+                    <div>&copy;2025 FinTrackEasy. All rights reserved.</div>
+                    <Link to="/" className="underline hover:text-gray-300">
+                        Privacy Policy
+                    </Link>
+                    <Link to="/" className="underline hover:text-gray-300">
+                        Terms of Service
+                    </Link>
+                    <Link to="/" className="underline hover:text-gray-300">
+                        Cookies Settings
+                    </Link>
+                </div>
+
+                <div className="flex gap-3">
+                    <Link to={"https://www.facebook.com/"}>
+                        <FaFacebook className="text-white text-xl hover:text-gray-300" />
+                    </Link>
+                    <Link to={"https://www.instagram.com/"}>
+                        <FaInstagram className="text-white text-xl hover:text-gray-300" />
+                    </Link>
+                    <Link to={"https://x.com/"}>
+                        <FaXTwitter className="text-white text-xl hover:text-gray-300" />
+                    </Link>
+                </div>
             </div>
         </div>
     );
