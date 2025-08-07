@@ -36,8 +36,11 @@ export default function Navbar() {
         <nav className="w-full h-14 bg-green-800 px-4 flex items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center w-1/3">
-                <Link to="/" className="font-bold text-white text-2xl">
-                    FinTrackEasy
+                <Link to="/" className="flex text-white text-xl items-center gap-1">
+                    <img src="fte-logo-final.svg" alt="fte-logo" className="h-10" />
+                    <div className="font-roboto">
+                        FinTrack<span className="font-bold">Easy</span>
+                    </div>
                 </Link>
             </div>
 
