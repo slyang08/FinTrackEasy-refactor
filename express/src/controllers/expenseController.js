@@ -20,6 +20,10 @@ export const createExpense = async (req, res, next) => {
             return res.status(400).json({ messages: error.details.map((e) => e.message) });
         }
 
+        if (value.date) {
+            value.date = new Date(value.date);
+        }
+
         const expenseData = {
             ...value,
             account: req.account._id,
@@ -28,6 +32,7 @@ export const createExpense = async (req, res, next) => {
         const expense = await Expense.create(expenseData);
         res.status(201).json(expense);
     } catch (err) {
+        console.error("Error creating expense:", err);
         next(err);
     }
 };

@@ -23,6 +23,10 @@ export const createIncome = async (req, res, next) => {
             return res.status(400).json({ messages: error.details.map((e) => e.message) });
         }
 
+        if (value.date) {
+            value.date = new Date(value.date);
+        }
+
         const incomeData = {
             ...value,
             account: req.account._id,
@@ -31,6 +35,7 @@ export const createIncome = async (req, res, next) => {
         const income = await Income.create(incomeData);
         res.status(201).json(income);
     } catch (err) {
+        console.error("Error creating income:", err);
         next(err);
     }
 };
