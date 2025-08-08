@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 import Expense from "../models/Expense.js";
+import { formatToTorontoTime } from "../utils/timeUtils.js";
 import { expenseSchema, updateExpenseSchema } from "../validations/expenseValidation.js";
 
 // Helper: Check for valid MongoDB ObjectId
@@ -18,6 +19,10 @@ export const createExpense = async (req, res, next) => {
 
         if (error) {
             return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        if (value.date) {
+            value.date = formatToTorontoTime(value.date);
         }
 
         const expenseData = {
