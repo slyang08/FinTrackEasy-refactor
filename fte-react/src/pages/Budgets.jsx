@@ -133,7 +133,7 @@ export default function Budgets() {
 
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button className="py-2 border rounded-md shadow-sm text-sm cursor-pointer">
+                        <button className="py-2 mx-24 border w-62 rounded-md shadow-sm text-sm cursor-pointer">
                             {`${displayDate.from} - ${displayDate.to}`}
                         </button>
                     </PopoverTrigger>
@@ -144,9 +144,9 @@ export default function Budgets() {
             </div>
 
             {/* Monthly Budget Card */}
-            <Card>
+            <Card className="p-8">
                 <CardHeader>
-                    <CardTitle className="flex justify-center text-2xl">Monthly Budgets</CardTitle>
+                    <CardTitle className="flex justify-center text-[18px]">Monthly Budgets</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {budgets.length > 0 ? (

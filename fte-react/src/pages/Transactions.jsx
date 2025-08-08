@@ -200,22 +200,24 @@ export default function Transactions() {
     };
 
     return (
-        <div className="p-6">
-            <div className="max-w-5xl mx-auto space-y-6">
+        <div className="flex flex-col min-h-screen">
+        {/* Main content */}
+        <main className="flex-1 p-6">
+            <div className="max-w-5xl mx-auto space-y-8">
                 {/* Top Controls */}
                 <div className="flex flex-wrap gap-4 items-center justify-between">
-                    <div className="flex gap-2">
+                    <div className="flex gap-8">
                         <Button
                             variant="income"
                             onClick={() => openDialog("income")}
-                            className="cursor-pointer"
+                            className="cursor-pointer w-30"
                         >
                             Add Income
                         </Button>
                         <Button
                             variant="expense"
                             onClick={() => openDialog("expense")}
-                            className="cursor-pointer"
+                            className="cursor-pointer w-30"
                         >
                             Add Expense
                         </Button>
@@ -272,6 +274,7 @@ export default function Transactions() {
                     />
                 </DialogContent>
             </Dialog>
+        </main>
         </div>
     );
 }

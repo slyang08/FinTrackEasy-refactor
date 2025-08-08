@@ -98,10 +98,10 @@ export default function GoalsTable({
     };
 
     return (
-        <Card className="max-w-5xl mx-auto">
+        <Card className="max-w-5xl mx-auto p-8">
             <CardContent className="p-4 overflow-x-auto">
                 <div className="mb-4 text-center">
-                    <h2 className="text-xl">Goals Tracker</h2>
+                    <h2 className="text-[18px] font-semibold">Goals Tracker</h2>
                 </div>
 
                 <div className="relative mb-4 min-h-[40px]">
@@ -135,7 +135,8 @@ export default function GoalsTable({
                     </div>
 
                     <Button
-                        className="absolute top-0 right-0 bg-blue-600 font-bold hover:bg-blue-700 text-white px-8 py-2"
+                        variant="report"
+                        className="absolute top-0 right-0 font-semibold hover:bg-blue-700 text-white px-8 py-2"
                         style={{ right: "12px" }}
                         onClick={handleAddClick}
                     >
@@ -189,8 +190,9 @@ export default function GoalsTable({
                                     <td className="p-3">
                                         <div className="flex justify-end gap-2">
                                             <Button
+                                                variant="edit"
                                                 size="sm"
-                                                className="w-24 bg-yellow-300 text-yellow-800 hover:bg-yellow-400 font-bold"
+                                                //className="w-24 bg-yellow-300 text-yellow-800 hover:bg-yellow-400 font-bold"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleEditClick(goal);
@@ -199,8 +201,9 @@ export default function GoalsTable({
                                                 Edit
                                             </Button>
                                             <Button
+                                                variant="delete"
                                                 size="sm"
-                                                className="w-24 bg-red-300 text-red-700 hover:bg-pink-200 font-bold"
+                                                //className="w-24 bg-red-300 text-red-700 hover:bg-pink-200 font-bold"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteClick(goal);

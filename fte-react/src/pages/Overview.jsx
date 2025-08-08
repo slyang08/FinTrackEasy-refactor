@@ -251,11 +251,11 @@ export default function Overview() {
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Top Controls */}
                 <div className="flex flex-wrap gap-4 items-center justify-between">
-                    <div className="flex gap-2">
+                    <div className="flex gap-8">
                         <Button
                             variant="income"
                             onClick={() => openDialog("income")}
-                            className="cursor-pointer"
+                            className="cursor-pointer w-30"
                         >
                             Add Income
                         </Button>
@@ -299,7 +299,10 @@ export default function Overview() {
                 </div>
                 {/* Charts */}
                 <div className="flex flex-col md:flex-row justify-center items-center gap-10">
-                    <div className="bg-white shadow rounded p-4 h-64 w-full md:w-[90%]">
+                    <div className="bg-white shadow-lg rounded-lg p-8 h-80 w-full md:w-[90%]">
+                    <div className="sticky top-0 left-0 right-0 bg-white z-20 text-center text-[18px] font-semibold mb-2">
+                        Income 
+                    </div>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={incomeData}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -332,7 +335,10 @@ export default function Overview() {
                         </ResponsiveContainer>
                     </div>
 
-                    <div className="bg-white shadow rounded p-4 h-64 w-full md:w-[90%]">
+                    <div className="bg-white shadow-lg rounded-lg p-8 h-80 w-full md:w-[90%]">
+                        <div className="sticky top-0 left-0 right-0 bg-white z-20 text-center text-[18px] font-semibold mb-2">
+                            Expenses
+                        </div>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={expenseData}>
                                 <CartesianGrid strokeDasharray="3 3" />
