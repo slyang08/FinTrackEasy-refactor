@@ -38,7 +38,7 @@ export default function Home() {
                         <img
                             src="/Macbook-Pro.png"
                             alt="App Screenshot"
-                            className="w-[510px] h-[360px]"
+                            className="w-[536px] h-[340px]"
                         />
                     </div>
                 </div>
