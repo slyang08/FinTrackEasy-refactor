@@ -45,7 +45,7 @@ function App() {
                     Is jumping to the page...
                 </div>
             ) : (
-                <div className="min-h-screen">
+                <div className="min-h-screen bg-[#F7F8F9]">
                     <Routes>
                         {appRoutes.map(({ path, element }) => (
                             <Route key={path} path={path} element={element} />

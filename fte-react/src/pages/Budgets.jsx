@@ -133,7 +133,7 @@ export default function Budgets() {
 
                 <Popover>
                     <PopoverTrigger asChild>
-                        <button className="py-2 mx-24 border w-62 rounded-md shadow-sm text-sm cursor-pointer">
+                        <button className="bg-white py-2 mx-24 border w-62 rounded-md shadow-sm text-sm cursor-pointer">
                             {`${displayDate.from} - ${displayDate.to}`}
                         </button>
                     </PopoverTrigger>
