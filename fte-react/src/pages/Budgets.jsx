@@ -146,7 +146,9 @@ export default function Budgets() {
             {/* Monthly Budget Card */}
             <Card className="p-8">
                 <CardHeader>
-                    <CardTitle className="flex justify-center text-[18px]">Monthly Budgets</CardTitle>
+                    <CardTitle className="flex justify-center text-[18px]">
+                        Monthly Budgets
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {budgets.length > 0 ? (

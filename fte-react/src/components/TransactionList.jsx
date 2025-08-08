@@ -35,7 +35,7 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
         >
             {/* Sticky Transaction header */}
             <div className="sticky top-0 left-0 right-0 bg-white z-20 -mx-4 mt-4 -mb-2 px-4 py-3 text-center text-[18px] font-semibold">
-                Transactions 
+                Transactions
             </div>
 
             <div>

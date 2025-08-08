@@ -201,80 +201,84 @@ export default function Transactions() {
 
     return (
         <div className="flex flex-col min-h-screen">
-        {/* Main content */}
-        <main className="flex-1 p-6">
-            <div className="max-w-5xl mx-auto space-y-8">
-                {/* Top Controls */}
-                <div className="flex flex-wrap gap-4 items-center justify-between">
-                    <div className="flex gap-8">
-                        <Button
-                            variant="income"
-                            onClick={() => openDialog("income")}
-                            className="cursor-pointer w-30"
-                        >
-                            Add Income
-                        </Button>
-                        <Button
-                            variant="expense"
-                            onClick={() => openDialog("expense")}
-                            className="cursor-pointer w-30"
-                        >
-                            Add Expense
-                        </Button>
+            {/* Main content */}
+            <main className="flex-1 p-6">
+                <div className="max-w-5xl mx-auto space-y-8">
+                    {/* Top Controls */}
+                    <div className="flex flex-wrap gap-4 items-center justify-between">
+                        <div className="flex gap-8">
+                            <Button
+                                variant="income"
+                                onClick={() => openDialog("income")}
+                                className="cursor-pointer w-30"
+                            >
+                                Add Income
+                            </Button>
+                            <Button
+                                variant="expense"
+                                onClick={() => openDialog("expense")}
+                                className="cursor-pointer w-30"
+                            >
+                                Add Expense
+                            </Button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <TransactionDateFilter dateRange={dateRange} onChange={setDateRange} />
+                        </div>
+                        <CategoryFilter
+                            selectedCategories={selectedCategories}
+                            dateRange={dateRange}
+                            onChange={setSelectedCategories}
+                        />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <TransactionDateFilter dateRange={dateRange} onChange={setDateRange} />
-                    </div>
-                    <CategoryFilter
-                        selectedCategories={selectedCategories}
-                        dateRange={dateRange}
-                        onChange={setSelectedCategories}
+
+                    {/* Summary Cards */}
+                    <SummarySection
+                        balance={balance}
+                        income={totalIncome}
+                        expenses={totalExpenses}
+                    />
+
+                    <TransactionList
+                        transactions={transactions.map((txn) => ({
+                            ...txn,
+                            displayCategory:
+                                txn.category === "Other" && txn.customCategory
+                                    ? txn.customCategory
+                                    : txn.category,
+                        }))}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        showNote={true}
+                        className="max-h-none"
+                    />
+
+                    {/* Confirmation Dialog */}
+                    <ConfirmationDialog
+                        open={confirmDelete}
+                        setOpen={setConfirmDelete}
+                        onConfirm={confirmDeleteEntry}
+                        actionType="delete"
+                        entry={{
+                            name: selectedDelete?.category,
+                            note: selectedDelete?.note,
+                            amount: selectedDelete?.amount,
+                        }}
                     />
                 </div>
 
-                {/* Summary Cards */}
-                <SummarySection balance={balance} income={totalIncome} expenses={totalExpenses} />
-
-                <TransactionList
-                    transactions={transactions.map((txn) => ({
-                        ...txn,
-                        displayCategory:
-                            txn.category === "Other" && txn.customCategory
-                                ? txn.customCategory
-                                : txn.category,
-                    }))}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    showNote={true}
-                    className="max-h-none"
-                />
-
-                {/* Confirmation Dialog */}
-                <ConfirmationDialog
-                    open={confirmDelete}
-                    setOpen={setConfirmDelete}
-                    onConfirm={confirmDeleteEntry}
-                    actionType="delete"
-                    entry={{
-                        name: selectedDelete?.category,
-                        note: selectedDelete?.note,
-                        amount: selectedDelete?.amount,
-                    }}
-                />
-            </div>
-
-            {/* Edit / Add Transaction Form Modal */}
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="max-w-2xl">
-                    <TransactionForm
-                        type={type}
-                        setOpen={handleFormClose}
-                        editingId={editingId}
-                        editingData={editingData}
-                    />
-                </DialogContent>
-            </Dialog>
-        </main>
+                {/* Edit / Add Transaction Form Modal */}
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogContent className="max-w-2xl">
+                        <TransactionForm
+                            type={type}
+                            setOpen={handleFormClose}
+                            editingId={editingId}
+                            editingData={editingData}
+                        />
+                    </DialogContent>
+                </Dialog>
+            </main>
         </div>
     );
 }

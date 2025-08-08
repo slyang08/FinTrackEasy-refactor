@@ -576,9 +576,9 @@ export default function Overview() {
                         ref={incomeChartRef}
                         style={{ backgroundColor: "#ffffff", color: "#000000" }}
                     >
-                    <div className="sticky top-0 left-0 right-0 bg-white z-20 text-center text-[18px] font-semibold mb-2">
-                        Income 
-                    </div>
+                        <div className="sticky top-0 left-0 right-0 bg-white z-20 text-center text-[18px] font-semibold mb-2">
+                            Income
+                        </div>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={incomeData}>
                                 <CartesianGrid strokeDasharray="3 3" />
