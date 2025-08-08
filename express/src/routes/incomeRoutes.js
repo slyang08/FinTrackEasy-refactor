@@ -12,14 +12,13 @@ import {
     updateIncome,
 } from "../controllers/incomeController.js";
 import { attachAccount, protect } from "../middlewares/authMiddleware.js";
-import { TorontoTimeMiddleware } from "../middlewares/timeMiddleware.js";
 import { validateBody, validateQuery } from "../middlewares/validate.js";
 import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 import { incomeFilterQuerySchema, incomeQuerySchema } from "../validations/queryValidation.js";
 
 const router = express.Router();
 
-router.use(protect, attachAccount, TorontoTimeMiddleware);
+router.use(protect, attachAccount);
 
 // POST create income
 router.post("/", validateBody(incomeSchema), createIncome);
