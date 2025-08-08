@@ -112,9 +112,11 @@ export default function BudgetSummary({ dateRange, confirmDelete, confirmEdit })
 
     return (
         <div className="h-full w-full">
-            <Card className="max-h-80 pb-0">
+            <Card className="max-h-80 pb-0 shadow-lg">
                 <CardHeader>
-                    <CardTitle className="flex justify-center">Monthly Budget</CardTitle>
+                    <CardTitle className="flex justify-center text-[18px] mt-1 mb-2">
+                        Monthly Budget
+                    </CardTitle>
                 </CardHeader>
 
                 <CardContent className="max-h-[400px] overflow-y-auto  pt-5">

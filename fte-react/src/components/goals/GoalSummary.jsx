@@ -45,7 +45,7 @@ function CircularProgress({ size = 160, strokeWidth = 14, progress, color, label
                 y="50%"
                 dominantBaseline="middle"
                 textAnchor="middle"
-                fontWeight="700"
+                fontWeight="600"
                 fontSize={size / 7}
                 fill={color}
                 style={{
@@ -62,10 +62,10 @@ function CircularProgress({ size = 160, strokeWidth = 14, progress, color, label
 function TimeRemainingCard({ daysLeft }) {
     return (
         <div className="w-60 bg-white shadow-lg px-6 py-4 rounded-lg border border-gray-200 flex flex-col items-center select-none">
-            <p className="text-sm text-gray-500 mb-1 tracking-wide uppercase font-semibold">
+            <p className="text-[16px] text-gray-500 mb-1 tracking-wide font-semibold">
                 Time Remaining
             </p>
-            <p className="text-red-600 font-extrabold text-xl">{daysLeft} days</p>
+            <p className="text-red-600 font-semibold text-xl">{daysLeft} days</p>
         </div>
     );
 }
@@ -74,12 +74,12 @@ export default function GoalSummary({ currentSaving, daysRemaining, progressPerc
     return (
         <div className="flex flex-col md:flex-row justify-center items-center gap-40 px-4 md:px-0">
             <div className="text-center">
-                <p className="text-sm text-gray-500 mb-3 uppercase font-semibold tracking-wide">
-                    Current Savings
+                <p className="text-[16px] text-gray-500 mb-3 font-semibold tracking-wide">
+                    Current Total Savings
                 </p>
                 <CircularProgress
                     progress={100}
-                    color="#16a34a"
+                    color="#348D37"
                     label={`$${currentSaving.toLocaleString()}`}
                     size={160}
                     strokeWidth={14}
@@ -89,12 +89,12 @@ export default function GoalSummary({ currentSaving, daysRemaining, progressPerc
             <TimeRemainingCard daysLeft={daysRemaining} />
 
             <div className="text-center">
-                <p className="text-sm text-gray-500 mb-3 uppercase font-semibold tracking-wide">
+                <p className="text-[16px] text-gray-500 mb-3 font-semibold tracking-wide">
                     Savings Progress
                 </p>
                 <CircularProgress
                     progress={progressPercent}
-                    color="#2563eb"
+                    color="#3B82F6"
                     label={`${progressPercent}%`}
                     size={160}
                     strokeWidth={14}

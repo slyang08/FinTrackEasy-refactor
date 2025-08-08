@@ -33,10 +33,10 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="w-full h-14 bg-green-800 px-4 flex items-center justify-between">
+        <nav className="w-full h-16 bg-white px-4 pl-10 pr-10 flex items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center w-1/3">
-                <Link to="/" className="flex text-white text-xl items-center gap-1">
+                <Link to="/" className="flex text-black text-xl items-center gap-1">
                     <img src="fte-logo-final.svg" alt="fte-logo" className="h-10" />
                     <div className="font-roboto">
                         FinTrack<span className="font-bold">Easy</span>
@@ -48,12 +48,12 @@ export default function Navbar() {
             {isAuth && (
                 <div className="absolute left-1/2 transform -translate-x-1/2">
                     <NavigationMenu className="hidden md:flex justify-center">
-                        <NavigationMenuList>
+                        <NavigationMenuList className="flex gap-x-6">
                             <NavigationMenuItem>
                                 <NavigationMenuLink asChild>
                                     <Link
                                         to="/overview"
-                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                        className="text-black text-[15px] font-poppins px-4 py-2 hover:text-gray-300 hover:bg-transparent"
                                     >
                                         Overview
                                     </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         to="/transactions"
-                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                        className="text-black text-[15px] font-poppins px-4 py-2 hover:text-gray-300 hover:bg-transparent"
                                     >
                                         Transactions
                                     </Link>
@@ -73,7 +73,7 @@ export default function Navbar() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         to="/budgets"
-                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                        className="text-black text-[15px] font-poppins px-4 py-2 hover:text-gray-300 hover:bg-transparent"
                                     >
                                         Budgets
                                     </Link>
@@ -83,7 +83,7 @@ export default function Navbar() {
                                 <NavigationMenuLink asChild>
                                     <Link
                                         to="/goals"
-                                        className="text-white px-4 py-2 hover:text-gray-300 hover:bg-transparent"
+                                        className="text-black text-[15px] font-poppins px-4 py-2 hover:text-gray-300 hover:bg-transparent"
                                     >
                                         Goals
                                     </Link>
@@ -100,7 +100,7 @@ export default function Navbar() {
                     <NavigationMenuList className="flex gap-x-6">
                         <NavigationMenuItem>
                             <NavigationMenuLink asChild>
-                                <Link to="/" className="px-3 py-2 text-white">
+                                <Link to="/" className="text-[15px] px-3 py-2 text-black">
                                     Home
                                 </Link>
                             </NavigationMenuLink>
@@ -110,7 +110,7 @@ export default function Navbar() {
                             <NavigationMenuLink asChild>
                                 <Link
                                     to="/about"
-                                    className="px-3 py-2 text-white hover:text-gray-300"
+                                    className="text-[15px] px-3 py-2 text-black hover:text-gray-300"
                                 >
                                     About Us
                                 </Link>
@@ -121,7 +121,7 @@ export default function Navbar() {
                             <NavigationMenuLink asChild>
                                 <Link
                                     to="/contact"
-                                    className="px-3 py-2 text-white hover:text-gray-300"
+                                    className="text-[15px] px-3 py-2 text-black hover:text-gray-300"
                                 >
                                     Contact
                                 </Link>
@@ -132,7 +132,7 @@ export default function Navbar() {
                             <NavigationMenuLink asChild>
                                 <Link
                                     to="/login"
-                                    className="px-3 py-2 border border-white rounded hover:bg-white hover:text-green-800 transition"
+                                    className="text-black px-3 py-1 border-2 border-black rounded bg-white text-sm hover:bg-gray hover:text-green-800 transition"
                                 >
                                     Log In
                                 </Link>
@@ -143,7 +143,7 @@ export default function Navbar() {
                             <NavigationMenuLink asChild>
                                 <Link
                                     to="/register"
-                                    className="px-3 py-2 border border-white rounded hover:bg-white hover:text-green-800 transition"
+                                    className="border bg-[#348D37] text-white font-normal shadow-sm rounded-[12px] px-3 py-1 text-sm leading-6 hover:bg-[#2F7E32] focus-visible:ring-green-100"
                                 >
                                     Sign Up
                                 </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
                 <NavigationMenu className="hidden md:flex justify-end items-center">
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger className="bg-transparent text-white hover:bg-transparent hover:text-gray-300">
+                            <NavigationMenuTrigger className="bg-transparent text-black hover:bg-transparent hover:text-gray-300">
                                 <FaCircleUser className="text-3xl" />
                             </NavigationMenuTrigger>
 
