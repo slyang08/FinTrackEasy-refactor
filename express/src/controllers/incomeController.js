@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 import Income from "../models/Income.js";
+import { formatToTorontoTime } from "../utils/timeUtils.js";
 import { incomeSchema, updateIncomeSchema } from "../validations/incomeValidation.js";
 
 // Helper: Check for valid MongoDB ObjectId
@@ -21,6 +22,10 @@ export const createIncome = async (req, res, next) => {
         const { error, value } = incomeSchema.validate(req.body, { abortEarly: false });
         if (error) {
             return res.status(400).json({ messages: error.details.map((e) => e.message) });
+        }
+
+        if (value.date) {
+            value.date = formatToTorontoTime(value.date);
         }
 
         const incomeData = {
