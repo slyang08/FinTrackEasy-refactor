@@ -21,11 +21,11 @@ import CategoriesDropdown from "../CategoriesDropdown";
 
 const categories = expenseCategories;
 const formSchema = z.object({
-    budgetName: z.string().min(1, "Name is required"),
+    budgetName: z.string(),
     budgetAmount: z.coerce
         .number({ invalid_type_error: "Please enter a valid number" })
-        .min(0, "Budget must be at least 0"),
-    budgetCategory: z.string(),
+        .min(1, "Budget must be at least 1"),
+    budgetCategory: z.string().min(1, "Category is required"),
     budgetDuration: z.string(),
 });
 
@@ -109,19 +109,23 @@ export default function BudgetForm({ setOpen, existBudgetCategories }) {
                     <FormField
                         control={form.control}
                         name="budgetCategory"
-                        render={({ field }) => (
-                            <FormItem className="flex-1/2">
-                                <FormLabel>Category</FormLabel>
-                                <FormControl>
-                                    <CategoriesDropdown
-                                        categories={budgetCategories}
-                                        type="expense"
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                    />
-                                </FormControl>
-                            </FormItem>
-                        )}
+                        render={({ field }) => {
+                            const isInvalid = !!form.formState.errors.budgetCategory;
+                            return (
+                                <FormItem className="flex-1/2">
+                                    <FormLabel>Category</FormLabel>
+                                    <FormControl>
+                                        <CategoriesDropdown
+                                            categories={budgetCategories}
+                                            type="expense"
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                            isInvalid={isInvalid}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            );
+                        }}
                     />
 
                     <FormField
