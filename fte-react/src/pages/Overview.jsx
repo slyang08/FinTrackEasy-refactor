@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useEffect, useRef,useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     CartesianGrid,
     Legend,
