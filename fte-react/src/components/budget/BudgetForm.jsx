@@ -54,7 +54,7 @@ export default function BudgetForm({ setOpen, existBudgetCategories }) {
     async function handleAddNewBudget(values) {
         const today = new Date();
         const budget = {
-            name: values.budgetName,
+            name: values.budgetName || " ",
             amount: values.budgetAmount,
             category: values.budgetCategory,
             dateRange: {
