@@ -22,7 +22,8 @@ export const createExpense = async (req, res, next) => {
         }
 
         if (value.date) {
-            value.date = formatToTorontoTime(value.date);
+            const formattedDate = formatToTorontoTime(value.date);
+            value.date = new Date(formattedDate);
         }
 
         const expenseData = {

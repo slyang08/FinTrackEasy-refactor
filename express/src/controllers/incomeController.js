@@ -25,7 +25,8 @@ export const createIncome = async (req, res, next) => {
         }
 
         if (value.date) {
-            value.date = formatToTorontoTime(value.date);
+            const formattedDate = formatToTorontoTime(value.date);
+            value.date = new Date(formattedDate);
         }
 
         const incomeData = {
