@@ -1,4 +1,5 @@
 import { format, parseISO } from "date-fns";
+import { DateTime } from "luxon";
 
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -17,7 +18,10 @@ export default function TransactionList({ transactions, onEdit, onDelete, showNo
     );
 
     const groupedTransactions = sortedTransactions.reduce((groups, txn) => {
-        const dateKey = txn.date.slice(0, 10);
+        // const dateKey = txn.date.slice(0, 10);
+        const dateKey = DateTime.fromJSDate(new Date(txn.date), { zone: "America/Toronto" })
+            .toISO()
+            .slice(0, 10);
         if (!groups[dateKey]) groups[dateKey] = [];
         groups[dateKey].push(txn);
         return groups;
