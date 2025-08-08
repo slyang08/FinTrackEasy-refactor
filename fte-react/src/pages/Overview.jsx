@@ -137,6 +137,7 @@ export default function Overview() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedDelete, setSelectedDelete] = useState(null);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [addedExpense, setAddedExpense] = useState(null);
     const incomeChartRef = useRef(null);
     const expenseChartRef = useRef(null);
 
@@ -673,6 +674,8 @@ export default function Overview() {
                         dateRange={dateRange}
                         confirmDelete={confirmDelete}
                         confirmEdit={open}
+                        addedExpense={addedExpense}
+                        setAddedExpense={setAddedExpense}
                     />
 
                     <ConfirmationDialog
@@ -699,6 +702,7 @@ export default function Overview() {
                         editingId={editingId}
                         editingData={editingData}
                         triggerRefresh={refreshTrigger}
+                        setAddedExpense={setAddedExpense}
                     />
                 </DialogContent>
             </Dialog>

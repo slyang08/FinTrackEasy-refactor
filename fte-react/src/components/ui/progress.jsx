@@ -15,7 +15,13 @@ function Progress({ className, value, ...props }) {
         >
             <ProgressPrimitive.Indicator
                 data-slot="progress-indicator"
-                className={`${value === 100 ? "bg-red-500" : "bg-gradient-to-r from-green-500 from-90% to-primary/0.01 to-100%"} h-full w-full flex-1 transition-all duration-800`}
+                className={`${
+                    value >= 100
+                        ? "bg-red-500"
+                        : value >= 90
+                          ? "bg-gradient-to-r from-yellow-500 from-90% to-primary/0.01 to-100%"
+                          : "bg-gradient-to-r from-green-500 from-90% to-primary/0.01 to-100%"
+                } h-full w-full flex-1 transition-all duration-800`}
                 style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
             />
         </ProgressPrimitive.Root>

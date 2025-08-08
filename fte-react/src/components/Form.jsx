@@ -87,7 +87,13 @@ const incomeCategories = [
 
 const MAX_NOTE_LENGTH = 30;
 
-export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
+export default function TransactionForm({
+    type,
+    setOpen,
+    editingId = null,
+    editingData = null,
+    setAddedExpense,
+}) {
     const [dropdown] = useState("dropdown");
     const [showConfirm, setShowConfirm] = useState(false);
     const [pendingValues, setPendingValues] = useState(null);
@@ -175,7 +181,8 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                 await api.patch(`${endpoint}/${editingId}`, payload);
                 toast.success(`${type === "income" ? "Income" : "Expense"} entry updated!`);
             } else {
-                await api.post(endpoint, payload);
+                const res = await api.post(endpoint, payload);
+                if (setAddedExpense) setAddedExpense(res.data);
                 toast.success(`${type === "income" ? "Income" : "Expense"} entry added!`);
             }
 
