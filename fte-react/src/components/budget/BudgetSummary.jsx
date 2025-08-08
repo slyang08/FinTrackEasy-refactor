@@ -129,16 +129,16 @@ export default function BudgetSummary({
                 const totalUsedAmount = filteredDateAmount[addedExpense.category];
                 const budgetAmount = filteredDateBudget.find(
                     (budget) => budget.category === addedExpense.category
-                ).amount;
+                );
                 const percentage = (totalUsedAmount / budgetAmount) * 100;
                 if (percentage >= 100) {
                     toast.error(
-                        `Over Budget! You’ve used your entire ${addedExpense.category} budget.`
+                        `Over Budget! You've used your entire ${addedExpense.category} budget.`
                     );
                     setAddedExpense(null);
                 } else if (percentage >= 90) {
                     toast.warning(
-                        `Budget Alert: You’ve reached 90% of your ${addedExpense.category} budget`
+                        `Budget Alert: You've reached 90% of your ${addedExpense.category} budget`
                     );
                     setAddedExpense(null);
                 }
