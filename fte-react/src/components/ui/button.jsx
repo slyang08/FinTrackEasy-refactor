@@ -17,7 +17,7 @@ const buttonVariants = cva(
                 secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
                 link: "text-primary underline-offset-4 hover:underline",
-                income: "border bg-lime-600 text-white shadow-xs hover:bg-green-700 focus-visible:ring-green-100 dark:bg-green-700 dark:hover:bg-green-800",
+                income: "border bg-[#348D37] text-white shadow-xs hover:bg-green-700 focus-visible:ring-green-100 dark:bg-green-700 dark:hover:bg-green-800",
                 expense:
                     "border bg-red-600 text-white shadow-xs hover:bg-red-700 focus-visible:ring-red-100 dark:bg-red-700 dark:hover:bg-red-800",
                 report: "border bg-blue-500 text-white shadow-xs hover:bg-blue-600 focus-visible:ring-blue-100 dark:bg-blue-600 dark:hover:bg-blue-700",

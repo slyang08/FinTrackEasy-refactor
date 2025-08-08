@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
     return (
-        <div className="bg-green-800 text-white p-12">
+        <div className="bg-white text-black p-11">
             <div className="border-1 mb-5" />
 
             <div className="flex justify-between items-center">
@@ -17,27 +17,27 @@ export default function Footer() {
                 </div>
 
                 <div className="flex gap-5">
-                    <div>&copy;2025 FinTrackEasy. All rights reserved.</div>
-                    <Link to="/" className="underline hover:text-gray-300">
+                    <div className="text-[14px]">&copy;2025 FinTrackEasy. All rights reserved.</div>
+                    <Link to="/" className="underline text-[14px] hover:text-gray-300">
                         Privacy Policy
                     </Link>
-                    <Link to="/" className="underline hover:text-gray-300">
+                    <Link to="/" className="underline text-[14px] hover:text-gray-300">
                         Terms of Service
                     </Link>
-                    <Link to="/" className="underline hover:text-gray-300">
+                    <Link to="/" className="underline text-[14px] hover:text-gray-300">
                         Cookies Settings
                     </Link>
                 </div>
 
                 <div className="flex gap-3">
                     <Link to={"https://www.facebook.com/"}>
-                        <FaFacebook className="text-white text-xl hover:text-gray-300" />
+                        <FaFacebook className="text-black text-xl hover:text-gray-300" />
                     </Link>
                     <Link to={"https://www.instagram.com/"}>
-                        <FaInstagram className="text-white text-xl hover:text-gray-300" />
+                        <FaInstagram className="text-black text-xl hover:text-gray-300" />
                     </Link>
                     <Link to={"https://x.com/"}>
-                        <FaXTwitter className="text-white text-xl hover:text-gray-300" />
+                        <FaXTwitter className="text-black text-xl hover:text-gray-300" />
                     </Link>
                 </div>
             </div>

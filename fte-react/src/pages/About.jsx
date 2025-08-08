@@ -14,7 +14,7 @@ export default function About() {
                 <img
                     src="/user-icon.svg"
                     alt={member.name}
-                    className="w-[80px] h-[80px] rounded-full object-cover mx-auto"
+                    className="w-[64px] h-[64px] rounded-full object-cover mx-auto"
                 />
             </div>
 
@@ -29,19 +29,19 @@ export default function About() {
                     {member.name}
                 </a>
             ) : (
-                <h3 className="text-[20px] leading-[30px] font-bold font-poppins text-[#060B06] mb-1">
+                <h3 className="text-[18px] leading-[30px] font-bold font-poppins text-[#060B06] mb-1">
                     {member.name}
                 </h3>
             )}
 
             {/* Role */}
-            <p className="text-[18px] leading-[27px] text-[#4B5563] font-semibold font-poppins mb-4">
+            <p className="text-[16px] leading-[18px] text-[#4B5563] font-medium font-poppins mb-4">
                 {member.role}
             </p>
 
             {/* Bio */}
             <p
-                className={`text-[18px] leading-[27px] text-[#4B5563] font-normal font-poppins mb-4 ${
+                className={`text-[16px] leading-[22px] text-[#4B5563] font-normal font-poppins mb-4 ${
                     large ? "max-w-[520px]" : "max-w-[394.67px]"
                 }`}
             >
@@ -49,7 +49,7 @@ export default function About() {
             </p>
 
             {/* Social Icons */}
-            <div className="flex gap-2 mt-auto">
+            <div className="flex gap-2">
                 <img src="/LinkedIn.png" alt="LinkedIn" className="w-6 h-6" />
                 <img src="/X.png" alt="X" className="w-6 h-6" />
                 <img src="/Dribble.png" alt="Dribble" className="w-6 h-6" />
@@ -68,9 +68,9 @@ export default function About() {
                 }}
             >
                 <div className="text-center max-w-3xl mx-auto">
-                    <h4 className="text-medium text-gray-800 font-semibold mb-2">About Us</h4>
-                    <h1 className="text-[56px] font-semibold mb-6">Our Financial Mission</h1>
-                    <p className="text-xl text-gray-900 leading-[27px] text-[#060B06] font-sans mb-6">
+                    <h4 className="text-xl text-gray-800 font-semibold mb-2">About Us</h4>
+                    <h1 className="text-5xl font-medium mb-4">Our Financial Mission</h1>
+                    <p className="text-[16px] text-gray-800 leading-[27px] mb-6">
                         At FinTrackEasy, we strive to simplify budgeting and expense tracking for
                         everyone,
                         <br></br>regardless of their background.
@@ -88,15 +88,15 @@ export default function About() {
 
             {/* Our Journey Section */}
             <section
-                className="bg-[#ECF5EC] w-full px-[64px]"
+                className="bg-[#ECF5EC] w-full flex"
                 style={{
-                    paddingTop: "146px",
-                    paddingBottom: "152px",
+                    paddingTop: "100px",
+                    paddingBottom: "100px",
                 }}
             >
-                <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center gap-[80px]">
+                <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center gap-[6px]">
                     {/* Image */}
-                    <div className="w-[600px] h-[640px] flex-shrink-0">
+                    <div className="w-[480px] h-[490px] flex-shrink-0">
                         <img
                             src="/lady-with-laptop-and-coffee.jpg"
                             alt="Laptop user with coffee"
@@ -105,14 +105,14 @@ export default function About() {
                     </div>
 
                     {/* Text and Button Container */}
-                    <div className="w-[600px] h-[324px] flex flex-col justify-between">
+                    <div className="w-[600px] h-[315px] flex flex-col justify-between px-16">
                         {/* Heading */}
-                        <h2 className="text-5xl font-semibold leading-[56px] font-semibold text-[#060B06] font-sans">
+                        <h2 className="text-4xl font-medium leading-[46px] font-semibold text-[#060B06] font-sans">
                             Our Journey to Financial Empowerment
                         </h2>
 
                         {/* Description */}
-                        <p className="text-xl text-gray-900 leading-[27px] text-[#060B06] font-sans">
+                        <p className="text-[16px] text-gray-900 leading-[27px] text-[#060B06] font-sans">
                             FinTrackEasy was born from a desire to simplify personal finance
                             management. Our goal is to provide an accessible platform that empowers
                             users to take control of their financial health, free of charge.
@@ -135,20 +135,20 @@ export default function About() {
             <section
                 className="bg-white w-full px-[64px]"
                 style={{
-                    paddingTop: "112px",
-                    paddingBottom: "112px",
+                    paddingTop: "60px",
+                    paddingBottom: "60px",
                 }}
             >
-                <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center gap-[80px]">
+                <div className="max-w-[1090px] mx-auto flex flex-col md:flex-row items-center gap-[12px]">
                     {/* Left: Text Content */}
-                    <div className="w-[600px] flex flex-col gap-[32px]">
+                    <div className="w-[500px] flex flex-col gap-[28px]">
                         {/* Heading + Paragraph */}
                         <div>
-                            <h3 className="text-[40px] leading-[52px] tracking-[-0.01em] font-bold text-[#060B06] mb-[24px] font-mulish">
+                            <h3 className="text-4xl leading-[42px] tracking-[-0.01em] font-medium text-[#060B06] mb-[24px] font-mulish">
                                 Unlock Your Financial Potential with FinTrackEasy's User-Friendly
                                 Budgeting Tools
                             </h3>
-                            <p className="text-xl text-gray-900 leading-[27px] text-[#060B06] font-sans">
+                            <p className="text-[16px] text-gray-900 leading-[24px] mt-8 text-[#060B06] font-sans">
                                 FinTrackEasy empowers you to take control of your finances
                                 effortlessly. Track your expenses and manage your budget with ease,
                                 all in one place.
@@ -157,29 +157,29 @@ export default function About() {
 
                         {/* Feature Cards */}
                         <div className="flex flex-col gap-[32px]">
-                            <div className="flex gap-[24px]">
+                            <div className="flex gap-[25px]">
                                 {/* Card 1 */}
                                 <div className="w-[288px] flex flex-col gap-[16px]">
-                                    <img src="/thumbs-up.svg" alt="" className="w-12 h-12 mt-1" />
+                                    <img src="/thumbs-up.svg" alt="" className="w-10 h-10 mt-1" />
                                     <div>
-                                        <h6 className="text-[20px] leading-[32px] tracking-[-0.01em] font-semibold text-[#060B06] font-mulish">
+                                        <h6 className="text-[18px] leading-[32px] tracking-[-0.01em] font-semibold text-[#060B06] font-mulish">
                                             Easy Tracking
                                         </h6>
-                                        <p className="text-[18px] text-[#4B5563] leading-[24px] mt-2 font-poppins">
-                                            Monitor your spending habits and <br></br>gain insights
-                                            into your financial behavior.
+                                        <p className="text-[16px] text-[#4B5563] leading-[24px] mt-2 font-poppins">
+                                            Monitor your spending habits and gain insights into your
+                                            financial behavior.
                                         </p>
                                     </div>
                                 </div>
 
                                 {/* Card 2 */}
-                                <div className="w-[288px] flex flex-col gap-[16px]">
-                                    <img src="/wallet.svg" alt="" className="w-12 h-12 mt-1" />
+                                <div className="w-[275px] flex flex-col gap-[16px]">
+                                    <img src="/wallet.svg" alt="" className="w-10 h-10 mt-1" />
                                     <div>
-                                        <h6 className="text-[20px] leading-[32px] tracking-[-0.01em] font-semibold text-[#060B06] font-mulish">
+                                        <h6 className="text-[18px] leading-[32px] tracking-[-0.01em] font-semibold text-[#060B06] font-mulish">
                                             Budgeting Made Simple
                                         </h6>
-                                        <p className="text-[18px] text-[#4B5563] leading-[24px] mt-2 font-poppins">
+                                        <p className="text-[16px] text-[#4B5563] leading-[24px] mt-2 font-poppins">
                                             Set realistic budgets and receive reminders to stay on
                                             track with your goals.
                                         </p>
@@ -190,7 +190,7 @@ export default function About() {
                     </div>
 
                     {/* Right: Image */}
-                    <div className="w-[600px] h-[640px] flex-shrink-0">
+                    <div className="w-[550px] h-[580px] flex-shrink-0">
                         <img
                             src="/budgeting-tools.png"
                             alt="Budgeting illustration"
@@ -202,10 +202,10 @@ export default function About() {
 
             {/* Our Team Section */}
             <section className="bg-[#F7F8F9] w-full py-[112px] px-[64px]">
-                <div className="max-w-[1280px] mx-auto text-center">
+                <div className="max-w-[1045px] mx-24 text-center">
                     {/* Heading */}
                     <h2
-                        className="text-[48px] leading-[57.6px] tracking-[-0.01em] font-semibold font-mulish text-[#060B06] mb-[24px]"
+                        className="text-4xl leading-[57px] tracking-[-0.01em] font-medium font-mulish text-[#060B06] mb-[12px]"
                         style={{ width: "768px", marginLeft: "auto", marginRight: "auto" }}
                     >
                         Our Team
@@ -213,14 +213,14 @@ export default function About() {
 
                     {/* Subheading */}
                     <p
-                        className="text-[19px] leading-[27px] font-normal font-poppins text-gray-800 mb-[80px]"
+                        className="text-[18px] leading-[27px] font-normal font-poppins text-gray-800 mb-[80px]"
                         style={{ width: "768px", marginLeft: "auto", marginRight: "auto" }}
                     >
                         Meet the passionate individuals behind FinTrackEasy.
                     </p>
 
                     {/* Row 1 – 3 Members */}
-                    <div className="flex justify-center flex-wrap gap-x-[48px] mb-[80px]">
+                    <div className="flex justify-center gap-x-[24px] mb-[24px]">
                         {[
                             {
                                 name: "Carrie Leung",
@@ -246,7 +246,7 @@ export default function About() {
                     </div>
 
                     {/* Row 2 – 2 Wider Members */}
-                    <div className="flex justify-center flex-wrap gap-x-[48px]">
+                    <div className="flex justify-center gap-x-[16px]">
                         {[
                             {
                                 name: "Wing Ho Chau",

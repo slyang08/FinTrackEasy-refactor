@@ -69,7 +69,7 @@ export default function SavingsDetail({ selectedGoal, fetchGoals, onEditSaving, 
     };
 
     return (
-        <Card className="max-w-5xl mx-auto">
+        <Card className="max-w-5xl mx-auto p-6">
             <CardContent className="p-4 space-y-4">
                 <div className="flex justify-between items-center mb-2">
                     <p className="font-medium max-w-[300px] break-words leading-tight ml-3">
@@ -78,14 +78,14 @@ export default function SavingsDetail({ selectedGoal, fetchGoals, onEditSaving, 
 
                     <div className="flex items-center">
                         <p
-                            className="w-[100px] text-left text-black text-md"
-                            style={{ marginLeft: "-350px" }}
+                            className="w-[68px] text-left text-black text-md"
+                            style={{ marginLeft: "-200px" }}
                         >
                             ${selectedGoal.targetAmount.toLocaleString()}
                         </p>
 
                         <Button
-                            className="ml-27 bg-green-700 text-white font-bold hover:bg-green-800 px-6 py-2 rounded-md"
+                            className="ml-27 mr-2 bg-[#348D37] text-white font-semibold hover:bg-green-800 px-6 py-2 rounded-md"
                             onClick={() => setAddDialogOpen(true)}
                         >
                             Add Savings
@@ -111,15 +111,17 @@ export default function SavingsDetail({ selectedGoal, fetchGoals, onEditSaving, 
                                     </td>
                                     <td className="p-3 flex justify-end gap-2">
                                         <Button
+                                            variant="edit"
                                             size="sm"
-                                            className="w-24 bg-yellow-300 text-yellow-800 hover:bg-yellow-400 font-bold"
+                                            //className="w-24 bg-yellow-300 text-yellow-800 hover:bg-yellow-400 font-bold"
                                             onClick={() => setEditSaving(saving)}
                                         >
                                             Edit
                                         </Button>
                                         <Button
+                                            variant="delete"
                                             size="sm"
-                                            className="w-24 bg-red-300 text-red-700 hover:bg-pink-300 font-bold"
+                                            //className="w-24 bg-red-300 text-red-700 hover:bg-pink-300 font-bold"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setDeleteSavingId(saving._id);
@@ -140,7 +142,7 @@ export default function SavingsDetail({ selectedGoal, fetchGoals, onEditSaving, 
                     </tbody>
                 </table>
 
-                <div className="w-[967px] h-[2px] bg-gray-300 my-4 mx-auto"></div>
+                <div className="w-[900px] h-[2px] bg-gray-300 my-4 mx-auto"></div>
 
                 <div className="flex font-semibold">
                     <p className="ml-3">Saved Amount</p>
