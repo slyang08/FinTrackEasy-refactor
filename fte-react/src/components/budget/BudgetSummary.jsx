@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import api from "@/api/axios.js";
 
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import BudgetItem from "./BudgetItem";
 
-export default function BudgetSummary({ dateRange, confirmDelete, confirmEdit }) {
+export default function BudgetSummary({
+    dateRange,
+    confirmDelete,
+    confirmEdit,
+    addedExpense,
+    setAddedExpense,
+}) {
     const [date, setDate] = useState({});
     const [budgets, setBudgets] = useState({});
     const [sortedDate, setSortedDate] = useState({});
@@ -109,6 +116,35 @@ export default function BudgetSummary({ dateRange, confirmDelete, confirmEdit })
         });
         return await Promise.all(promises);
     }
+
+    useEffect(() => {
+        if (addedExpense) {
+            const expenseDate = new Date(addedExpense.date);
+            const year = expenseDate.getFullYear();
+            const month = String(expenseDate.getMonth() + 1).padStart(2, "0");
+            const expenseYearMonth = `${year}-${month}`;
+            const filteredDateAmount = totalPerCategory[expenseYearMonth];
+            const filteredDateBudget = budgets[expenseYearMonth];
+            if (filteredDateAmount && filteredDateBudget) {
+                const totalUsedAmount = filteredDateAmount[addedExpense.category];
+                const budgetAmount = filteredDateBudget.find(
+                    (budget) => budget.category === addedExpense.category
+                ).amount;
+                const percentage = (totalUsedAmount / budgetAmount) * 100;
+                if (percentage >= 100) {
+                    toast.error(
+                        `Over Budget! You’ve used your entire ${addedExpense.category} budget.`
+                    );
+                    setAddedExpense(null);
+                } else if (percentage >= 90) {
+                    toast.warning(
+                        `Budget Alert: You’ve reached 90% of your ${addedExpense.category} budget`
+                    );
+                    setAddedExpense(null);
+                }
+            }
+        }
+    }, [totalPerCategory, addedExpense, budgets, setAddedExpense]);
 
     return (
         <div className="h-full w-full">
