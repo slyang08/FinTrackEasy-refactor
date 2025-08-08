@@ -9,10 +9,19 @@ import {
 
 import CategoryIcon from "./icons/CategoryIcon";
 
-export default function CategoriesDropdown({ categories, type, value, onValueChange, ...props }) {
+export default function CategoriesDropdown({
+    categories,
+    type,
+    value,
+    onValueChange,
+    isInvalid,
+    ...props
+}) {
     return (
         <Select value={value} onValueChange={onValueChange} {...props}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger
+                className={`w-full ${isInvalid && "border-red-500 focus-visible:ring-red-500"}`}
+            >
                 {value ? (
                     <SelectValue />
                 ) : (

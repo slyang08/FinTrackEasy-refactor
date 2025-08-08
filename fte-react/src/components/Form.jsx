@@ -1,7 +1,8 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,13 +12,6 @@ import api from "@/api/axios.js";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
 import {
     Form,
     FormControl,
@@ -29,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
@@ -92,14 +85,6 @@ const incomeCategories = [
     { label: "Other", value: "Other" },
 ];
 
-// // Recurrence mapping - deprecated as recurring is now just a checkbox
-// const recurring = [
-//     { label: "None", value: "None" },
-//     { label: "Bi-weekly", value: "Bi-weekly" },
-//     { label: "Monthly", value: "Monthly" },
-//     { label: "Weekly", value: "Weekly" },
-// ];
-
 const MAX_NOTE_LENGTH = 30;
 
 export default function TransactionForm({ type, setOpen, editingId = null, editingData = null }) {
@@ -145,7 +130,9 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         console.log("Submitting form with values:", values);
 
         // Convert txnDate to ISO format
-        const formattedDate = new Date(values.txnDate).toISOString();
+        const formattedDate = DateTime.fromJSDate(values.txnDate, {
+            zone: "America/Toronto",
+        }).toISO();
 
         // Ensure txnNote is properly reset to undefined if it's empty
         const txnNote2 = values.txnNote?.trim() === "" ? undefined : values.txnNote;
@@ -168,7 +155,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
         console.log("Payload being submitted:", pendingValues);
 
         try {
-            const endpoint = type === "income" ? "incomes" : "expenses";
+            const endpoint = type === "income" ? "/incomes" : "/expenses";
 
             const payload = {
                 date: pendingValues.txnDate || undefined,
@@ -185,7 +172,7 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
             console.log("Payload:", payload);
 
             if (editingId) {
-                await api.patch(`/${endpoint}/${editingId}`, payload);
+                await api.patch(`${endpoint}/${editingId}`, payload);
                 toast.success(`${type === "income" ? "Income" : "Expense"} entry updated!`);
             } else {
                 await api.post(endpoint, payload);
@@ -226,64 +213,6 @@ export default function TransactionForm({ type, setOpen, editingId = null, editi
                                                 onValueChange={field.onChange}
                                             />
                                         </FormControl>
-                                        {/* <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className={cn(
-                                                            "w-full justify-between",
-                                                            !field.value && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {field.value
-                                                            ? categoryOptions.find(
-                                                                  (l) => l.value === field.value
-                                                              )?.label
-                                                            : "Select category"}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <ScrollArea>
-                                                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                                                    <Command>
-                                                        <CommandList>
-                                                            <CommandEmpty>
-                                                                No categories found.
-                                                            </CommandEmpty>
-                                                            <CommandGroup>
-                                                                {categoryOptions.map((category) => (
-                                                                    <CommandItem
-                                                                        value={category.label}
-                                                                        key={category.value}
-                                                                        onSelect={() => {
-                                                                            form.setValue(
-                                                                                "txnCategory",
-                                                                                category.value
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <Check
-                                                                            className={cn(
-                                                                                "mr-2 h-4 w-4",
-                                                                                category.value ===
-                                                                                    field.value
-                                                                                    ? "opacity-100"
-                                                                                    : "opacity-0"
-                                                                            )}
-                                                                        />
-                                                                        {category.label}
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </ScrollArea>
-                                        </Popover> */}
-
                                         <FormMessage />
                                     </FormItem>
                                 )}
