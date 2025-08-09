@@ -144,7 +144,7 @@ export default function BudgetSummary({
                 }
             }
         }
-    }, [totalPerCategory, addedExpense, budgets, setAddedExpense]);
+    }, [totalPerCategory]);
 
     return (
         <div className="h-full w-full">
