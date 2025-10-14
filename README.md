@@ -1,8 +1,14 @@
-# FinTrackEasy
+# FinTrackEasy-refactor
 
-FinTrackEasy is a user-friendly personal finance tracking application that helps users manage their daily income and expenses.
+**FinTrackEasy-refactor** is a personal finance tracking application refactored from the original [FinTrackEasy](https://github.com/Project-Implementation-PRJ666/FinTrackEasy).
 
-# Member
+This version focuses on back-end improvements by refactoring the original monolithic architecture into a microservices-based structure, improving scalability, maintainability, and modularity.
+
+Users can still manage their daily income and expenses, while developers benefit from a cleaner and more flexible service-oriented back-end design.
+
+## Credits
+
+This project is a refactored version of [FinTrackEasy](https://github.com/Project-Implementation-PRJ666/FinTrackEasy), originally developed by the PRJ666 project team:
 
 |      Name      |    ID     |
 | :------------: | :-------: |
@@ -12,6 +18,10 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 |   Tracy Tran   | 109604223 |
 |  Wing Ho Chau  | 150924231 |
 
+All original design and implementation credits go to the respective authors.
+
+**This repository is independently maintained by _Sheng-Lin Yang_ as a personal refactoring project.**
+
 ## Technology Stack
 
 ### Frontend
@@ -19,20 +29,26 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 - React
 - React Router
 - Axios
-- Shadcn UI/Tailwind CSS
+- Shadcn UI
+- Tailwind CSS
 
 ### Backend
 
-- Node.js
-- Express
+- Node.js & Express (Main API)
+- Python & FastAPI (Auth service)
+- Golang & Gin (User service)
 - MongoDB
-- Mongoose
+- PostgreSQL
 
 ## Installation Guide
 
 ### Prerequisites
 
 - Node.js (v14 or higher)
+- Python (v3.9 or higher)
+- FastAPI
+- Go (v1.24 or higher)
+- Gin
 - MongoDB
 - pnpm
 
@@ -41,8 +57,8 @@ FinTrackEasy is a user-friendly personal finance tracking application that helps
 1. Clone the project
 
 ```bash
-git clone [repository-url]
-cd FinTrackEasy
+git clone https://github.com/slyang08/FinTrackEasy-refactor
+cd FinTrackEasy-refactor
 ```
 
 2. Install backend dependencies
@@ -59,8 +75,8 @@ cd ../fte-react
 pnpm install
 ```
 
-4. Configure environment variables
-   Create a `.env` file in the project root directory and add the necessary environment variables:
+4. Configure environment variables  
+   Create a `.env` file inside the `express` directory with the following variables:
 
 ```
 MONGODB_URI=your_mongodb_connection_string
@@ -75,20 +91,23 @@ PORT=3000
 pnpm dev
 ```
 
-## Prettier (only handles formatting)
+## Code Formatting & Linting
+
+### Prettier – Code Formatter
 
 ```bash
 pnpm format:fix
 ```
 
-- Execution tool: Prettier
-- Purpose: Unify code formats (such as indentation, semicolons, quotes, line breaks, etc.), and do not check for syntax errors or potential bugs
+- Formats code (indentation, semicolons, quotes, etc.)
+- Does **not** check for syntax errors or code quality issues
 
-## ESLint (which handles syntax, quality, and some formatting (such as import ordering))
+### ESLint – Code Linter
 
 ```bash
 pnpm lint:fix
 ```
 
-- Execution tool: ESLint
-- Function: Check and automatically correct syntax errors and code quality issues (such as import order, unused variables, etc.) according to ESLint rules, and can also correct some formatting issues
+- Checks for syntax errors and code quality issues
+- Enforces consistent import order and usage rules
+- Can auto-fix many common issues
