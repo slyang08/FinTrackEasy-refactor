@@ -1,3 +1,4 @@
 packages:
     - "fte-react"
     - "express"
+    - "auth-fastapi"

@@ -14,6 +14,8 @@
         "format": "pnpm -r --parallel --stream format",
         "format:check": "prettier --check . --config ./.prettierrc.json",
         "format:fix": "prettier --write . --config ./.prettierrc.json",
+        "format:python": "pnpm --filter auth-fastapi run format:fix",
+        "format:all": "pnpm run format:fix && pnpm run format:python",
         "start:front": "pnpm -F fte-react dev",
         "start:back": "pnpm -F express dev",
         "prepare": "husky install"

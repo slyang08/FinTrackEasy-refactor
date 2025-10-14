@@ -1,0 +1,31 @@
+{
+    // Python virtual environment path (automatically detects .venv)
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+
+    // Use Black as the formatting tool, set line width, and skip string quote normalization
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--skip-string-normalization", "--line-length", "100"],
+
+    // Enable Python code static analysis tools
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": false,
+    "python.linting.pylintArgs": ["--max-line-length=100"],
+
+    // Default formatter set to Python's official extension (uses Black)
+    "editor.defaultFormatter": "ms-python.python",
+
+    // Auto-format on save (enable as needed)
+    "editor.formatOnSave": true,
+
+    // Pylance auto-completion and type checking settings
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+
+    // Enhance type hints in FastAPI projects by scanning the entire workspace
+    "python.analysis.diagnosticMode": "workspace",
+
+    // Set file line endings to LF (Linux/Mac style)
+    "files.eol": "\n"
+}

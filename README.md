@@ -46,7 +46,7 @@ All original design and implementation credits go to the respective authors.
 
 - Node.js (v14 or higher)
 - Python (v3.9 or higher)
-- FastAPI
+- FastAPI (v0.119.0)
 - Go (v1.24 or higher)
 - Gin
 - MongoDB

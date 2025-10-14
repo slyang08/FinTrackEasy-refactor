@@ -1,0 +1,28 @@
+[tool.black]
+line-length = 100
+skip-string-normalization = false
+target-version = ["py39"]
+include = '\.pyi?$'
+exclude = '''
+/(
+  \.venv
+  | \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+  "C0114",  # missing-module-docstring
+  "C0115",  # missing-class-docstring
+  "C0116"   # missing-function-docstring
+]
+
+[tool.pylint.basic]
+max-line-length = 100

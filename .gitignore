@@ -50,3 +50,9 @@ coverage
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
