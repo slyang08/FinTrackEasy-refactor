@@ -48,7 +48,7 @@ All original design and implementation credits go to the respective authors.
 - Python (v3.9 or higher)
 - FastAPI (v0.119.0)
 - Go (v1.24 or higher)
-- Gin
+- Gin (v1.11.0)
 - MongoDB
 - pnpm
 
