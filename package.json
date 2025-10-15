@@ -1,5 +1,5 @@
 {
-    "name": "fintrackeasy",
+    "name": "fintrackeasy-refactor",
     "private": true,
     "version": "1.0.0",
     "type": "module",
@@ -14,8 +14,8 @@
         "format": "pnpm -r --parallel --stream format",
         "format:check": "prettier --check . --config ./.prettierrc.json",
         "format:fix": "prettier --write . --config ./.prettierrc.json",
-        "format:python": "pnpm --filter auth-fastapi run format:fix",
-        "format:all": "pnpm run format:fix && pnpm run format:python",
+        "format:python": "pnpm --filter auth-fastapi format:fix",
+        "format:all": "pnpm format:fix && pnpm format:python && pnpm --filter user-gin format:fix",
         "start:front": "pnpm -F fte-react dev",
         "start:back": "pnpm -F express dev",
         "prepare": "husky install"

@@ -56,3 +56,10 @@ desktop.ini
 venv/
 ENV/
 env/
+
+# Go build & Air temp binary
+/tmp/
+/**/tmp/
+/**/tmp/main
+# Air config (Go live reloading)
+/**/.air.toml

@@ -1,0 +1,9 @@
+{
+    "name": "user-gin",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "air",
+        "format:fix": "goimports -w ."
+    }
+}

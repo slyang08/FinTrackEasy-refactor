@@ -2,3 +2,4 @@ packages:
     - "fte-react"
     - "express"
     - "auth-fastapi"
+    - "user-gin"
