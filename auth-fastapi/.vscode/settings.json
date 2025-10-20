@@ -27,5 +27,7 @@
     "python.analysis.diagnosticMode": "workspace",
 
     // Set file line endings to LF (Linux/Mac style)
-    "files.eol": "\n"
+    "files.eol": "\n",
+
+    "python.analysis.extraPaths": ["./.venv/lib/python3.14/site-packages"]
 }

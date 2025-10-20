@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "python3 -m uvicorn main:app --reload",
+        "dev": "python3 -m uvicorn app.main:app --reload",
         "format:fix": "black ."
     }
 }

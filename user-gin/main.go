@@ -3,10 +3,15 @@ package main
 import (
 	"net/http"
 
+	"FinTrackEasy-refactor/user-gin/config"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// Initialize the database (no return value)
+	config.ConnectDB()
+
 	// Create a Gin router with default middleware (logger and recovery)
 	r := gin.Default()
 
